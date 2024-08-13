@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { webVitals } from '$lib/vitals';
+	import { onMount } from 'svelte';
 	import Header from './Header.svelte';
 	import './styles.css';
 
@@ -25,7 +26,7 @@
 	</main>
 
 	<footer>
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+		<p>Footer content</p>
 	</footer>
 </div>
 
