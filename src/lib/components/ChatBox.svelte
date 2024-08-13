@@ -60,7 +60,8 @@
       isLoading = false;
     };
   </script>
-  
+  <!-- <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" /> -->
+
   <div class="chat-container">
     <div class="messages">
       {#each messages as { role, content }}
@@ -70,13 +71,9 @@
       {/each}
     </div>
     <div class="input-container">
-      <input
-        type="text"
-        bind:value={input}
-        placeholder="Ask me anything..."
-        on:keydown={(e) => e.key === 'Enter' && sendMessage()}
-      />
-      <button on:click={sendMessage} disabled={isLoading}>Send</button>
+      
+      <input class="input input-bordered w-full max-w-full" type="text" bind:value={input} placeholder="Ask me anything..." on:keydown={(e) => e.key === 'Enter' && sendMessage()} />
+      <button class="btn btn-primary" on:click={sendMessage} disabled={isLoading}>Send</button>
     </div>
   </div>
   
@@ -103,7 +100,7 @@
     .input-container {
       display: flex;
       padding: 1rem;
-      border-top: 1px solid #ccc;
+      /* border-top: 1px solid #ccc; */
     }
     input {
       flex-grow: 1;

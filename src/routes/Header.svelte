@@ -6,7 +6,7 @@
 <header>
 	<div class="corner">
 		<a href="https://www.conservation.org/">
-			<img src={logo} alt="SvelteKit" />
+			<img src={logo} alt="Conservation International" />
 		</a>
 	</div>
 
