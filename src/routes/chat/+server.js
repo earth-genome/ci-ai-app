@@ -1,4 +1,6 @@
-import { OPEN_AI_KEY } from '$env/static/private';
+import dotenv from 'dotenv';
+dotenv.config();
+const OPEN_AI_KEY = process.env.OPEN_AI_KEY;
 export const POST = async ({ request }) => {
   const { message } = await request.json();
 
