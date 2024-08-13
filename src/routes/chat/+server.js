@@ -1,5 +1,4 @@
 import { OPEN_AI_KEY } from '$env/static/private';
-console.log('OpenAI Key:', OPEN_AI_KEY); 
 export const POST = async ({ request }) => {
   const { message } = await request.json();
 
@@ -19,6 +18,15 @@ export const POST = async ({ request }) => {
   return new Response(response.body, {
     headers: {
       'Content-Type': 'text/event-stream',
+    }
+  });
+};
+
+export const GET = async () => {
+  return new Response('This endpoint only supports POST requests', {
+    status: 405,
+    headers: {
+      'Content-Type': 'text/plain'
     }
   });
 };
