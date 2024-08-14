@@ -38,6 +38,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"aws-sdk": "^2.1675.0",
 		"openai": "^4.55.7"
 	}
 }
