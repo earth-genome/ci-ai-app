@@ -1,6 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	import logo from '$lib/images/ci-logo.svg';
+	import egLogo from '$lib/images/eg-logo.png';
 </script>
 
 <header>
@@ -24,58 +25,29 @@
 					</svg>
 				</div>
 				<ul
-					tabindex="0"
 					class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
 				>
 					<li><a href="/">Home</a></li>
-					<li><a href="/chat">Chat</a></li>
+					<li><a href="/chat">Basic Chat</a></li>
 					<li><a href="/third">Third Page</a></li>
 				</ul>
 			</div>
-			<a class="btn btn-ghost text-xl">Conservation International</a>
+			<a href="/" class="btn btn-ghost text-xl">Conservation International</a>
 		</div>
 		<div class="navbar-center hidden lg:flex">
 			<ul class="menu menu-horizontal px-1">
 				<li><a href="/">Home</a></li>
-				<li><a href="/chat">Chat</a></li>
+				<li><a href="/chat">Basic Chat</a></li>
 				<li><a href="/third">Third Page</a></li>
 			</ul>
 		</div>
 		<div class="navbar-end">
-			<a class="btn" href="/">Button</a>
+			<a class="btn" href="https://www.earthgenome.org/">
+				<img class="eg-logo" src={egLogo} alt="Earth Genome" />
+
+			</a>
 		</div>
 	</div>
-	<!-- <div class="corner">
-		<a href="https://www.conservation.org/">
-			<img src={logo} alt="Conservation International" />
-		</a>
-	</div>
-
-	<nav>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
-		<ul>
-			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
-			</li>
-			<li aria-current={$page.url.pathname === '/chat' ? 'page' : undefined}>
-				<a href="/chat">Chat</a>
-			</li>
-			<li aria-current={$page.url.pathname.startsWith('/third') ? 'page' : undefined}>
-				<a href="/third">Third App</a>
-			</li>
-		</ul>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
-	</nav> -->
-	<!-- could add a earth genome logo here -->
-	<!-- <div class="corner"> -->
-	<!-- <a href="https://github.com/sveltejs/kit"> -->
-	<!-- <img src={github} alt="GitHub" /> -->
-	<!-- </a> -->
-	<!-- </div> -->
 </header>
 
 <style>
@@ -166,5 +138,9 @@
 
 	a:hover {
 		color: var(--color-theme-1);
+	}
+	.eg-logo {
+		width:7em;
+		/* height: 5em; */
 	}
 </style>

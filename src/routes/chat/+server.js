@@ -1,32 +1,35 @@
-import { OPEN_AI_KEY } from '$env/static/private';
-export const POST = async ({ request }) => {
+import { json } from '@sveltejs/kit';
+import OpenAI from 'openai';
+import { OPENAI_API_KEY } from '$env/static/private';
+
+const openai = new OpenAI({
+  apiKey: OPENAI_API_KEY
+});
+
+export async function POST({ request }) {
   const { message } = await request.json();
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPEN_AI_KEY}`
+  const stream = await openai.chat.completions.create({
+    model: 'gpt-4',
+    messages: [{ role: 'user', content: message }],
+    stream: true,
+  });
+
+  const readableStream = new ReadableStream({
+    async start(controller) {
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content || '';
+        if (content) {
+          controller.enqueue(content);
+        }
+      }
+      controller.close();
     },
-    body: JSON.stringify({
-      model: 'gpt-4',
-      messages: [{ role: 'user', content: message }],
-      stream: true
-    })
   });
 
-  return new Response(response.body, {
+  return new Response(readableStream, {
     headers: {
-      'Content-Type': 'text/event-stream',
-    }
+      'Content-Type': 'text/plain',
+    },
   });
-};
-
-export const GET = async () => {
-  return new Response('This endpoint only supports POST requests', {
-    status: 405,
-    headers: {
-      'Content-Type': 'text/plain'
-    }
-  });
-};
+}
