@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import OpenAI from 'openai';
-import { OPENAI_API_KEY } from '$env/static/private';
+import { OPEN_AI_KEY } from '$env/static/private';
 
 const openai = new OpenAI({
-  apiKey: OPENAI_API_KEY
+  apiKey: OPEN_AI_KEY
 });
 
 export async function POST({ request }) {
