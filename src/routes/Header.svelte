@@ -32,7 +32,9 @@
 					<li><a href="/third">Third Page</a></li>
 				</ul>
 			</div>
-			<a href="/" class="btn btn-ghost text-xl">Conservation International</a>
+			<a href="/" class="btn btn-ghost">
+				<img class="ci-logo" src={logo} alt="CI Logo" />
+			</a>
 		</div>
 		<div class="navbar-center hidden lg:flex">
 			<ul class="menu menu-horizontal px-1">
@@ -42,8 +44,8 @@
 			</ul>
 		</div>
 		<div class="navbar-end">
-			<a class="btn" href="https://www.earthgenome.org/">
-				<img class="eg-logo" src={egLogo} alt="Earth Genome" />
+			<a class="btn btn-ghost" href="https://www.earthgenome.org/">
+				<img class="eg-logo " src={egLogo} alt="Earth Genome" />
 
 			</a>
 		</div>
@@ -141,6 +143,10 @@
 	}
 	.eg-logo {
 		width:7em;
+		/* height: 5em; */
+	}
+	.ci-logo {
+		width:10em;
 		/* height: 5em; */
 	}
 </style>
