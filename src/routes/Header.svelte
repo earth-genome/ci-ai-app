@@ -4,7 +4,48 @@
 </script>
 
 <header>
-	<div class="corner">
+	<div class="navbar bg-base-100">
+		<div class="navbar-start">
+			<div class="dropdown">
+				<div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-5 w-5"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M4 6h16M4 12h8m-8 6h16"
+						/>
+					</svg>
+				</div>
+				<ul
+					tabindex="0"
+					class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+				>
+					<li><a href="/">Home</a></li>
+					<li><a href="/chat">Chat</a></li>
+					<li><a href="/third">Third Page</a></li>
+				</ul>
+			</div>
+			<a class="btn btn-ghost text-xl">Conservation International</a>
+		</div>
+		<div class="navbar-center hidden lg:flex">
+			<ul class="menu menu-horizontal px-1">
+				<li><a href="/">Home</a></li>
+				<li><a href="/chat">Chat</a></li>
+				<li><a href="/third">Third Page</a></li>
+			</ul>
+		</div>
+		<div class="navbar-end">
+			<a class="btn" href="/">Button</a>
+		</div>
+	</div>
+	<!-- <div class="corner">
 		<a href="https://www.conservation.org/">
 			<img src={logo} alt="Conservation International" />
 		</a>
@@ -28,13 +69,13 @@
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
 		</svg>
-	</nav>
+	</nav> -->
 	<!-- could add a earth genome logo here -->
-	<div class="corner">
-		<!-- <a href="https://github.com/sveltejs/kit"> -->
-			<!-- <img src={github} alt="GitHub" /> -->
-		<!-- </a> -->
-	</div>
+	<!-- <div class="corner"> -->
+	<!-- <a href="https://github.com/sveltejs/kit"> -->
+	<!-- <img src={github} alt="GitHub" /> -->
+	<!-- </a> -->
+	<!-- </div> -->
 </header>
 
 <style>
