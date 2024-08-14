@@ -27,7 +27,18 @@ export async function POST({ request }) {
     },
   });
 
+
+
   return new Response(readableStream, {
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+  });
+}
+
+export async function GET() {
+  return new Response('This endpoint only supports POST requests for streaming responses from OpenAI.', {
+    status: 405, // Method Not Allowed
     headers: {
       'Content-Type': 'text/plain',
     },
