@@ -30,6 +30,7 @@
 					<li><a href="/">Home</a></li>
 					<li><a href="/chat">Basic Chat</a></li>
 					<li><a href="/third">Third Page</a></li>
+					<li><a href="/agent-chat">Custom Robot</a></li>
 				</ul>
 			</div>
 			<a href="/" class="btn btn-ghost">
@@ -41,6 +42,7 @@
 				<li><a href="/">Home</a></li>
 				<li><a href="/chat">Basic Chat</a></li>
 				<li><a href="/third">Third Page</a></li>
+				<li><a href="/agent-chat">Custom Robot</a></li>
 			</ul>
 		</div>
 		<div class="navbar-end">
