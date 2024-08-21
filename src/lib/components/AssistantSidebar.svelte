@@ -8,7 +8,6 @@
 		options.push({
 			id: index,
 			label: definition.name,
-			emoji: definition.emoji
 		});
 	});
 	console.log(options);
@@ -22,8 +21,7 @@
 <ul class="menu menu-vertical lg:menu-horizontal bg-base-200 rounded-box">
 	{#each options as option, index}
 		<li>
-			<a on:click={() => handleClick(index)} class:active={$selectedOption === index} href="">
-				{option.emoji}
+			<a on:click={() => handleClick(index)} class:active={$selectedOption === index} href="#">
 				{option.label}
 			</a>
 		</li>
