@@ -4,16 +4,18 @@
 	import robotAvatar from '$lib/images/robot-circle.png';
 	let messages = [];
 	let input = '';
-	let isLoading = false;
+	let isLoading = false; 
+
 
 	async function sendMessage() {
 		if (input.trim() === '') return;
 
 		messages = [...messages, { role: 'user', content: input }];
 		isLoading = true;
+		console.log('input is:', input);
 
 		try {
-			const response = await fetch('../api/agent-chat', {
+			const response = await fetch('../api/lambda-chat', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -25,8 +27,10 @@
 				throw new Error('Network response was not ok');
 			}
 
-			const data = await response.json();
-			messages = [...messages, { role: 'assistant', content: data.message }];
+			const content = await response.text();
+			console.log(response)
+			console.log("content: ", content)
+			messages = [...messages, { role: 'assistant', content }];
 		} catch (error) {
 			console.error('Error:', error);
 			messages = [...messages, { role: 'assistant', content: 'Sorry, an error occurred.' }];
@@ -64,7 +68,6 @@
 		<button class="btn btn-primary" on:click={sendMessage} disabled={isLoading}>Send</button>
 	</div>
 </div>
-
 
 <style>
 	.chat-container {
@@ -117,3 +120,4 @@
 		margin: 0 0.5rem;
 	}
 </style>
+

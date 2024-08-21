@@ -28,9 +28,9 @@
 					class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
 				>
 					<li><a href="/">Home</a></li>
-					<li><a href="/chat">Basic Chat</a></li>
-					<li><a href="/third">Third Page</a></li>
-					<li><a href="/agent-chat">Custom Robot</a></li>
+					<li><a href="/basic-chat">Basic Chat</a></li>
+					<li><a href="/lambda-chat">Lambda Chat</a></li>
+					<li><a href="/agent-chat">Agent Chat</a></li>
 				</ul>
 			</div>
 			<a href="/" class="btn btn-ghost">
@@ -40,15 +40,14 @@
 		<div class="navbar-center hidden lg:flex">
 			<ul class="menu menu-horizontal px-1">
 				<li><a href="/">Home</a></li>
-				<li><a href="/chat">Basic Chat</a></li>
-				<li><a href="/third">Third Page</a></li>
-				<li><a href="/agent-chat">Custom Robot</a></li>
+				<li><a href="/basic-chat">Basic Chat</a></li>
+				<li><a href="/lambda-chat">Lambda Chat</a></li>
+				<li><a href="/agent-chat">Agent Chat</a></li>
 			</ul>
 		</div>
 		<div class="navbar-end">
 			<a class="btn btn-ghost" href="https://www.earthgenome.org/">
-				<img class="eg-logo " src={egLogo} alt="Earth Genome" />
-
+				<img class="eg-logo" src={egLogo} alt="Earth Genome" />
 			</a>
 		</div>
 	</div>
@@ -144,11 +143,11 @@
 		color: var(--color-theme-1);
 	}
 	.eg-logo {
-		width:7em;
+		width: 7em;
 		/* height: 5em; */
 	}
 	.ci-logo {
-		width:10em;
+		width: 10em;
 		/* height: 5em; */
 	}
 </style>
