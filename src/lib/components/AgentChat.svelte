@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import userAvatar from '$lib/images/user-square.png';
 	import robotAvatar from '$lib/images/robot-circle.png';
+	import { selectedOption } from '$lib/stores';
 	let messages = [];
 	let input = '';
 	let isLoading = false;
@@ -18,7 +19,10 @@
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ message: input })
+				body: JSON.stringify({ 
+					message: input,
+					agentIndex: $selectedOption
+				})
 			});
 
 			if (!response.ok) {

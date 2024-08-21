@@ -3,9 +3,7 @@
 	import Sidebar from '$lib/components/AssistantSidebar.svelte';
 </script>
 
-<div class="flex">
+<main class="flex-1">
 	<Sidebar />
-	<main class="flex-1">
-		<AgentChat />
-	</main>
-</div>
+	<AgentChat />
+</main>

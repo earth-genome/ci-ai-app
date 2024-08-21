@@ -8,11 +8,11 @@ const openai = new OpenAI({
 });
 
 export async function POST({ request }) {
-  const { message } = await request.json();
+  const { message, agentIndex } = await request.json();
 
   try {
     // Create a temporary assistant
-    const assistant = await openai.beta.assistants.create(assistantDefinitions[0]);
+    const assistant = await openai.beta.assistants.create(assistantDefinitions[agentIndex]);
 
     // Create a new thread
     const thread = await openai.beta.threads.create();

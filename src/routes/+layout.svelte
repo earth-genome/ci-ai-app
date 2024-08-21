@@ -18,7 +18,7 @@
 		});
 	}
 	onMount(() => {
-		document.documentElement.setAttribute('data-theme', 'cupcake');
+		document.documentElement.setAttribute('data-theme', 'emerald');
 	});
 </script>
 
