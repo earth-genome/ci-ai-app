@@ -33,6 +33,7 @@ async function invokeLambda(prompt) {
 }
 
 export async function POST({ request }) {
+    console.log("POST request received in api folder structure")
 	const { message } = await request.json();
 
 	try {
