@@ -7,7 +7,7 @@
 	assistantDefinitions.forEach((definition, index) => {
 		options.push({
 			id: index,
-			label: definition.name,
+			label: definition.name
 		});
 	});
 	console.log(options);
