@@ -2,6 +2,7 @@ import { json } from '@sveltejs/kit';
 import OpenAI from 'openai';
 import { OPEN_AI_KEY } from '$env/static/private';
 import { assistantDefinitions } from '$lib/assistant-definition.js';
+import { citationsMap } from '$lib/citations-map.js';
 
 const openai = new OpenAI({
   apiKey: OPEN_AI_KEY
@@ -13,6 +14,11 @@ export async function POST({ request }) {
   try {
     // Create a temporary assistant
     const assistant = await openai.beta.assistants.create(assistantDefinitions[agentIndex]);
+    // const assistant = await openai.beta.assistants.retrieve("asst_JDu2zlmHF0Ok8Z5CR1l37Ugc");
+    // const assistant = assistantDefinitions[agentIndex]
+    // const assistant = await openai.beta.assistants.retrieve(
+    //   assistantDefinitions[agentIndex].id
+    // );
 
     // Create a new thread
     const thread = await openai.beta.threads.create();
@@ -43,7 +49,31 @@ export async function POST({ request }) {
     await openai.beta.assistants.del(assistant.id);
 
     if (assistantMessage && assistantMessage.content[0].type === 'text') {
-      return json({ message: assistantMessage.content[0].text.value });
+      const { text } = assistantMessage.content[0];
+      const { annotations } = text;
+      const citations = [];
+
+      let index = 0;
+      for (let annotation of annotations) {
+        text.value = text.value.replace(annotation.text, "[" + index + "]");
+        const { file_citation } = annotation;
+        if (file_citation) {
+          const citedFile = await openai.files.retrieve(file_citation.file_id);
+          citations.push("[" + index + "]" + citedFile.filename);
+        }
+        index++;
+      }
+
+      const links = citations.map((citation, index) => {
+        const filename = citation.split(']')[1].trim();
+        const link = citationsMap.find(map => map.filename === filename)?.link;
+        return `<p><a href="${link}" target="_blank">${citation.split(']')[0]}: ${link}</a></p>`;
+      });
+
+      console.log('citations: ', citations);
+      console.log('links: ', links);
+
+      return json({ message: text.value + "\n" + links });
     } else {
       return json({ message: 'No response from the assistant.' });
     }
