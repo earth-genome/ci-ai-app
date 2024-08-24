@@ -10,7 +10,14 @@
 	async function sendMessage() {
 		if (input.trim() === '') return;
 
-		messages = [...messages, { role: 'user', content: input }];
+		const currentInput = input;
+		input = '';
+
+		messages = [
+			...messages, 
+			{ role: 'user', content: currentInput },
+			{ role: 'assistant', content: 'Loading...', isLoading: true }
+		];
 		isLoading = true;
 
 		try {
@@ -20,7 +27,7 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({ 
-					message: input,
+					message: currentInput,
 					agentIndex: $selectedOption
 				})
 			});
@@ -30,26 +37,29 @@
 			}
 
 			const data = await response.json();
+			messages = messages.filter(msg => !msg.isLoading);
 			messages = [...messages, { role: 'assistant', content: data.message }];
 		} catch (error) {
 			console.error('Error:', error);
+			messages = messages.filter(msg => !msg.isLoading);
 			messages = [...messages, { role: 'assistant', content: 'Sorry, an error occurred.' }];
 		} finally {
-			input = '';
 			isLoading = false;
 		}
+
+		console.log('messages: ', messages);
 	}
 </script>
 
 <div class="chat-container">
 	<div class="messages">
-		{#each messages as { role, content }}
+		{#each messages as { role, content, isLoading }}
 			<div class={`message-container ${role}`}>
 				{#if role === 'assistant'}
 					<img src={robotAvatar} alt="Assistant icon" class="avatar" />
 				{/if}
-				<div class="message-content">
-					{content}
+				<div class="message-content" class:loading={isLoading}>
+					{@html content}
 				</div>
 				{#if role === 'user'}
 					<img src={userAvatar} alt="User icon" class="avatar" />
@@ -119,5 +129,9 @@
 		height: 2.5rem;
 		border-radius: 50%;
 		margin: 0 0.5rem;
+	}
+	.message-content.loading {
+		font-style: italic;
+		opacity: 0.7;
 	}
 </style>
