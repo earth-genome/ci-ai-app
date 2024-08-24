@@ -14,11 +14,6 @@ export async function POST({ request }) {
   try {
     // Create a temporary assistant
     const assistant = await openai.beta.assistants.create(assistantDefinitions[agentIndex]);
-    // const assistant = await openai.beta.assistants.retrieve("asst_JDu2zlmHF0Ok8Z5CR1l37Ugc");
-    // const assistant = assistantDefinitions[agentIndex]
-    // const assistant = await openai.beta.assistants.retrieve(
-    //   assistantDefinitions[agentIndex].id
-    // );
 
     // Create a new thread
     const thread = await openai.beta.threads.create();
