@@ -1,6 +1,7 @@
 <script>
 	import Map  from '$lib/components/Map.svelte';
-	// import { env } from '$env/dynamic/public';
+	import {Coords} from '$lib/stores.js';
+	
+
 </script>
-  
 <Map />
