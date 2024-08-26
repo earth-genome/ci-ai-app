@@ -31,6 +31,7 @@
 					<li><a href="/basic-chat">Basic Chat</a></li>
 					<li><a href="/lambda-chat">Lambda Chat</a></li>
 					<li><a href="/agent-chat">Agent Chat</a></li>
+					<li><a href="/map-chat">Map Chat</a></li>
 				</ul>
 			</div>
 			<a href="/" class="btn btn-ghost">
@@ -43,6 +44,7 @@
 				<li><a href="/basic-chat">Basic Chat</a></li>
 				<li><a href="/lambda-chat">Lambda Chat</a></li>
 				<li><a href="/agent-chat">Agent Chat</a></li>
+				<li><a href="/map-chat">Map Chat</a></li>
 			</ul>
 		</div>
 		<div class="navbar-end">
