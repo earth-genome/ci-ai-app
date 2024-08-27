@@ -1,6 +1,6 @@
 {
     "functions": {
-      "routes/api/agent-chat": {
+      "src/routes/api/agent-chat/+server.js": {
         "maxDuration": 60
       }
     }
