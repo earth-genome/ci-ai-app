@@ -1,6 +1,6 @@
 {
     "functions": {
-      "api/agent-chat": {
+      "routes/api/agent-chat": {
         "maxDuration": 60
       }
     }

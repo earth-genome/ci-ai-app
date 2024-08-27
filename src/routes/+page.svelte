@@ -1,39 +1,56 @@
 <script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+	import leaves from '$lib/images/leaf-texture.png';
 </script>
 
 <svelte:head>
 	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<meta name="description" content="CI AI Experiments" />
 </svelte:head>
-
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
-</section>
+<div class="card bg-base-100 image-full w-96 shadow-xl">
+	<figure>
+		<img
+			src={leaves}
+			alt="leaves"
+		/>
+	</figure>
+	<div class="card-body">
+		<h2 class="card-title">Research Agent Demo</h2>
+		<p>Chat with a research agent to learn more about climate change and it's impacts.</p>
+		<div class="card-actions justify-end">
+			<button class="btn btn-primary" href="./agent-chat">Explore</button>
+		</div>
+	</div>
+</div>
+<div class="card lg:card-side bg-base-100 shadow-xl">
+	<figure>
+		<img
+			src="https://img.daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.webp"
+			alt="Album"
+		/>
+	</figure>
+	<div class="card-body">
+		<h2 class="card-title">Research Agent Demo</h2>
+		<p>Chat with a research agent to learn more about climate change and it's impacts.</p>
+		<div class="card-actions justify-end">
+			<button class="btn btn-primary">Explore</button>
+		</div>
+	</div>
+</div>
+<div class="card lg:card-side bg-base-100 shadow-xl">
+	<figure>
+		<img
+			src="https://img.daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.webp"
+			alt="Album"
+		/>
+	</figure>
+	<div class="card-body">
+		<h2 class="card-title">Map Explorer</h2>
+		<p>Explore the impacts of deforestation on warming temperatures</p>
+		<div class="card-actions justify-end">
+			<button class="btn btn-primary">Explore</button>
+		</div>
+	</div>
+</div>
 
 <style>
-	/* section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	} */
 </style>
