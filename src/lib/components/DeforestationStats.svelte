@@ -13,44 +13,39 @@
 		const change = (parseFloat(end) - parseFloat(start)) * 100;
 		return change.toFixed(1) + '%';
 	}
-    function roundNum(value, decimals) {
-        return  Number(value).toFixed(decimals);
-    }
+	function roundNum(value, decimals) {
+		return Number(value).toFixed(decimals);
+	}
 </script>
 
-<!-- create 2 columns -->
-<div class="columns-2">
-    <div class="stats-vertical shadow">
-        <div class="stat">
-			<div class="stat-title">Historical Change in Temp.</div>
-			<div class="stat-figure text-accent">
-				<Thermometer class="w-8 h-8" />
-			</div>
-			<div class="stat-value text-accent">                
-				{roundNum($pointInfo.Delta_T, 2)}
-			</div>
-			<div class="stat-desc">
-				Degrees Celsius between 2000-2019
-			</div>
+<div class="stats shadow m-2 bg-neutral-content">
+	<div class="stat">
+		<div class="stat-title">Historical Change in Temp.</div>
+		<div class="stat-figure text-accent">
+			<Thermometer class="w-8 h-8" />
 		</div>
-    </div>
-    <div class="stats-vertical shadow">
-        <div class="stat">
-			<div class="stat-title">Selected Location</div>
-			<div class="stat-figure text-secondary">
-				<MapPin class="w-8 h-8" />
-			</div>
-			<div class="stat-value text-secondary">                
-				{roundNum($pointInfo['lat'], 3)}, {roundNum($pointInfo['lon'], 3)}
-			</div>
-			<div class="stat-desc">
-				Latitude, Longitude
-			</div>
+		<div class="stat-value text-accent">
+			{roundNum($pointInfo.Delta_T, 2)}
 		</div>
-    </div>
-	<div class="stats-vertical shadow">
+		<div class="stat-desc">Degrees Celsius between 2000-2019</div>
+	</div>
+</div>
+<div class="stats shadow m-2 bg-neutral-content">
+	<div class="stat">
+		<div class="stat-title">Selected Location</div>
+		<div class="stat-figure text-secondary">
+			<MapPin class="w-8 h-8" />
+		</div>
+		<div class="stat-value text-secondary">
+			{roundNum($pointInfo['lat'], 3)}, {roundNum($pointInfo['lon'], 3)}
+		</div>
+		<div class="stat-desc">Latitude, Longitude</div>
+	</div>
+</div>
+<div class="overflow-x-auto">
+	<div class="stats shadow bg-neutral-content m-2">
 		<div class="stat">
-			<div class="stat-title">Local Deforestation (0-2km)</div>
+			<div class="stat-title">Deforestation (0-2km)</div>
 			<div class="stat-figure text-primary">
 				<TreePine class="w-8 h-8" />
 			</div>
@@ -61,9 +56,8 @@
 				{formatPercentage($pointInfo['local_0-2km_end'])} Local Forest Cover
 			</div>
 		</div>
-
 		<div class="stat">
-			<div class="stat-title">Regional Deforestation (2-5km)</div>
+			<div class="stat-title">Deforestation (2-5km)</div>
 			<div class="stat-figure text-primary">
 				<TreePine class="w-8 h-8" />
 			</div>
@@ -76,7 +70,7 @@
 		</div>
 
 		<div class="stat">
-			<div class="stat-title">Regional Deforestation (5-10km)</div>
+			<div class="stat-title">Deforestation (5-10km)</div>
 			<div class="stat-figure text-primary">
 				<TreePine class="w-8 h-8" />
 			</div>
@@ -89,7 +83,7 @@
 		</div>
 
 		<div class="stat">
-			<div class="stat-title">Regional Deforestation (10-25km)</div>
+			<div class="stat-title">Deforestation (10-25km)</div>
 			<div class="stat-figure text-primary">
 				<TreePine class="w-8 h-8" />
 			</div>
@@ -102,7 +96,7 @@
 		</div>
 
 		<div class="stat">
-			<div class="stat-title">Regional Deforestation (25-50km)</div>
+			<div class="stat-title">Deforestation (25-50km)</div>
 			<div class="stat-figure text-primary">
 				<TreePine class="w-8 h-8" />
 			</div>
@@ -115,7 +109,7 @@
 		</div>
 
 		<div class="stat">
-			<div class="stat-title">Regional Deforestation (50-100km)</div>
+			<div class="stat-title">Deforestation (50-100km)</div>
 			<div class="stat-figure text-primary">
 				<TreePine class="w-8 h-8" />
 			</div>
@@ -131,6 +125,7 @@
 		</div>
 	</div>
 </div>
+
 <!-- 
 <div class="stats shadow w-full">
 	<div class="stat">
