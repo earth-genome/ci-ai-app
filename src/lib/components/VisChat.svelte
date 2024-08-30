@@ -10,6 +10,24 @@
 	let assistantResponse = '';
 	let input = '';
 	let isLoading = false;
+	let imageExists = false;
+	let imageSrc = 'src/lib/images/temp-chart.png';
+	let cacheBuster = 0; // used to force reload when temp-chart.png changes
+
+	async function checkImageExists() {
+		try {
+			const response = await fetch(`${imageSrc}?v=${cacheBuster}`);
+			if (response.ok) {
+				imageExists = true;
+			}
+		} catch (error) {
+			imageExists = false;
+		}
+	}
+
+	onMount(() => {
+		checkImageExists();
+	});
 
 	async function sendMessage() {
 		if (input.trim() === '') return;
@@ -38,12 +56,15 @@
 			const data = await response.json();
 			assistantResponse = data.message;
 			currentCitations.set(data.citations);
-			console.log("this is the store", currentCitations);
+			imageSrc = 'src/lib/images/temp-chart.png'; // Update image source after response
+			console.log('this is the store', currentCitations);
 		} catch (error) {
 			console.error('Error:', error);
 			assistantResponse = 'Sorry, an error occurred.';
 		} finally {
 			isLoading = false;
+			cacheBuster = Date.now();
+            await checkImageExists();
 		}
 	}
 </script>
@@ -83,10 +104,13 @@
 </div>
 
 <div class="image-row">
-	<!-- <img src={leafTexture} alt="Returnred visualization" class="image" /> -->
-	<!-- {#if fileExists} -->
-    <img src=src/lib/images/temp-chart.png alt="Returnred visualization" class="image" />
-	<!-- {/if} -->
+    {#if imageExists}
+        <img
+            src={`${imageSrc}?v=${cacheBuster}`}
+            alt="Visualization of the user's query response"
+            class="image"
+        />
+    {/if}
 </div>
 
 <style>
@@ -98,7 +122,8 @@
 	.input-container {
 		flex-grow: 1;
 	}
-	.user-question, .assistant-response {
+	.user-question,
+	.assistant-response {
 		display: flex;
 		align-items: center;
 	}
