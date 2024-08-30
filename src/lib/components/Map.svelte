@@ -8,7 +8,7 @@
 
 	export let accessToken = PUBLIC_MAPBOX_TOKEN;
 	export let center = [-62.2159, -3.4653];
-	export let zoom = 5.5;
+	export let zoom = 3;
 
 	let map;
 	const dispatch = createEventDispatcher();
@@ -81,11 +81,12 @@
 	});
 </script>
 
-<div id="map" />
+<div class="shadow-xl" id="map" />
 
 <style>
 	#map {
 		width: 100%;
-		height: 100vh;
+		height: 500px;
+		border-radius: 1rem;
 	}
 </style>
