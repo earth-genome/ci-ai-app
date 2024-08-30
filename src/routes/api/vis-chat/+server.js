@@ -14,7 +14,7 @@ export async function POST({ request }) {
 	try {
 		// Create a temporary assistant
 		// const assistant = await openai.beta.assistants.create(assistantDefinitions[agentIndex]);
-        const assistant = await openai.beta.assistants.retrieve("asst_owrsd8qvmKFroRyCkL8PwgP3")
+        const assistant = await openai.beta.assistants.retrieve("asst_gaXDLcc9Ay1mCOnkRKnQmSGe")
 
 		// Create a new thread
 		const thread = await openai.beta.threads.create();
@@ -41,58 +41,63 @@ export async function POST({ request }) {
 		const messages = await openai.beta.threads.messages.list(thread.id);
 		const assistantMessage = messages.data.find((msg) => msg.role === 'assistant');
 
-        console.log('messages: ', messages);
+        console.log('assistantMessage: ', assistantMessage);
 
 		// Clean up: delete the temporary assistant
-		await openai.beta.assistants.del(assistant.id);
+		// await openai.beta.assistants.del(assistant.id);
 
-		if (assistantMessage && assistantMessage.content[0].type === 'text') {
-			const { text } = assistantMessage.content[0];
-			const { annotations } = text;
-			const citations = [];
+		if (assistantMessage) {
+			const textMessage = assistantMessage.content.find(msg => msg.type === 'text');
+			if (textMessage) {
+				const { text } = textMessage;
+				const { annotations } = text;
+				const citations = [];
 
-            console.log('text: ', text);
+                console.log('text: ', text);
 
-			let processedText = text.value;
+				let processedText = text.value;
 
-			for (let i = 0; i < annotations.length; i++) {
-				const annotation = annotations[i];
-				processedText = processedText.replace(annotation.text, `[${i}]`);
+				for (let i = 0; i < annotations.length; i++) {
+					const annotation = annotations[i];
+					processedText = processedText.replace(annotation.text, `[${i}]`);
 
-				const { file_citation } = annotation;
-				if (file_citation) {
-					const citedFile = await openai.files.retrieve(file_citation.file_id);
-					const filename = citedFile.filename;
-					const link = citationsMap.find((map) => map.filename === filename)?.link || '#';
-					citations.push(`
+					const { file_citation } = annotation;
+					if (file_citation) {
+						const citedFile = await openai.files.retrieve(file_citation.file_id);
+						const filename = citedFile.filename;
+						const link = citationsMap.find((map) => map.filename === filename)?.link || '#';
+						citations.push(`
             	<a href="${link}" class="card-title-link">
   					<h2 class="card-title">${i} - ${filename}</h2>
 				</a>
             `);
-				} else {
-					console.log('There are no citations');
+					} else {
+						console.log('There are no citations');
+					}
 				}
+
+				const responseWithCitations =
+					processedText + (citations.length > 0 ? '\n\nCitations:\n' + citations.join('\n') : '');
+
+				console.log('Processed text:', processedText);
+				console.log('Citations:', citations);
+
+				return json({
+					message: processedText,
+					citations: citations,
+					responseWithCitations: responseWithCitations,
+					rawAnnotations: annotations // Include raw annotations for potential frontend use
+				});
 			}
-
-			const responseWithCitations =
-				processedText + (citations.length > 0 ? '\n\nCitations:\n' + citations.join('\n') : '');
-
-			console.log('Processed text:', processedText);
-			console.log('Citations:', citations);
-
-			return json({
-				message: processedText,
-				citations: citations,
-				responseWithCitations: responseWithCitations,
-				rawAnnotations: annotations // Include raw annotations for potential frontend use
-			});
-		} else if (assistantMessage && assistantMessage.content[0].type === 'image_file') {
-            // pull image file id from response
-            let imageFileID = ""
-            const response = await openai.files.content(imageFileID);
-            const image_data = await response.arrayBuffer();
-            const image_data_buffer = Buffer.from(image_data);
-            fs.writeFileSync("/lib/images/temp-chart.png", image_data_buffer);
+            const imageMessage = assistantMessage.content.find(msg => msg.type === 'image_file');
+            if (imageMessage) {
+                console.log('imageMessage: ', imageMessage);
+                let imageFileID = ""
+                const response = await openai.files.content(imageFileID);
+                const image_data = await response.arrayBuffer();
+                const image_data_buffer = Buffer.from(image_data);
+                fs.writeFileSync("/lib/images/temp-chart.png", image_data_buffer);
+            }
 		} else {
 			return json({ message: 'No response from the assistant.' });
 		}
