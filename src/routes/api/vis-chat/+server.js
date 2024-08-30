@@ -3,6 +3,7 @@ import OpenAI from 'openai';
 import { OPEN_AI_KEY } from '$env/static/private';
 import { assistantDefinitions } from '$lib/assistant-definition.js';
 import { citationsMap } from '$lib/citations-map.js';
+import fs from "fs";
 
 const openai = new OpenAI({
 	apiKey: OPEN_AI_KEY
@@ -48,6 +49,19 @@ export async function POST({ request }) {
 
 		if (assistantMessage) {
 			const textMessage = assistantMessage.content.find(msg => msg.type === 'text');
+			const imageMessage = assistantMessage.content.find(msg => msg.type === 'image_file');
+
+            console.log('imageMessage: ', imageMessage);
+
+			if (imageMessage) {
+				let imageFileID = imageMessage.image_file.file_id
+				const response = await openai.files.content(imageFileID);
+                console.log('rsponse: ', response);
+				const image_data = await response.arrayBuffer();
+				const image_data_buffer = Buffer.from(image_data);
+				fs.writeFileSync("src/lib/images/temp-chart.png", image_data_buffer);
+			}
+
 			if (textMessage) {
 				const { text } = textMessage;
 				const { annotations } = text;
@@ -89,15 +103,11 @@ export async function POST({ request }) {
 					rawAnnotations: annotations // Include raw annotations for potential frontend use
 				});
 			}
-            const imageMessage = assistantMessage.content.find(msg => msg.type === 'image_file');
-            if (imageMessage) {
-                console.log('imageMessage: ', imageMessage);
-                let imageFileID = ""
-                const response = await openai.files.content(imageFileID);
-                const image_data = await response.arrayBuffer();
-                const image_data_buffer = Buffer.from(image_data);
-                fs.writeFileSync("/lib/images/temp-chart.png", image_data_buffer);
-            }
+
+			// If no response from the assistant, handle it here
+			if (!textMessage && !imageMessage) {
+				return json({ message: 'No response from the assistant.' });
+			}
 		} else {
 			return json({ message: 'No response from the assistant.' });
 		}

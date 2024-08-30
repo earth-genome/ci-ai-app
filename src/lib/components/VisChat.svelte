@@ -83,8 +83,10 @@
 </div>
 
 <div class="image-row">
-	<img src={leafTexture} alt="Returnred visualization" class="image" /> <!-- placeholder -->
-	<!-- <img src=/lib/images/temp-chart.png alt="Returnred visualization" class="image" /> -->
+	<!-- <img src={leafTexture} alt="Returnred visualization" class="image" /> -->
+	<!-- {#if fileExists} -->
+    <img src=src/lib/images/temp-chart.png alt="Returnred visualization" class="image" />
+	<!-- {/if} -->
 </div>
 
 <style>
