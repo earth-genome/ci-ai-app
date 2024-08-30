@@ -81,12 +81,11 @@
 	});
 </script>
 
-<div class="shadow-xl" id="map" />
+<div id="map" />
 
 <style>
 	#map {
 		width: 100%;
-		height: 500px;
-		border-radius: 1rem;
+		height: 100%;
 	}
 </style>

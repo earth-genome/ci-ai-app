@@ -1,6 +1,6 @@
 <script>
 	import { pointInfo } from '$lib/stores';
-	import { TreePine, MapPin, TrendingDown, Thermometer } from 'lucide-svelte';
+	import { TreePine, MapPin, Thermometer } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import { currentCitations } from '$lib/stores';
 	import { assistantDefinitions } from '$lib/assistant-definition.js';
@@ -13,119 +13,39 @@
 		const change = (parseFloat(end) - parseFloat(start)) * 100;
 		return change.toFixed(1) + '%';
 	}
+
 	function roundNum(value, decimals) {
 		return Number(value).toFixed(decimals);
 	}
-	console.log($pointInfo);
 </script>
 
-<div class="stats shadow m-2 bg-neutral-content">
-	<div class="stat">
-		<div class="stat-title">Historical Change in Temp.</div>
-		<div class="stat-figure text-accent">
-			<Thermometer class="w-8 h-8" />
-		</div>
-		<div class="stat-value text-accent">
-			{roundNum($pointInfo.Delta_T, 2)}
-		</div>
-		<div class="stat-desc">Degrees Celsius between 2000-2019</div>
-	</div>
-</div>
-<div class="stats shadow m-2 bg-neutral-content">
-	<div class="stat">
-		<div class="stat-title">Selected Location</div>
-		<div class="stat-figure text-secondary">
-			<MapPin class="w-8 h-8" />
-		</div>
-		<div class="stat-value text-secondary">
-			{roundNum($pointInfo['lat'], 3)}, {roundNum($pointInfo['lon'], 3)}
-		</div>
-		<div class="stat-desc">Latitude, Longitude</div>
-	</div>
-</div>
 <div class="overflow-x-auto">
-	<div class="stats shadow bg-neutral-content m-2">
-		<div class="stat">
-			<div class="stat-title">Deforestation (0-2km)</div>
-			<div class="stat-figure text-primary">
-				<TreePine class="w-8 h-8" />
-			</div>
-			<div class="stat-value">
-				{calculateChange($pointInfo['local_0-2km_start'], $pointInfo['local_0-2km_end'])}
-			</div>
-			<div class="stat-desc">
-				{formatPercentage($pointInfo['local_0-2km_end'])} Local Forest Cover
-			</div>
-		</div>
-		<div class="stat">
-			<div class="stat-title">Deforestation (2-5km)</div>
-			<div class="stat-figure text-primary">
-				<TreePine class="w-8 h-8" />
-			</div>
-			<div class="stat-value">
-				{calculateChange($pointInfo['regional_2-5km_start'], $pointInfo['regional_2-5km_end'])}
-			</div>
-			<div class="stat-desc">
-				{formatPercentage($pointInfo['regional_2-5km_end'])} Regional Forest Cover
-			</div>
+	<div class="flex space-x-4 py-0 px-2 min-w-max">
+		<div class="flex flex-col items-center w-32">
+			<Thermometer class="w-5 h-5 text-accent mb-2" />
+			<div class="text-xl font-bold">{roundNum($pointInfo.Delta_T, 2)}°C</div>
+			<div class="text-sm text-gray-500 text-center">Temp Change 2000-2019</div>
 		</div>
 
-		<div class="stat">
-			<div class="stat-title">Deforestation (5-10km)</div>
-			<div class="stat-figure text-primary">
-				<TreePine class="w-8 h-8" />
-			</div>
-			<div class="stat-value">
-				{calculateChange($pointInfo['regional_5-10km_start'], $pointInfo['regional_5-10km_end'])}
-			</div>
-			<div class="stat-desc">
-				{formatPercentage($pointInfo['regional_5-10km_end'])} Regional Forest Cover
-			</div>
+		<div class="flex flex-col items-center w-32">
+			<MapPin class="w-5 h-5 text-secondary mb-2" />
+			<div class="text-l font-bold">{roundNum($pointInfo['lat'], 3)}, {roundNum($pointInfo['lon'], 3)}</div>
+			<div class="text-sm text-gray-500 text-center">Latitude, Longitude</div>
 		</div>
 
-		<div class="stat">
-			<div class="stat-title">Deforestation (10-25km)</div>
-			<div class="stat-figure text-primary">
-				<TreePine class="w-8 h-8" />
+		{#each [
+			{ range: '0-2km', start: 'local_0-2km_start', end: 'local_0-2km_end', label: 'Local' },
+			{ range: '2-5km', start: 'regional_2-5km_start', end: 'regional_2-5km_end', label: 'Regional' },
+			{ range: '5-10km', start: 'regional_5-10km_start', end: 'regional_5-10km_end', label: 'Regional' },
+			{ range: '10-25km', start: 'regional_10-25km_start', end: 'regional_10-25km_end', label: 'Regional' },
+			{ range: '25-50km', start: 'regional_25-50km_start', end: 'regional_25-50km_end', label: 'Regional' },
+			{ range: '50-100km', start: 'regional_50-100km_start', end: 'regional_50-100km_end', label: 'Regional' }
+		] as item}
+			<div class="flex flex-col items-center w-32">
+				<TreePine class="w-5 h-5 text-primary mb-2" />
+				<div class="text-xl font-bold">{calculateChange($pointInfo[item.start], $pointInfo[item.end])}</div>
+				<div class="text-sm text-gray-500 text-center">Deforestation ({item.range})</div>
 			</div>
-			<div class="stat-value">
-				{calculateChange($pointInfo['regional_10-25km_start'], $pointInfo['regional_10-25km_end'])}
-			</div>
-			<div class="stat-desc">
-				{formatPercentage($pointInfo['regional_10-25km_end'])} Regional Forest Cover
-			</div>
-		</div>
-
-		<div class="stat">
-			<div class="stat-title">Deforestation (25-50km)</div>
-			<div class="stat-figure text-primary">
-				<TreePine class="w-8 h-8" />
-			</div>
-			<div class="stat-value">
-				{calculateChange($pointInfo['regional_25-50km_start'], $pointInfo['regional_25-50km_end'])}
-			</div>
-			<div class="stat-desc">
-				{formatPercentage($pointInfo['regional_25-50km_end'])} Regional Forest Cover
-			</div>
-		</div>
-
-		<div class="stat">
-			<div class="stat-title">Deforestation (50-100km)</div>
-			<div class="stat-figure text-primary">
-				<TreePine class="w-8 h-8" />
-			</div>
-			<div class="stat-value">
-				{calculateChange(
-					$pointInfo['regional_50-100km_start'],
-					$pointInfo['regional_50-100km_end']
-				)}
-			</div>
-			<div class="stat-desc">
-				{formatPercentage($pointInfo['regional_50-100km_end'])} Regional Forest Cover
-			</div>
-		</div>
+		{/each}
 	</div>
 </div>
-
-<style>
-</style>
