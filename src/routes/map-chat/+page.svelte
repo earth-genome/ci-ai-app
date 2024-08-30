@@ -15,7 +15,6 @@
 		</div>
 		<div>
 			<MapAgent />
-			<AgentChat />
 		</div>
 	</div>
 </main>
