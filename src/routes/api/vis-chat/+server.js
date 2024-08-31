@@ -9,22 +9,24 @@ const openai = new OpenAI({
 	apiKey: OPEN_AI_KEY
 });
 
+let thread;
+
+(async () => {	
+    thread = await openai.beta.threads.create();
+})();
+
 export async function POST({ request }) {
 	const { message, agentIndex } = await request.json();
 
 	try {
-		// Create a temporary assistant
-		// const assistant = await openai.beta.assistants.create(assistantDefinitions[agentIndex]);
-        const assistant = await openai.beta.assistants.retrieve("asst_gaXDLcc9Ay1mCOnkRKnQmSGe")
+		// Create a temporary assistant\
+        const assistant = await openai.beta.assistants.create(assistantDefinitions[agentIndex]);
+        // const assistant = await openai.beta.assistants.retrieve("asst_gaXDLcc9Ay1mCOnkRKnQmSGe")
 
-		// Create a new thread
-		const thread = await openai.beta.threads.create();
-
-		// Add a message to the thread
-		await openai.beta.threads.messages.create(thread.id, {
-			role: 'user',
-			content: message
-		});
+        await openai.beta.threads.messages.create(thread.id, {
+            role: 'user',
+            content: message
+        });
 
 		// Run the assistant
 		const run = await openai.beta.threads.runs.create(thread.id, {
@@ -45,7 +47,7 @@ export async function POST({ request }) {
         console.log('assistantMessage: ', assistantMessage);
 
 		// Clean up: delete the temporary assistant
-		// await openai.beta.assistants.del(assistant.id);
+		await openai.beta.assistants.del(assistant.id);
 
 		if (assistantMessage) {
 			const textMessage = assistantMessage.content.find(msg => msg.type === 'text');

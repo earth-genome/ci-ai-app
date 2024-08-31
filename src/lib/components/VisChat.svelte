@@ -13,6 +13,7 @@
 	let imageExists = false;
 	let imageSrc = 'src/lib/images/temp-chart.png';
 	let cacheBuster = 0; // used to force reload when temp-chart.png changes
+	let chatHistory = [];
 
 	async function checkImageExists() {
 		try {
@@ -32,10 +33,12 @@
 	async function sendMessage() {
 		if (input.trim() === '') return;
 
-		userQuestion = input;
+		const userMessage = input;
 		input = '';
-		assistantResponse = '';
 		isLoading = true;
+
+		chatHistory.push({ role: 'user', content: userMessage });
+		chatHistory.push({ role: 'assistant', content: 'Loading...' });
 
 		try {
 			const response = await fetch('../api/vis-chat', {
@@ -44,7 +47,7 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					message: userQuestion,
+					message: userMessage,
 					agentIndex: 4
 				})
 			});
@@ -54,13 +57,18 @@
 			}
 
 			const data = await response.json();
-			assistantResponse = data.message;
+			const assistantResponse = data.message;
 			currentCitations.set(data.citations);
-			imageSrc = 'src/lib/images/temp-chart.png'; // Update image source after response
-			console.log('this is the store', currentCitations);
+			imageSrc = 'src/lib/images/temp-chart.png';
+            // TODO: could generate unique files to save history of 
+            // image responses, keep inline w chat
+
+			// update the last assistant message with the actual response
+			chatHistory[chatHistory.length - 1] = { role: 'assistant', content: assistantResponse };
 		} catch (error) {
 			console.error('Error:', error);
-			assistantResponse = 'Sorry, an error occurred.';
+			// update the last assistant message to indicate an error
+			chatHistory[chatHistory.length - 1] = { role: 'assistant', content: 'Sorry, an error occurred.' };
 		} finally {
 			isLoading = false;
 			cacheBuster = Date.now();
@@ -81,26 +89,23 @@
 		<button class="btn btn-primary" on:click={sendMessage} disabled={isLoading}>Send</button>
 	</div>
 
-	{#if userQuestion}
-		<div class="user-question">
-			<img src={userAvatar} alt="User icon" class="avatar" />
-			<div class="content user">{userQuestion}</div>
-		</div>
-	{/if}
-
-	<div class="assistant-response">
-		{#if isLoading || assistantResponse}
-			<img src={robotAvatar} alt="Assistant icon" class="avatar" />
-			<div
-				class="content assistant"
-				class:loading={isLoading}
-				class:loading-bars={isLoading}
-				class:loading-lg={isLoading}
-			>
-				{@html assistantResponse}
+	{#each chatHistory as message}
+		<div class={message.role === 'user' ? 'user-question' : 'assistant-response'}>
+			<img src={message.role === 'user' ? userAvatar : robotAvatar} alt="{message.role} icon" class="avatar" />
+			<div class="content {message.role}">
+				{#if message.role === 'assistant' && isLoading}
+					<span
+                        class="loading-icon"
+                        class:loading={isLoading}
+                        class:loading-bars={isLoading}
+                        class:loading-lg={isLoading}
+                    ></span>
+				{:else}
+					{@html message.content}
+				{/if}
 			</div>
-		{/if}
-	</div>
+		</div>
+	{/each}
 </div>
 
 <div class="image-row">
@@ -139,5 +144,8 @@
 	}
 	.image {
 		width: 100%;
+	}
+	.loading-icon {
+		color: gray;
 	}
 </style>
