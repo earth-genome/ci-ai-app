@@ -38,6 +38,7 @@
 		isLoading = true;
 
 		chatHistory.push({ role: 'user', content: userMessage });
+		const assistantMessageIndex = chatHistory.length;
 		chatHistory.push({ role: 'assistant', content: 'Loading...' });
 
 		try {
@@ -64,11 +65,11 @@
             // image responses, keep inline w chat
 
 			// update the last assistant message with the actual response
-			chatHistory[chatHistory.length - 1] = { role: 'assistant', content: assistantResponse };
+			chatHistory[assistantMessageIndex] = { role: 'assistant', content: assistantResponse };
 		} catch (error) {
 			console.error('Error:', error);
 			// update the last assistant message to indicate an error
-			chatHistory[chatHistory.length - 1] = { role: 'assistant', content: 'Sorry, an error occurred.' };
+			chatHistory[assistantMessageIndex] = { role: 'assistant', content: 'Sorry, an error occurred.' };
 		} finally {
 			isLoading = false;
 			cacheBuster = Date.now();
@@ -93,7 +94,7 @@
 		<div class={message.role === 'user' ? 'user-question' : 'assistant-response'}>
 			<img src={message.role === 'user' ? userAvatar : robotAvatar} alt="{message.role} icon" class="avatar" />
 			<div class="content {message.role}">
-				{#if message.role === 'assistant' && isLoading}
+				{#if message.role === 'assistant' && message.content === 'Loading...'}
 					<span
                         class="loading-icon"
                         class:loading={isLoading}
