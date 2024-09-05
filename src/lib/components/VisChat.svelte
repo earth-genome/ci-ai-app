@@ -79,20 +79,11 @@
 </script>
 
 <div class="chat-container prose">
-	<div class="input-container">
-		<input
-			class="input input-bordered w-full max-w-full"
-			type="text"
-			bind:value={input}
-			placeholder="Ask me about climate change in the Amazon..."
-			on:keydown={(e) => e.key === 'Enter' && !isLoading && sendMessage()}
-		/>
-		<button class="btn btn-primary" on:click={sendMessage} disabled={isLoading}>Send</button>
-	</div>
-
 	{#each chatHistory as message}
 		<div class={message.role === 'user' ? 'user-question' : 'assistant-response'}>
-			<img src={message.role === 'user' ? userAvatar : robotAvatar} alt="{message.role} icon" class="avatar" />
+			{#if message.role === 'assistant'}
+				<img src={robotAvatar} alt="{message.role} icon" class="avatar" />
+			{/if}
 			<div class="content {message.role}">
 				{#if message.role === 'assistant' && message.content === 'Loading...'}
 					<span
@@ -105,8 +96,22 @@
 					{@html message.content}
 				{/if}
 			</div>
+			{#if message.role === 'user'}
+				<img src={userAvatar} alt="{message.role} icon" class="avatar" />
+			{/if}
 		</div>
 	{/each}
+
+	<div class="input-container">
+		<input
+			class="input input-bordered w-full max-w-full"
+			type="text"
+			bind:value={input}
+			placeholder="Ask me about climate change in the Amazon..."
+			on:keydown={(e) => e.key === 'Enter' && !isLoading && sendMessage()}
+		/>
+		<button class="btn btn-primary" on:click={sendMessage} disabled={isLoading}>Send</button>
+	</div>
 </div>
 
 <div class="image-row">
@@ -128,7 +133,11 @@
 	.input-container {
 		flex-grow: 1;
 	}
-	.user-question,
+	.user-question {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
 	.assistant-response {
 		display: flex;
 		align-items: center;
