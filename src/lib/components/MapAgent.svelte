@@ -45,18 +45,15 @@
 </script>
 
 <div>
-	
 	{#if assistantResponse}
-		<div class="card bg-base-100 w-100 shadow-xl overflow-y-auto bg-neutral-content max-h-[500px]">
-			<div class="card-body prose">
-				{@html assistantResponse}
-			</div>
+		<div class="prose">
+			{@html assistantResponse}
 		</div>
-        {:else}
-            <button class="btn btn-lg bg-primary" on:click={sendMessage($pointInfo)}>Tell me More</button>
+	{:else}
+	<div class="flex justify-center">
+		<button class="btn btn-lg bg-primary" on:click={sendMessage($pointInfo)}>Tell me More</button>
+	</div>
 	{/if}
-        
-    
 </div>
 
 <style>

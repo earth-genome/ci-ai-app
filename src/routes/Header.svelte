@@ -5,7 +5,7 @@
 </script>
 
 <header>
-	<div class="navbar bg-base-100">
+	<div class="navbar h-100px bg-base-100">
 		<div class="navbar-start">
 			<div class="dropdown">
 				<div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -56,9 +56,9 @@
 
 <style>
 	.eg-logo {
-		width: 7em;
+		width: 5em;
 	}
 	.ci-logo {
-		width: 10em;
+		width: 7em;
 	}
 </style>
