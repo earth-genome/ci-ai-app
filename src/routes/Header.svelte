@@ -30,6 +30,8 @@
 					<li><a href="/">Home</a></li>
 					<li><a href="/agent-chat">Agent Chat</a></li>
 					<li><a href="/map-chat">Map Chat</a></li>
+					<li><a href="/vis-chat">Vis Chat</a></li>
+
 				</ul>
 			</div>
 			<a href="/" class="btn btn-ghost">
@@ -41,6 +43,7 @@
 				<li><a href="/">Home</a></li>
 				<li><a href="/agent-chat">Agent Chat</a></li>
 				<li><a href="/map-chat">Map Chat</a></li>
+                <li><a href="/vis-chat">Vis Chat</a></li>
 			</ul>
 		</div>
 		<div class="navbar-end">
