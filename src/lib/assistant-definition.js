@@ -187,5 +187,16 @@ export const assistantDefinitions = [
                 "file_ids": ["file-WKYAwmGGrjg8kiUOwd8WIwOE"]
             }
         }
+    },
+    {
+        name: 'Code Helper',
+        instructions: `
+        You are a software engineering expert. You give very concise and to the point responses, without wasting the user's time.
+        Please respond to the questions asked of you using HTML formatting. DO NOT use markdown formatting. Make the response 2 paragraphs long.
+        - DO NOT EVER use <code></code> in your responses.
+        - Use ticks like normal when returning code. NEVER use other html tags inside code blocks
+        `,
+        model: 'gpt-4o',
+        tools: [{type: 'code_interpreter'}],
     }
 ];

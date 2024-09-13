@@ -26,23 +26,34 @@
 		"eslint": "^8.55.0",
 		"eslint-config-prettier": "^8.10.0",
 		"eslint-plugin-svelte": "^2.35.1",
-		"postcss": "^8.4.41",
+		"postcss": "^8.4.45",
 		"prettier": "^2.8.8",
 		"prettier-plugin-svelte": "^2.10.1",
 		"svelte": "^3.59.2",
 		"svelte-check": "^3.6.2",
-		"tailwindcss": "^3.4.9",
+		"tailwindcss": "^3.4.11",
 		"typescript": "^5.3.3",
 		"vite": "^4.5.1",
+		"vite-plugin-static-copy": "^1.0.6",
 		"vitest": "^0.25.8",
 		"web-vitals": "^3.5.0"
 	},
 	"type": "module",
 	"dependencies": {
+		"@friendofsvelte/tipex": "^0.0.2-svelte.5",
+		"@tinymce/tinymce-svelte": "^3.0.0",
 		"@turf/turf": "^7.1.0",
 		"aws-sdk": "^2.1675.0",
+		"brace": "^0.11.1",
+		"codemirror": "^6.0.1",
+		"jquery": "^3.7.1",
 		"lucide-svelte": "^0.436.0",
 		"mapbox-gl": "^3.6.0",
-		"openai": "^4.55.7"
+		"openai": "^4.55.7",
+		"sass": "^1.78.0",
+		"svelte-ace": "^1.0.21",
+		"svelte-codemirror": "^1.2.1",
+		"svelte-codemirror-editor": "^1.4.1",
+		"tinymce": "^6.8.4"
 	}
 }
