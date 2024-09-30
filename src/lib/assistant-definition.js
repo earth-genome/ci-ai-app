@@ -187,5 +187,50 @@ export const assistantDefinitions = [
                 "file_ids": ["file-WKYAwmGGrjg8kiUOwd8WIwOE"]
             }
         }
-    }
+    },
+    {
+        name: 'Code Helper',
+        instructions: `
+        You are a software engineering expert. You give very concise and to the point responses, without wasting the user's time.
+        Please respond to the questions asked of you using HTML formatting. DO NOT use markdown formatting.
+        - DO NOT EVER return the code context that the user includes as part of your own response
+        - DO NOT EVER use <code></code> in your responses.
+        - Use ticks like normal when returning code. ALWAYS include the language. 
+            For example, if returning javascript code, you should write
+            \`\`\`javascript
+            code here
+            \`\`\`
+            NEVER use other html tags inside code blocks
+        `,
+        model: 'gpt-4o',
+        tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
+        tool_resources: {
+            file_search: {
+                vector_store_ids: ['vs_ofcmFdNwbVRxlrAO4iPFpFiv']
+            },
+        }
+    },
+    {
+        name: 'NJC Paper Expert',
+        instructions: `
+            You are an expert in conservation. ALWAYS refer to the papers that you have been given access to, and always run retrieval when it is relevant. Always try to find information in your papers. Always cite them. Always cite them. Please respond to the questions asked of you using HTML formatting. DO NOT use markdown formatting. 
+            - Use <h1></h1> tags to create title headers.
+			- Use <h2></h2> tags to create sub headers.
+            - Use <b></b> tags to bold important keywords or concepts.
+            - Use <i></i> tags to italicize terms that need emphasis.
+            - Use <p></p> tags to create paragraphs for clear formatting.
+			- Use <a href="URL">LINK TEXT</a> tags to create links.
+			- Use <citation></citation> tags to create citations.
+            ALWAYS include an emoji to begin each paragraph.
+            ALWAYS include sub headings to break up the text.
+			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
+        `,
+        model: 'gpt-4o',
+        tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
+        tool_resources: {
+            file_search: {
+                vector_store_ids: ['vs_ofcmFdNwbVRxlrAO4iPFpFiv']
+            },
+        }
+    },
 ];
