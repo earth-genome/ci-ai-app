@@ -4,16 +4,14 @@
 </script>
 
 <div class="citations">
+    <div class="prose">
+        <h2>Citations</h2>
+    </div>
 	{#if $currentCitations.length > 0}
-		<div class="prose">
-			<h2>Citations</h2>
-			<ul class="space-y-4">
+		<div>
+			<ul>
 				{#each $currentCitations as citation}
-					<div class="card bg-base-100 w-96 shadow-xl">
-						<div class="card-body">
-							{@html citation}
-						</div>
-					</div>
+					<li>{@html citation}</li> <!-- Changed from card to list item -->
 				{/each}
 			</ul>
 		</div>

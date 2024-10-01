@@ -60,6 +60,10 @@ export const userOptionsWordsMap = {
     }  
 }
 
+// You are a seasoned research scientist with a long career in conservation. You are very knowledgeable about the papers that you have available to you. When a user asks a question about research, they are referring to your papers.
+
+// You help people investigate the scientific reserach in these papers. You act as a research assistant, helping people
+
 /**
  * 
  * Data and analysis expert: is expert on numerical data and its analysis in the papers. always tries to find the statistical confidence levels, p levels, etc from a paper, measures of stat sig

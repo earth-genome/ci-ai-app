@@ -7,12 +7,5 @@
 </script>
 
 <main class="flex-1">
-	<div class="grid grid-cols-3">
-		<div class="col-span-2">
-			<MultiAgentChat />
-		</div>
-		<div>
-			<Citations />
-		</div>
-	</div>
+    <MultiAgentChat />
 </main>

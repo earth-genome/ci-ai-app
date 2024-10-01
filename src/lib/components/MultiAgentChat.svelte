@@ -16,10 +16,9 @@
 	let input = '';
 	let isLoading = false;
 	let chatHistory = [];
-	let chatUsed = false; // State to track if the chat has been used
-	let selectedCardIndex = 0; // State to track the selected card
+	let chatUsed = false;
+	let selectedCardIndex = 0;
 
-	// Define an array of card texts
 	const cardTexts = [
 		'⚗️👨‍🔬🔬Expert scientist:<br>A knowledgeable research assistant to help you explore scientific literature',
 		'📊💻🔍Data analyst:<br>Helps you explore data, conclusions, and the significance of findings',
@@ -39,6 +38,7 @@
 	function extractCodeBlocks(response) {
 		const multiLineCodeBlockRegex = /```(.*?)\n([\s\S]*?)```/g;
 		const singleLineCodeBlockRegex = /`([^`]+)`/g;
+		const citationRegex = /\[(\d+)\]/g;
 		let match;
 		const codeBlocks = [];
 		let prunedResponse = response;
@@ -49,29 +49,15 @@
 			const codeId = `code-${codeMap.size}`;
 			codeMap.set(codeId, match[2].trim());
 
-			// Escape HTML characters in the code block
 			const escapedCode = escapeHtml(match[2].trim());
-			// Replace the matched code block with an HTML structure including header and copy button
 			const codeBlockHtml = `
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <span class="code-language">${
-													match[1].trim() === ''
-														? 'js'
-														: match[1].trim() === 'javascript'
-														? 'js'
-														: match[1].trim()
-												}</span>
-                        <button class="copy-button" onclick="window.insertCode('${codeId}')">Insert code</button>
-                    </div>
-                    <pre><code class="language-${
-											match[1].trim() === ''
-												? 'js'
-												: match[1].trim() === 'javascript'
-												? 'js'
-												: match[1].trim()
-										}">${escapedCode}</code></pre>
-                </div>`;
+				<div class="code-card">
+					<div class="code-card-header">
+						<span class="code-language">${ match[1].trim() === '' ? 'js' : match[1].trim() === 'javascript' ? 'js' : match[1].trim() }</span>
+						<button class="copy-button" onclick="window.insertCode('${codeId}')">Insert code</button>
+					</div>
+					<pre><code class="language-${match[1].trim() === '' ? 'js' : match[1].trim() === 'javascript' ? 'js' : match[1].trim()}">${escapedCode}</code></pre>
+				</div>`;
 			prunedResponse = prunedResponse.replace(match[0], codeBlockHtml);
 		}
 
@@ -81,6 +67,19 @@
 			return `<code class="inline-code">${escapedCode}</code>`;
 		});
 
+		// Handle citations
+		prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
+			const citationIndex = parseInt(p1, 10);
+			const citation = get(currentCitations)[citationIndex];
+			console.log("cit: ", citation);
+            // return ``;
+            return `
+                <div class="tooltip" data-tip=${citation}>
+                    <span class="badge badge-primary">${p1}</span>
+                </div>
+            `
+		});
+
 		codeBlocksMap.set(codeMap);
 		return { codeBlocks, prunedResponse: prunedResponse.trim() };
 	}
@@ -88,23 +87,20 @@
 	function insertCode(codeId) {
 		const codeMap = get(codeBlocksMap);
 		const code = codeMap.get(codeId);
-		console.log('Inserting code:', code); // Debugging
 		textEditorContent.update((content) => {
 			const newContent = content + '\n' + code;
-			console.log('Updated content:', newContent); // Debugging
 			return newContent;
 		});
 	}
 
 	function handleCardClick(index) {
-		selectedCardIndex = index; // Update the selected card index
+		selectedCardIndex = index;
 	}
 
 	async function sendMessage() {
 		if (input.trim() === '') return;
 
-		chatUsed = true; // Update state when a message is sent
-
+		chatUsed = true;
 		const userMessage = input;
 		input = '';
 		isLoading = true;
@@ -114,14 +110,15 @@
 		chatHistory.push({ role: 'assistant', content: 'Loading...' });
 
 		try {
+            console.log(selectedCardIndex)
 			const response = await fetch('../api/multiagent-chat', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					message: userMessage, // +  "\n\nCode context:\n```" + $textEditorContent + "```",
-					agentIndex: 6
+					message: userMessage,
+					agentIndex: selectedCardIndex
 				})
 			});
 
@@ -130,22 +127,21 @@
 			}
 
 			const data = await response.json();
+//             const data = {
+//                 "message": "<h1>Interesting Finding on Sustainable Development in the Amazon</h1>\n\n<h2>Novel Sustainable Development Paradigm</h2>\n😊 The Amazon region has been facing significant environmental challenges due to land-use changes and climate change. A study highlights the need for a new sustainable development paradigm. The Amazon region’s development has traditionally relied on intensive exploitation of natural resources, leading to extensive deforestation and biodiversity loss. This has created high risks of irreversible changes in the tropical forests. Notably, modeling studies have identified two critical tipping points: a temperature increase of 4°C or deforestation exceeding 40% of the forest area, beyond which large-scale savannization could occur.\n\n<h2>Integrating Advanced Technologies</h2>\n🚀 An interesting proposal for a novel sustainable development paradigm involves leveraging advanced digital, biological, and material technologies. This approach aims to create high-value products and services using the Amazon’s biological assets. This paradigm shift from traditional agricultural and hydropower exploitation to a high-tech innovation approach could help conserve the Amazon as a global public good while fostering sustainable economic development[0].\n\n<h2>Health Care and Conservation in Borneo</h2>\n😊 Another fascinating insight comes from an intervention in rural Borneo that combined health care improvements with conservation efforts. By expanding health care access to communities living near a national park and providing clinic discounts, the intervention significantly reduced illegal logging activities. Over a decade, this approach led to a 70% reduction in deforestation in the national park area. It also provided health care access to over 28,400 unique patients, highlighting a successful human-centered solution to achieving natural climate mitigation and improving community well-being simultaneously[1][2].\n\nThese examples underscore the importance of innovative and integrated approaches to sustainable development and conservation efforts in biodiverse and ecologically crucial regions of the world.",
+//                 "citations": {
+//                     "0": "nobre-et-al-2016-land-use-and-climate-change-risks-in-the-amazon-and-the-need-of-a-novel-sustainable-development.pdf",
+//                     "1": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
+//                     "2": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf"
+//                 }
+// }
+            console.log(data)
 			const { codeBlocks, prunedResponse } = extractCodeBlocks(data.message);
-			// console.log(codeBlocks);
 			const assistantResponse = prunedResponse;
-			// const assistantResponse = data.message;
 			currentCitations.set(data.citations);
 
-			// after the map is generated and the api response is returned, open the file in a new tab
-			// maybe toss the returned code into the editor for fun time permitting
-
-			// const filePath = '/gpt-map.html'; // Replace this with the actual path to your HTML file
-			// window.open(filePath, '_blank');
-
 			// update the last assistant message with the actual response
-			console.log(data.message);
 			chatHistory[assistantMessageIndex] = { role: 'assistant', content: assistantResponse };
-			console.log('chatHistory: ', chatHistory);
 		} catch (error) {
 			console.error('Error:', error);
 			// update the last assistant message to indicate an error
@@ -160,12 +156,9 @@
 
 	onMount(() => {
 		Prism.highlightAll();
-
-		// Attach the insertCode function to the window object
 		window.insertCode = insertCode;
 	});
 
-	// Highlight code blocks after the chat history is updated
 	afterUpdate(() => {
 		Prism.highlightAll();
 	});
@@ -210,7 +203,7 @@
 			<div class="input-wrapper">
 				<input
 					type="text"
-					placeholder="I'd like to map..."
+					placeholder="Message..."
 					class="input-box"
 					bind:value={input}
 					on:keydown={(e) => e.key === 'Enter' && !isLoading && sendMessage()}

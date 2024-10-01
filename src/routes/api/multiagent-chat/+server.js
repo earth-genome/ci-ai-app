@@ -14,7 +14,7 @@ export async function POST({ request }) {
 	try {
 		// Create a temporary assistant
 		const assistant = await openai.beta.assistants.create(assistantDefinitions[agentIndex]);
-
+        console.log('assistantDefinitions[agentIndex]: ', assistantDefinitions[agentIndex]);
 		// Create a new thread
 		const thread = await openai.beta.threads.create();
 
@@ -46,7 +46,7 @@ export async function POST({ request }) {
 		if (assistantMessage && assistantMessage.content[0].type === 'text') {
 			const { text } = assistantMessage.content[0];
 			const { annotations } = text;
-			const citations = [];
+			const citations = {};
 
 			let processedText = text.value;
 
@@ -58,30 +58,15 @@ export async function POST({ request }) {
 				if (file_citation) {
 					const citedFile = await openai.files.retrieve(file_citation.file_id);
 					const filename = citedFile.filename;
-					const link = citationsMap.find((map) => map.filename === filename)?.link || '#';
-					citations.push(`
-            	<a href="${link}" class="card-title-link">
-  					<h2 class="card-title">${i} - ${filename}</h2>
-				</a>
-            `);
+					citations[i] = filename;
 				} else {
 					console.log('There are no citations');
 				}
 			}
 
-			const responseWithCitations =
-				processedText + (citations.length > 0 ? '\n\nCitations:\n' + citations.join('\n') : '');
-
-			console.log('Processed text:', processedText);
-			console.log('Citations:', citations);
-			// console.log('Response with citations:', responseWithCitations);
-			// console.log('Raw annotations:', annotations);
-
 			return json({
 				message: processedText,
 				citations: citations,
-				responseWithCitations: responseWithCitations,
-				rawAnnotations: annotations // Include raw annotations for potential frontend use
 			});
 		} else {
 			return json({ message: 'No response from the assistant.' });
