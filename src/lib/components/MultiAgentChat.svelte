@@ -72,7 +72,7 @@
 		prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
 			const citationIndex = parseInt(p1, 10);
 			let citation = get(currentCitations)[citationIndex]
-            citation = pdf_citation_mapping['s41467-022-28388-4.pdf'] || citation
+            citation = pdf_citation_mapping[citation] || citation
             console.log('citation: ', citation);
 
             return `
