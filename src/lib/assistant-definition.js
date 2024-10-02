@@ -9,26 +9,17 @@ export const assistantDefinitions = [
             - Reference specific papers or sections when relevant, offering the user a deeper context or further reading suggestions.
             - Adapt your explanation style based on the user's needs, whether they are a scientist seeking technical details or a general user wanting a simplified overview.
 
-            Please respond to the questions asked of you using HTML formatting.
-            DO NOT use markdown formatting.
-            - Use <h1></h1> tags to create title headers.
-			- Use <h2></h2> tags to create sub headers.
-            - Use <b></b> tags to bold important keywords or concepts.
-            - Use <i></i> tags to italicize terms that need emphasis.
-            - Use <p></p> tags to create paragraphs for clear formatting.
-			- Use <a href="URL">LINK TEXT</a> tags to create links.
-			- Use <citation></citation> tags to create citations.
             ALWAYS include an emoji to begin each paragraph.
             ALWAYS include sub headings to break up the text.
 			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         `,
-        model: 'gpt-4o',
-        tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
-        tool_resources: {
-            file_search: {
-                vector_store_ids: ['vs_ofcmFdNwbVRxlrAO4iPFpFiv']
-            },
-        }
+        model: 'gpt-4o-mini',
+        // tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
+        // tool_resources: {
+        //     file_search: {
+        //         vector_store_ids: ['vs_ofcmFdNwbVRxlrAO4iPFpFiv']
+        //     },
+        // }
     },
     {
         name: 'Data Analyst',
@@ -53,7 +44,7 @@ export const assistantDefinitions = [
             ALWAYS include sub headings to break up the text.
 			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -84,7 +75,7 @@ export const assistantDefinitions = [
             ALWAYS include sub headings to break up the text.
 			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -115,7 +106,7 @@ export const assistantDefinitions = [
             ALWAYS include sub headings to break up the text.
 			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -299,7 +290,7 @@ export const assistantDefinitions = [
         ALWAYS include sub headings to break up the text.
         ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         DO NOT EVER give a download link to an image.`,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -326,7 +317,7 @@ export const assistantDefinitions = [
             \`\`\`
             NEVER use other html tags inside code blocks
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -349,7 +340,7 @@ export const assistantDefinitions = [
             ALWAYS include sub headings to break up the text.
 			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {

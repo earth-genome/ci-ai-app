@@ -3,6 +3,7 @@
 	import userAvatar from '$lib/images/user-square.png';
 	import robotAvatar from '$lib/images/robot-circle.png';
 	import { currentCitations } from '$lib/stores';
+    import { pdf_citation_mapping } from '$lib/pdf_citation_mapping.js';
 	import { assistantDefinitions } from '$lib/assistant-definition.js';
 	import { textEditorContent, codeBlocksMap } from '$lib/stores.js';
 	import { get } from 'svelte/store';
@@ -70,11 +71,12 @@
 		// Handle citations
 		prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
 			const citationIndex = parseInt(p1, 10);
-			const citation = get(currentCitations)[citationIndex];
-			console.log("cit: ", citation);
-            // return ``;
+			let citation = get(currentCitations)[citationIndex]
+            citation = pdf_citation_mapping['s41467-022-28388-4.pdf'] || citation
+            console.log('citation: ', citation);
+
             return `
-                <div class="tooltip" data-tip=${citation}>
+                <div class="tooltip" data-tip="${citation}">
                     <span class="badge badge-primary">${p1}</span>
                 </div>
             `
@@ -127,13 +129,17 @@
 			}
 
 			const data = await response.json();
-//             const data = {
-//                 "message": "<h1>Interesting Finding on Sustainable Development in the Amazon</h1>\n\n<h2>Novel Sustainable Development Paradigm</h2>\n😊 The Amazon region has been facing significant environmental challenges due to land-use changes and climate change. A study highlights the need for a new sustainable development paradigm. The Amazon region’s development has traditionally relied on intensive exploitation of natural resources, leading to extensive deforestation and biodiversity loss. This has created high risks of irreversible changes in the tropical forests. Notably, modeling studies have identified two critical tipping points: a temperature increase of 4°C or deforestation exceeding 40% of the forest area, beyond which large-scale savannization could occur.\n\n<h2>Integrating Advanced Technologies</h2>\n🚀 An interesting proposal for a novel sustainable development paradigm involves leveraging advanced digital, biological, and material technologies. This approach aims to create high-value products and services using the Amazon’s biological assets. This paradigm shift from traditional agricultural and hydropower exploitation to a high-tech innovation approach could help conserve the Amazon as a global public good while fostering sustainable economic development[0].\n\n<h2>Health Care and Conservation in Borneo</h2>\n😊 Another fascinating insight comes from an intervention in rural Borneo that combined health care improvements with conservation efforts. By expanding health care access to communities living near a national park and providing clinic discounts, the intervention significantly reduced illegal logging activities. Over a decade, this approach led to a 70% reduction in deforestation in the national park area. It also provided health care access to over 28,400 unique patients, highlighting a successful human-centered solution to achieving natural climate mitigation and improving community well-being simultaneously[1][2].\n\nThese examples underscore the importance of innovative and integrated approaches to sustainable development and conservation efforts in biodiverse and ecologically crucial regions of the world.",
-//                 "citations": {
-//                     "0": "nobre-et-al-2016-land-use-and-climate-change-risks-in-the-amazon-and-the-need-of-a-novel-sustainable-development.pdf",
-//                     "1": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
-//                     "2": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf"
-//                 }
+    //         const data = {
+    // "message": "<h1>Interesting Findings in Recent Research Papers</h1>\n\n<h2>🌳 Forest Management and Climate Change</h2>\n\n<p>🌿 <b>Climber Removal in Tropical Forests:</b> An intriguing study shows that <i>climber removal</i> in tropical forests can more than double tree growth and roughly triple biomass accumulation (AGB). This has significant implications for global carbon sequestration, as removing climbers can potentially sequester 32 Gigatons of CO2 over a decade if applied to secondary and production forests across the tropics[0].</p>\n\n<h2>🚑 Health Interventions and Environmental Conservation</h2>\n\n<p>🌲 <b>Linking Healthcare and Forest Conservation in Indonesia:</b> A fascinating intervention combined improved healthcare access with conservation programs in rural Indonesian communities near a national park. This multi-sector approach resulted in reduced illegal logging and better health outcomes. Forest loss rates declined significantly in areas with high engagement in the intervention programs. By 2012, over 97% of households believed the intervention effectively reduced illegal logging[1][2][3].</p>\n\n<h2>🌍 Agroforestry and Climate Benefits</h2>\n\n<p>🌾 <b>Cooling Effects of Silvopasture:</b> Research indicates that integrating trees into pasturelands (silvopasture) can significantly cool local environments. This practice has the potential to store substantial carbon in regions like Africa and the Americas, thus contributing to climate change mitigation. Not only does this reduce heat exposure for outdoor workers and livestock, but it also aligns with sustainable development and biodiversity conservation goals[4][5].</p>\n\n<h2>🍃 Deforestation and Temperature Increase</h2>\n\n<p>🔥 <b>Impact of Forest Change on Temperature:</b> A global analysis showed that deforestation causes significant warming, while reforestation can provide cooling effects. For instance, deforestation in tropical regions increased local surface temperature by approximately 0.38°C, whereas similar levels of forestation led to a temperature decrease of 0.18°C. This highlights the importance of forest management in mitigating local climate changes[6].</p>\n\nMake sure to delve deeper into these studies if they pique your interest as they provide comprehensive methods, results, and discussions on these impactful topics!",
+    // "citations": {
+    //     "0": "Ecology and Evolution - 2022 - Finlayson - Removing climbers more than doubles tree growth and biomass in degraded tropical.pdf",
+    //     "1": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
+    //     "2": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
+    //     "3": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
+    //     "4": "s41467-022-28388-4.pdf",
+    //     "5": "s41467-022-28388-4.pdf",
+    //     "6": "file (4).pdf"
+    // }
 // }
             console.log(data)
 			const { codeBlocks, prunedResponse } = extractCodeBlocks(data.message);
@@ -243,7 +249,7 @@
 		flex-grow: 1;
 		overflow-y: auto;
 		border-radius: 15px;
-		background-color: #ffffff;
+		/* background-color: #ffffff; */
 		padding: 10px;
 		padding-bottom: 60px;
 	}
@@ -256,7 +262,7 @@
 		position: absolute;
 		bottom: 0;
 		width: 98%;
-		background-color: #ffffff;
+		/* background-color: #ffffff; */
 		overflow: hidden;
 	}
 
@@ -307,7 +313,7 @@
 	}
 
 	.message-content {
-		background-color: #f4f4f4; /* Light gray background */
+		background-color: #f4f4f4; 
 		padding: 10px 20px;
 		border-radius: 20px; /* Rounded corners */
 		max-width: 70%; /* Limit the width of the message content */
@@ -396,7 +402,7 @@
 	}
 
 	.card {
-		background-color: #fff; /* White background */
+		/* background-color: #fff;  */
 		color: #676767; /* Dark text color for contrast */
 		padding: 15px; /* Slightly smaller padding */
 		border-radius: 15px; /* More rounded corners */
@@ -425,6 +431,49 @@
 
 	.card.selected {
 		background-color: #e0f7fa; /* Pale blue background for selected card */
-		border: 1px solid #00acc1; /* Border color for selected card */
+		border: 1px solid #00acc1; 
 	}
+
+    /* :global(.tooltip) {
+        position: relative;
+        display: inline-block;
+    }
+
+    :global(.tooltip::before) {
+        content: attr(data-tip);
+        position: absolute;
+        background-color: #333;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 4px;
+        white-space: nowrap;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.3s;
+        
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 125%;
+    }
+
+    :global(.tooltip:hover::before) {
+        opacity: 1;
+    }
+
+    :global(.tooltip:hover::before) {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    :global(.tooltip:hover::before) {
+        left: auto;
+        right: 0;
+        transform: none;
+    }
+
+    :global(.tooltip:hover::before) {
+        left: 0;
+        right: auto;
+        transform: none;
+    } */
 </style>
