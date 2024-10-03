@@ -38,6 +38,7 @@
 			assistantResponse = data.message;
 			currentCitations.set(data.citations);
 			console.log("this is the store", currentCitations);
+            console.log('assistantResponse: ', assistantResponse);
 		} catch (error) {
 			console.error('Error:', error);
 			assistantResponse = 'Sorry, an error occurred.';

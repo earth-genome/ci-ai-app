@@ -1,12 +1,23 @@
-import { writable } from 'svelte/store';
+// prompt builder
 
-export const selectedOption = writable(0);
-export const Coords = writable({  lon: 0, lat: 0});
-export const pointInfo = writable({});
-export const currentCitations = writable([]);
-export const textEditorContent = writable('');
-export const codeBlocksMap = writable(new Map());
-export const promptModifiers = writable({
+export function buildSystemPrompt(userOptions) {
+    /**userOptions = {
+     *  formality: val,
+     *  technical_depth: val,
+     *  conciceness: val,
+     *  directness: val,
+     * }
+     * */ 
+    let prompt = "";
+    for (const [key, value] of Object.entries(userOptions)) {
+        const description = userOptionsWordsMap[key][value];
+        prompt += `Your ${key} is described by: ${description}. `;
+    }
+    return prompt;
+}
+
+
+export const userOptionsWordsMap = {
     formality: {
         1: "very casual, conversational tone, informal language, colloquial expressions",
         2: "casual, relaxed tone, everyday language, friendly but not overly formal",
@@ -46,26 +57,19 @@ export const promptModifiers = writable({
         6: "indirect, more exploratory and conversational, includes additional context and examples",
         7: "very indirect, detailed and exploratory, engaging conversation with multiple points",
         8: "extremely indirect, highly exploratory, deeply conversational, rich in context and examples"
-    },
-    grade: {
-        1: "first",
-        2: "second",
-        3: "third",
-        4: "fourth",
-        5: "fifth",
-        6: "sixth",
-        7: "seventh",
-        8: "eighth",
-        9: "ninth",
-        10: "tenth",
-        11: "eleventh",
-        12: "twelfth"
-    }
-})
-export const sliderValues = writable({
-    formality: 4,    
-    technical_depth: 4,
-    conciseness: 4,
-    directness: 4,
-    grade: 12,
-})
+    }  
+}
+
+// You are a seasoned research scientist with a long career in conservation. You are very knowledgeable about the papers that you have available to you. When a user asks a question about research, they are referring to your papers.
+
+// You help people investigate the scientific reserach in these papers. You act as a research assistant, helping people
+
+/**
+ * 
+ * Data and analysis expert: is expert on numerical data and its analysis in the papers. always tries to find the statistical confidence levels, p levels, etc from a paper, measures of stat sig
+ * Methodology expert: could suggest changes in methodology, assess methodology used and give how it could be flawed or improved
+ * Professor: could have a unique contextual slider for grade level?
+ * 
+ * 
+ * expert scientist, curious generalist, professor/techer, data analyst, methodology expert
+ */
