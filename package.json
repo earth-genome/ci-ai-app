@@ -43,8 +43,6 @@
 		"aws-sdk": "^2.1675.0",
 		"lucide-svelte": "^0.436.0",
 		"mapbox-gl": "^3.6.0",
-		"marked": "^14.1.2",
-		"openai": "^4.55.7",
-		"prismjs": "^1.29.0"
+		"openai": "^4.55.7"
 	}
 }

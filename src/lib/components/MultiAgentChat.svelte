@@ -7,10 +7,6 @@
 	import { assistantDefinitions } from '$lib/assistant-definition.js';
 	import { textEditorContent, codeBlocksMap, sliderValues } from '$lib/stores.js';
 	import { get } from 'svelte/store';
-	import Prism from 'prismjs';
-	import 'prismjs/themes/prism-tomorrow.css';
-	import 'prismjs/components/prism-javascript';
-	import 'prismjs/components/prism-python';
 
 	let userQuestion = '';
 	let assistantResponse = '';
@@ -175,12 +171,7 @@
 	}
 
 	onMount(() => {
-		Prism.highlightAll();
 		window.insertCode = insertCode;
-	});
-
-	afterUpdate(() => {
-		Prism.highlightAll();
 	});
 </script>
 
