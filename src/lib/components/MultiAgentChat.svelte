@@ -5,7 +5,7 @@
 	import { currentCitations } from '$lib/stores';
     import { pdf_citation_mapping } from '$lib/pdf_citation_mapping.js';
 	import { assistantDefinitions } from '$lib/assistant-definition.js';
-	import { textEditorContent, codeBlocksMap } from '$lib/stores.js';
+	import { textEditorContent, codeBlocksMap, sliderValues } from '$lib/stores.js';
 	import { get } from 'svelte/store';
 	import Prism from 'prismjs';
 	import 'prismjs/themes/prism-tomorrow.css';
@@ -69,11 +69,14 @@
 		});
 
 		// Handle citations
+        // match: full matched strig "[0]", p1: first captured group "0"
 		prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
 			const citationIndex = parseInt(p1, 10);
 			let citation = get(currentCitations)[citationIndex]
-            citation = pdf_citation_mapping[citation] || citation
+            console.log('currentCitations: ', get(currentCitations));
+            console.log('citationIndex: ', citationIndex);
             console.log('citation: ', citation);
+            citation = pdf_citation_mapping[citation] || citation
 
             return `
                 <div class="tooltip" data-tip="${citation}">
@@ -120,7 +123,8 @@
 				},
 				body: JSON.stringify({
 					message: userMessage,
-					agentIndex: selectedCardIndex
+					agentIndex: selectedCardIndex,
+                    currentSliderValues: get(sliderValues)
 				})
 			});
 
@@ -129,6 +133,16 @@
 			}
 
 			const data = await response.json();
+            // const data = //intersting undefined citation error
+//             {
+//     "message": "<h1>About Your Papers</h1>\n\n🌱 <i>Your papers encompass a variety of research topics related to forestry, hydrology, and environmental science.</i> One notable paper titled **\"Forests as ‘sponges’ and ‘pumps’: Assessing the impact of deforestation on dry-season flows across the tropics\"** investigates the effect of deforestation on water flows in tropical regions, authored by Jorge L. Peña-Arancibia et al. This research emphasizes the dual roles of forests in regulating water supply and highlights that deforestation can significantly disrupt these processes.\n\n<h2>Key Findings</h2>\n\n📝 <b>Impact of Deforestation</b>: The study found that in about **80%** of analyzed cases, forest restoration and cover expansion negatively impacted water yield, contrary to the expected positive outcomes often assumed in forest management discussions[0]. \n\n📊 <b>Methodology</b>: The researchers performed a systematic literature review, identifying a total of **666** papers, with **482** deemed relevant to the study's focus. They categorized data based on geographic location, intervention type, and hydrological responses, ultimately synthesizing findings from **167** papers for analysis[1].\n\n<h2>Additional Papers and Contributions</h2>\n\n🌳 Other related studies illustrate the broader implications of forest management practices on environmental outcomes, emphasizing topics such as carbon conservation and the socio-economic factors influencing deforestation rates[2][3]. These papers collectively suggest that more rigorous methodologies and interdisciplinary approaches are essential for addressing the complex interactions between forestry practices and ecosystem health.\n\n🔗 You can further explore the findings in detail through the <a href=\"https://doi.org/10.1016/j.jhydrol.2019.04.064\">Journal of Hydrology</a> where this research is published.",
+//     "citations": {
+//         "0": "Pena_Arancibia_2019_JH_pantropicalflowimpactsofdeforestation.pdf",
+//         "1": "file.pdf",
+//         "2": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
+//         "3": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf"
+//     }
+// }
     //         const data = {
     // "message": "<h1>Interesting Findings in Recent Research Papers</h1>\n\n<h2>🌳 Forest Management and Climate Change</h2>\n\n<p>🌿 <b>Climber Removal in Tropical Forests:</b> An intriguing study shows that <i>climber removal</i> in tropical forests can more than double tree growth and roughly triple biomass accumulation (AGB). This has significant implications for global carbon sequestration, as removing climbers can potentially sequester 32 Gigatons of CO2 over a decade if applied to secondary and production forests across the tropics[0].</p>\n\n<h2>🚑 Health Interventions and Environmental Conservation</h2>\n\n<p>🌲 <b>Linking Healthcare and Forest Conservation in Indonesia:</b> A fascinating intervention combined improved healthcare access with conservation programs in rural Indonesian communities near a national park. This multi-sector approach resulted in reduced illegal logging and better health outcomes. Forest loss rates declined significantly in areas with high engagement in the intervention programs. By 2012, over 97% of households believed the intervention effectively reduced illegal logging[1][2][3].</p>\n\n<h2>🌍 Agroforestry and Climate Benefits</h2>\n\n<p>🌾 <b>Cooling Effects of Silvopasture:</b> Research indicates that integrating trees into pasturelands (silvopasture) can significantly cool local environments. This practice has the potential to store substantial carbon in regions like Africa and the Americas, thus contributing to climate change mitigation. Not only does this reduce heat exposure for outdoor workers and livestock, but it also aligns with sustainable development and biodiversity conservation goals[4][5].</p>\n\n<h2>🍃 Deforestation and Temperature Increase</h2>\n\n<p>🔥 <b>Impact of Forest Change on Temperature:</b> A global analysis showed that deforestation causes significant warming, while reforestation can provide cooling effects. For instance, deforestation in tropical regions increased local surface temperature by approximately 0.38°C, whereas similar levels of forestation led to a temperature decrease of 0.18°C. This highlights the importance of forest management in mitigating local climate changes[6].</p>\n\nMake sure to delve deeper into these studies if they pique your interest as they provide comprehensive methods, results, and discussions on these impactful topics!",
     // "citations": {
@@ -142,9 +156,9 @@
     // }
 // }
             console.log(data)
+			currentCitations.set(data.citations);
 			const { codeBlocks, prunedResponse } = extractCodeBlocks(data.message);
 			const assistantResponse = prunedResponse;
-			currentCitations.set(data.citations);
 
 			// update the last assistant message with the actual response
 			chatHistory[assistantMessageIndex] = { role: 'assistant', content: assistantResponse };

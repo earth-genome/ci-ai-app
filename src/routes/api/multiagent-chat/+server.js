@@ -3,18 +3,42 @@ import OpenAI from 'openai';
 import { OPEN_AI_KEY } from '$env/static/private';
 import { assistantDefinitions } from '$lib/assistant-definition.js';
 import { citationsMap } from '$lib/citations-map.js';
+import { get } from 'svelte/store';
+import { promptModifiers, sliderValues } from '$lib/stores.js';
 
 const openai = new OpenAI({
 	apiKey: OPEN_AI_KEY
 });
 
+function getPromptModifierString(vals) {
+    let modifierString = '';
+    const promptModifiersValue = get(promptModifiers);
+    
+    for (const [key, value] of Object.entries(vals)) {
+        if (promptModifiersValue[key] && promptModifiersValue[key][value]) {
+            if (key === 'grade') {
+                modifierString += `Respond as if you are speaking with a student of ${promptModifiersValue[key][value]} grade level. `;
+            } else {
+                const attribute = key.charAt(0).toUpperCase() + key.slice(1);
+                modifierString += `Your ${attribute.toLowerCase()} should be described by these keywords: ${promptModifiersValue[key][value]}. `;
+            }
+        }
+    }
+    
+    return modifierString.trim();
+}
+
 export async function POST({ request }) {
-	const { message, agentIndex } = await request.json();
+	const { message, agentIndex, currentSliderValues } = await request.json();
 
 	try {
-		// Create a temporary assistant
-		const assistant = await openai.beta.assistants.create(assistantDefinitions[agentIndex]);
-        console.log('assistantDefinitions[agentIndex]: ', assistantDefinitions[agentIndex]);
+        console.log('currentSliderValues: ', currentSliderValues);
+        const modifierString = getPromptModifierString(currentSliderValues);
+        const assistantDef = { ...assistantDefinitions[agentIndex] };
+
+        assistantDef.instructions = assistantDef.instructions + ' ' + modifierString;
+        console.log('assistantDef: ', assistantDef);
+		const assistant = await openai.beta.assistants.create(assistantDef);
 		// Create a new thread
 		const thread = await openai.beta.threads.create();
 
