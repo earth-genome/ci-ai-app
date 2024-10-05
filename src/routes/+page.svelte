@@ -57,7 +57,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background-image: url(src/lib/images/tree-photo.png);
+		background-image: url($lib/images/tree-photo.png);
 		background-size: cover;
 		background-position: center;
 		z-index: 1;
@@ -67,7 +67,7 @@
 
 	@keyframes saturationChange {
 		0% {
-			filter: saturate(30%);
+			filter: saturate(10%);
 		}
 		100% {
 			filter: saturate(50%);
