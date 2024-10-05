@@ -164,6 +164,7 @@
 	});
 </script>
 
+
 <div class="chat-container">
 	<div class="cards-container {chatUsed ? 'cards-top' : 'cards-center'}">
 		{#each cardTexts as text, index}
