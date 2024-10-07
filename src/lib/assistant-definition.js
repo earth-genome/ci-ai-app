@@ -21,8 +21,11 @@ export const assistantDefinitions = [
             ALWAYS include an emoji to begin each paragraph.
             ALWAYS include sub headings to break up the text.
 			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
+            ALWAYS include an emoji to begin each paragraph.
+            ALWAYS include sub headings to break up the text.
+			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -53,7 +56,7 @@ export const assistantDefinitions = [
             ALWAYS include sub headings to break up the text.
 			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -84,7 +87,7 @@ export const assistantDefinitions = [
             ALWAYS include sub headings to break up the text.
 			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -115,7 +118,7 @@ export const assistantDefinitions = [
             ALWAYS include sub headings to break up the text.
 			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -299,7 +302,7 @@ export const assistantDefinitions = [
         ALWAYS include sub headings to break up the text.
         ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         DO NOT EVER give a download link to an image.`,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -326,7 +329,7 @@ export const assistantDefinitions = [
             \`\`\`
             NEVER use other html tags inside code blocks
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
@@ -349,7 +352,7 @@ export const assistantDefinitions = [
             ALWAYS include sub headings to break up the text.
 			ALWAYS Use the file search tool to find information in relevant documents and ALWAYS cite the papers you use.
         `,
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         tools: [{type: 'code_interpreter'}, {type: 'file_search'}],
         tool_resources: {
             file_search: {
