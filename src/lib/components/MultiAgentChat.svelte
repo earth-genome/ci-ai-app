@@ -51,6 +51,12 @@
 				.replace(/&#039;/g, "'");
 		}
 
+		function extractDOI(citation) {
+			const doiRegex = /\b(10\.\d{4,}(?:\.\d+)*\/\S+)\b/;
+			const match = citation.match(doiRegex);
+			return match ? `https://doi.org/${match[1]}` : null;
+		}
+
 		// Handle multi-line code blocks
 		while ((match = multiLineCodeBlockRegex.exec(response)) !== null) {
 			const codeId = `code-${codeMap.size}`;
@@ -84,8 +90,11 @@
             console.log('citation: ', citation);
             citation = pdf_citation_mapping[citation] || citation
 
+            const doiUrl = extractDOI(citation);
+            const openDoiFunc = `onclick="window.open('${doiUrl}', '_blank')"` || '';
+
             return `
-                <div class="tooltip" data-tip="${citation}">
+                <div class="tooltip" data-tip="${citation}" ${openDoiFunc}>
                     <span class="badge badge-primary">${p1}</span>
                 </div>
             `
@@ -455,9 +464,10 @@
 		border: 1px solid #003e24; /* Border color for selected card */
 	}
 
-    /* :global(.tooltip) {
+    :global(.tooltip) {
         position: relative;
         display: inline-block;
+        cursor: pointer;
     }
 
     :global(.tooltip::before) {
@@ -480,23 +490,6 @@
     :global(.tooltip:hover::before) {
         opacity: 1;
     }
-
-    :global(.tooltip:hover::before) {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    :global(.tooltip:hover::before) {
-        left: auto;
-        right: 0;
-        transform: none;
-    }
-
-    :global(.tooltip:hover::before) {
-        left: 0;
-        right: auto;
-        transform: none;
-    } */
 
     .rendered-html :global(h1),
     .rendered-html :global(h2),
