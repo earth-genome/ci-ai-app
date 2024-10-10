@@ -188,6 +188,7 @@
 	});
 </script>
 
+
 <div class="chat-container">
 	<div class="cards-container {chatUsed ? 'cards-top' : 'cards-center'}">
 		{#each cardTexts as text, index}
@@ -200,7 +201,7 @@
 			</button>
 		{/each}
 	</div>
-	<div class="messages">
+	<div class="messages ">
 		{#each chatHistory as message}
 			<div class={message.role === 'user' ? 'user-question' : 'assistant-response'}>
 				{#if message.role === 'assistant'}
@@ -269,7 +270,7 @@
 		flex-grow: 1;
 		overflow-y: auto;
 		border-radius: 15px;
-		/* background-color: #ffffff; */
+		background-color: #000000;
 		padding: 10px;
 		padding-bottom: 60px;
 	}
@@ -282,8 +283,7 @@
 		position: absolute;
 		bottom: 0;
 		width: 98%;
-		/* background-color: #ffffff; */
-		overflow: hidden;
+		background-color: #000000;
 	}
 
 	.input-wrapper {
@@ -296,9 +296,9 @@
 		flex: 1;
 		padding: 10px;
 		border-radius: 20px;
-		border: 1px solid #f4f4f4;
+		border: 1px solid oklch(var(--s));
 		margin-right: 5px;
-		background-color: rgb(235, 235, 235);
+		background-color: oklch(var(--s));
 	}
 
 	.send-button {
@@ -333,7 +333,7 @@
 	}
 
 	.message-content {
-		background-color: #f4f4f4; 
+		background-color: #000000; /* Light gray background */
 		padding: 10px 20px;
 		border-radius: 20px; /* Rounded corners */
 		max-width: 70%; /* Limit the width of the message content */
@@ -341,7 +341,7 @@
 	}
 
 	.loading-icon {
-		color: gray;
+		color: #003e24;
 	}
 
 	:global(.code-card) {
@@ -422,8 +422,8 @@
 	}
 
 	.card {
-		/* background-color: #fff;  */
-		color: #676767; /* Dark text color for contrast */
+		background-color: oklch(var(--s)); /* White background */
+		color: oklch(var(--pc)); /* Dark text color for contrast */
 		padding: 15px; /* Slightly smaller padding */
 		border-radius: 15px; /* More rounded corners */
 		text-align: center;
@@ -445,13 +445,14 @@
 	}
 
 	.card:hover {
-		background-color: #f0f0f0; /* Slightly darker background on hover */
+		background-color: #111111; /* Slightly darker background on hover */
 		box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
 	}
 
 	.card.selected {
-		background-color: #e0f7fa; /* Pale blue background for selected card */
-		border: 1px solid #00acc1; 
+
+		background-color: #000000; /* Pale blue background for selected card */
+		border: 1px solid #003e24; /* Border color for selected card */
 	}
 
     /* :global(.tooltip) {

@@ -1,7 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 	import logo from '$lib/images/ci-logo.svg';
-	import egLogo from '$lib/images/eg-logo.png';
+	import egLogo from '$lib/images/eg-logo-white.png';
 </script>
 
 <header>

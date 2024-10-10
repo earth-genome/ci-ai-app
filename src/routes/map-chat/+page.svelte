@@ -23,20 +23,20 @@
 
 <main class="flex-1">
 	<div class="h-screen flex flex-col">
-		<div class="card bg-neutral-content shadow-xl h-[15vh] w-full overflow-y-auto p-0">
+		<div class="card shadow-xl h-[15vh] w-full overflow-y-auto p-0">
 		  <div class="card-body m-1 p-0">
 			<DeforestationStats />
 		  </div>
 		</div>
 	  
 		<div class="flex-1 flex {isMobile ? 'flex-col' : 'flex-row'} overflow-hidden">
-		  <div class="card bg-neutral-content shadow-xl {isMobile ? 'h-[42.5vh]' : 'w-1/2'} overflow-y-auto m-1">
+		  <div class="card shadow-xl {isMobile ? 'h-[42.5vh]' : 'w-1/2'} overflow-y-auto m-1">
 			<div class="card-body p-0">
 				<Map />
 			</div>
 		  </div>
 	  
-		  <div class="card bg-neutral-content shadow-xl {isMobile ? 'h-[42.5vh]' : 'w-1/2'} overflow-y-auto m-1">
+		  <div class="card  shadow-xl {isMobile ? 'h-[42.5vh]' : 'w-1/2'} overflow-y-auto m-1">
 			<div class="card-body p-2">
 				<MapAgent />
 			</div>
