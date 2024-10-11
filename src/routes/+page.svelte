@@ -1,6 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import multiAgentPhoto from '$lib/images/aspen-white.png';
+	import mapAgentPhoto from '$lib/images/aspen-up.png';
 
 	let currentWord = 'Trees';
 	const words = ['Trees', 'Heat', 'Health', 'Carbon'];
@@ -30,7 +32,7 @@
 </svelte:head>
 
 <div class="hero min-h-screen hero-image-custom">
-	<div class="background-image"></div>
+	<div class="background-image" />
 	<div class="hero-content text-neutral-content text-center">
 		<h1 class="hero-title">
 			<span class="static-text">Not Just</span>
@@ -42,6 +44,40 @@
 				{/if}
 			</span>
 		</h1>
+	</div>
+</div>
+
+<div class="flex flex-row">
+	<div class="w-1/2 p-4">
+		<img class="w-50 h-30 object-cover rounded-xl" src={multiAgentPhoto} alt="front tree" />
+	</div>
+	<div class="w-1/2">
+		<div class="p-4 flex flex-col justify-center items-center h-full">
+			<h1 class="block-title font-bold text-center">Explore the research</h1>
+			<p class="text-neutral-content p-3">
+				The Not Just Carbon report produced information about the deep, wide reaching impact that
+				deforestation could have on climate change and our planet as a whole. Go deeper and explore
+				the research behind the report with a personalized AI assistant.
+			</p>
+			<a href="/multiagent-chat" role="button" class="btn btn-lg btn-outline">Start Exploring</a>
+		</div>
+	</div>
+</div>
+
+<div class="flex flex-row p-4">
+	<div class="w-1/2">
+		<div class="p-4 flex flex-col justify-center items-center h-full">
+			<h1 class="block-title font-bold text-center">Explore the maps</h1>
+			<p class="text-neutral-content p-3 text-right">
+				Several of the research projects that came out of the Not Just Carbon initiative produced
+				findings based on geospatial data. Explore these with an AI agent assisted map interface and
+				learn more about the where behind the findings.
+			</p>
+			<a href="/map-chat" role="button" class="btn btn-lg btn-outline">Start Exploring</a>
+		</div>
+	</div>
+	<div class="w-1/2 p-4">
+		<img class="w-50 h-30 object-cover rounded-xl" src={mapAgentPhoto} alt="tree" />
 	</div>
 </div>
 
@@ -62,7 +98,7 @@
 		background-position: center;
 		z-index: 1;
 		/* animation: brightnessChange  8s ease-in-out infinite alternate; */
-		animation: saturationChange  8s ease-in-out infinite alternate;
+		animation: saturationChange 8s ease-in-out infinite alternate;
 	}
 
 	@keyframes saturationChange {
@@ -102,6 +138,9 @@
 
 	.changing-word {
 		display: inline-block;
+	}
+	.block-title {
+		font-size: 4em;
 	}
 
 	@media (min-width: 1750px) {
