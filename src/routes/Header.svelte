@@ -5,7 +5,7 @@
 </script>
 
 <header>
-	<div class="navbar h-100px bg-base-100">
+	<div class="navbar h-100px" style="background-color: #ffffff0">
 		<div class="navbar-start">
 			<div class="dropdown">
 				<div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
