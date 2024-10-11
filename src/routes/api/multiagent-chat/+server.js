@@ -10,34 +10,43 @@ const openai = new OpenAI({
 	apiKey: OPEN_AI_KEY
 });
 
-function getPromptModifierString(vals) {
-    let modifierString = '';
-    const promptModifiersValue = get(promptModifiers);
-    
-    for (const [key, value] of Object.entries(vals)) {
-        if (promptModifiersValue[key] && promptModifiersValue[key][value]) {
-            if (key === 'grade') {
-                modifierString += `Respond as if you are speaking with a student of ${promptModifiersValue[key][value]} grade level. `;
-            } else {
-                const attribute = key.charAt(0).toUpperCase() + key.slice(1);
-                modifierString += `Your ${attribute.toLowerCase()} should be described by these keywords: ${promptModifiersValue[key][value]}. `;
-            }
-        }
-    }
-    
-    return modifierString.trim();
+function getPromptMods(vals, agentIndex) {
+	let modifierString = '';
+	const promptModifiersValue = get(promptModifiers);
+
+	for (const [key, value] of Object.entries(vals)) {
+		console.log('key: ', key);
+		console.log('val: ', value);
+		if (promptModifiersValue[key] && promptModifiersValue[key][value]) {
+			if (key !== 'temperature') {
+				if (key === 'grade' && agentIndex !== 3) {
+					// Skip grade level modifier if not professor agent
+					continue;
+				}
+				modifierString += promptModifiersValue[key][value] + ' ';
+			}
+		}
+	}
+
+	console.log('modifierString: ', modifierString);
+
+	return {
+		'modifierString': modifierString.trim(),
+		'temperature': vals['temperature']
+	};
 }
 
 export async function POST({ request }) {
 	const { message, agentIndex, currentSliderValues } = await request.json();
 
 	try {
-        console.log('currentSliderValues: ', currentSliderValues);
-        const modifierString = getPromptModifierString(currentSliderValues);
-        const assistantDef = { ...assistantDefinitions[agentIndex] };
+		console.log('currentSliderValues: ', currentSliderValues);
+		const promptMods = getPromptMods(currentSliderValues, agentIndex);
+		const assistantDef = { ...assistantDefinitions[agentIndex], 'temperature': promptMods.temperature};
+		
 
-        assistantDef.instructions = assistantDef.instructions + ' ' + modifierString;
-        console.log('assistantDef: ', assistantDef);
+		assistantDef.instructions = assistantDef.instructions + ' ' + promptMods.modifierString;
+		console.log('assistantDef: ', assistantDef);
 		const assistant = await openai.beta.assistants.create(assistantDef);
 		// Create a new thread
 		const thread = await openai.beta.threads.create();
