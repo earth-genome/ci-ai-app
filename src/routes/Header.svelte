@@ -5,7 +5,7 @@
 </script>
 
 <header>
-	<div class="navbar h-100px" style="background-color: #ffffff0">
+	<div class="navbar h-100px">
 		<div class="navbar-start">
 			<div class="dropdown">
 				<div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -55,6 +55,13 @@
 </header>
 
 <style>
+	header {
+		background-color: #2C665D;
+		border-bottom: 1px solid #F1E9D2;
+	}
+	.navbar {
+		color: #F1E9D2;
+	}
 	.eg-logo {
 		width: 5em;
 	}

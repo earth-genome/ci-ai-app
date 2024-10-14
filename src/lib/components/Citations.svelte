@@ -7,40 +7,13 @@
 
 	function formatCitationWithDOI(citation) {
 
-		// const yearRegex = /\b(19|20)\d{2}\b/g;
-		// citation = citation.replace(yearRegex, '<i>$&</i>');
-
-        // console.log('citation: ', citation);
-		
-		// const titleRegex = /"([^"]*)"/g;
-		// citation = citation.replace(titleRegex, '<b>"$1"</b>');
-
-		// const doiRegex = /\b(https:\/\/doi\.org\/10\.\d{4,}(?:\.\d+)*\/\S+)\b/;
-		// citation = citation.replace(doiRegex, (match) => `<a href="${match}" target="_blank">${match}</a>`);
-		
-		// return citation;
-
-
 		const doiRegex = /\b(https:\/\/doi\.org\/10\.\d{4,}(?:\.\d+)*\/\S+)\b/;
 		const doiMatches = citation.match(doiRegex);
-		
-        // find doi strings and make them links
 
-		// find years and italicize
-		// const yearRegex = /\b(19|20)\d{2}\b/g;
-		// citation = citation.replace(yearRegex, (match, p1, offset) => {
-		// 	// make sure the regex match in not part of a doi string
-		// 	const isInDOI = doiMatches && doiMatches.some(doi => doi.includes(match));
-		// 	return isInDOI ? match : `<i>${match}</i>`;
-		// });
-
-		// Bold the titles
 		const titleRegex = /"([^"]*)"/g;
 		citation = citation.replace(titleRegex, '<b>"$1"</b>');
-
 		citation = citation.replace(doiRegex, (match) => `<a href="${match}" target="_blank">${match}</a>`);
 
-		
 		return citation;
 	}
 
@@ -49,20 +22,40 @@
 			citation.toLowerCase().includes(searchTerm.toLowerCase())
 		);
 	}
+
+	let windowHeight;
+
+	// onMount(() => {
+	// 	const updateHeight = () => {
+	// 		windowHeight = window.innerHeight;
+	// 	};
+
+	// 	updateHeight();
+	// 	window.addEventListener('resize', updateHeight);
+
+	// 	return () => {
+	// 		window.removeEventListener('resize', updateHeight);
+	// 	};
+	// });
+
+	// $: citationListHeight = windowHeight
+	// 	? `${windowHeight - citationsTop - 160}px`
+	// 	: 'auto';
 </script>
 
 <div class="citations">
 	<div class="prose">
-		<h2 style="margin-bottom: 0rem;">List of available research</h2>
-		<p>CI AI has access to the following publications:</p>
+		<!-- <h2 style="margin-bottom: 0rem;">List of available research</h2> -->
+		<h4 style="margin: 10px">CI AI has access to the following publications:</h4>
 	</div>
 	<div class="search-box">
 		<input
 			type="text"
-			placeholder="Search citations..."
+			placeholder="Search publications..."
 			bind:value={searchTerm}
 		/>
 	</div>
+	<!-- <div class="citation-list" style="height: {citationListHeight};"> -->
 	<div class="citation-list">
 		<ul>
 			{#each filteredCitations as citation}
@@ -75,20 +68,18 @@
 <style>
 	.citations {
 		margin-top: 2rem;
-		font-size: 0.9rem;
+		font-size: 9pt;
 		color: #333333;
+		height: 60vh; 
+		display: flex;
+		flex-direction: column;
 	}
 
 	.citation-list {
-		height: 35vh;
+		flex-grow: 1;
 		overflow-y: auto;
-		/* border: 1px solid #ccc; */
-		/* border-radius: 4px; */
-		/* padding-left: 1rem; */
-		padding-top: 5px;
-		padding-bottom: 1rem;
-		padding-right: 1rem;
-
+		padding-right: 10px;
+		margin: 10px;
 	}
 
 	.citation-list ul {
@@ -99,7 +90,7 @@
 	.citation-list li {
 		margin-bottom: 1rem;
 		padding: 1rem;
-		background-color: #e6ffe6;
+		background-color: #F1E9D2;
 		border-radius: 4px;
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 		color: #333333; 
@@ -135,8 +126,11 @@
 	}
 
 	.search-box {
-		margin-bottom: 1rem;
-        margin-right: 2rem;
+		margin-left: 10px;
+		margin-bottom: 10px;
+		margin-top: 10px;
+		margin-right: 35px;
+
 	}
 
 	.search-box input {

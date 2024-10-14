@@ -4,7 +4,7 @@
 
     function updateSlider(key, value) {
         sliderValues.update(currentValues => {
-            return { ...currentValues, [key]: parseInt(value, 10) };
+            return { ...currentValues, [key]: key === 'temperature' ? parseFloat(value) : parseInt(value, 10) };
         });
         console.log('sliderValues: ', get(sliderValues))
     }
@@ -21,25 +21,38 @@
 </script>
 
 <div class="p-4 space-y-6">
-    <h2 class="text-2xl font-bold mb-4">Agent Customization</h2>
-  
     <div class="space-y-4">
         <div>
-            <label for="temperature" class="block mb-2">Temperature: {$sliderValues.temperature}</label>
-            <input type="range" min="0" max="2" class="range range-primary range-xs" step="0.1" 
-                   value={$sliderValues.temperatue} id="temperatue" 
-                   on:input={(e) => updateSlider('temperatue', e.target.value)} />
+            <div class="flex items-center">
+                <label for="temperature" class="badge badge-custom mr-2">Creativity: {$sliderValues.temperature.toFixed(1)}</label>
+                <div class="tooltip tooltip-right" data-tip="Creativity, aka 'temperature,' controls response randomness. Lower values make results more focused and predictable, while higher values increase creativity and diversity but reduce coherence.">
+                    <span class="badge badge-info cursor-help">?</span>
+                </div>
+            </div>
+            <input type="range" min="0" max="2" class="range range-temperature range-xs" step="0.1" 
+                   value={$sliderValues.temperature} id="temperature" 
+                   on:input={(e) => updateSlider('temperature', e.target.value)} />
         </div>
 
         <div>
-            <label for="length" class="block mb-2">Response length: {$sliderValues.length}</label>
+            <div class="flex items-center">
+                <label for="length" class="badge badge-custom mr-2">Response length: {$sliderValues.length}</label>
+                <div class="tooltip tooltip-right" data-tip="Lorem ipsum">
+                    <span class="badge badge-info cursor-help">?</span>
+                </div>
+            </div>
             <input type="range" min="1" max="4" class="range range-secondary range-xs" step="1" 
                    value={$sliderValues.length} id="length" 
                    on:input={(e) => updateSlider('length', e.target.value)}  />
         </div>
 
         <div>
-            <label for="formatting" class="block mb-2">Level of formatting: {$sliderValues.formatting}</label>
+            <div class="flex items-center">
+                <label for="formatting" class="badge badge-custom mr-2">Level of formatting: {$sliderValues.formatting}</label>
+                <div class="tooltip tooltip-right" data-tip="Lorem ipsum">
+                    <span class="badge badge-info cursor-help">?</span>
+                </div>
+            </div>
             <input type="range" min="1" max="4" class="range range-accent range-xs" step="1" 
                    value={$sliderValues.formatting} id="formatting" 
                    on:input={(e) => updateSlider('formatting', e.target.value)}  />
@@ -47,7 +60,12 @@
 
         {#if isProfessorSelected}
             <div>
-                <label for="grade" class="block mb-2">Grade level: {getGradeString($sliderValues.grade)}</label>
+                <div class="flex items-center">
+                    <label for="grade" class="badge badge-custom mr-2">Grade level: {getGradeString($sliderValues.grade)}</label>
+                    <div class="tooltip tooltip-right" data-tip="Lorem ipsum">
+                        <span class="badge badge-info cursor-help">?</span>
+                    </div>
+                </div>
                 <input type="range" min="1" max="15" class="range range-success range-xs" step="1" 
                        value={$sliderValues.grade} id="grade-level" 
                        on:input={(e) => updateSlider('grade', e.target.value)}  />
@@ -55,3 +73,19 @@
         {/if}
     </div>
 </div>
+
+<style lang="postcss">
+    :global(.tooltip::before) {
+        background-color: #DBEEFB;
+        color: theme('colors.primary');
+    }
+
+    .badge-custom {
+        background-color: #F5DB98;
+        color: black
+    }
+
+    .range-temperature {
+        --range-shdw: #79A37C
+    }
+</style>

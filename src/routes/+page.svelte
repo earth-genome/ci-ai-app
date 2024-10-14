@@ -24,6 +24,7 @@
 		const interval = setInterval(switchWord, 5000); // Change word every 4 seconds
 		return () => clearInterval(interval); // Cleanup on component unmount
 	});
+    // <div id="scene" class="scene animate-fade fade-in" style="transform: translate3d(0px, 0px, 0px) rotate(0.0001deg); transform-style: preserve-3d; backface-visibility: hidden; position: relative; pointer-events: none;"> <!--<div class="layer" data-depth="0.10"><img src="/hero04a.png"></div> --> <!--<div class="layer" data-depth="0.10"><img src="/hero03a.png"><div class="tiger-leaf"><img src="/tiger-leaf.png"></div></div><div class="layer" data-depth="0.10"><img src="/hero02a.png"><div class="charma-leaf"><img src="/charma-leaf.png"></div></div><div class="layer" data-depth="0.12"><img src="/hero01a.png"><div class="toucan-leaf"><img src="/toucan-leaf.png"></div></div> --><div class="layer" data-depth="0.10" style="transform: translate3d(-18px, 0.8px, 0px); transform-style: preserve-3d; backface-visibility: hidden; position: relative; display: block; left: 0px; top: 0px;"><img src="https://www.tigermarketing.co.uk/wp-content/themes/TigerMarketing/assets/images/hero0304cp.png"><div class="tiger-leaf"><img src="https://www.tigermarketing.co.uk/wp-content/themes/TigerMarketing/assets/images/tiger-leaf.png"></div></div><div class="layer" data-depth="0.15" style="transform: translate3d(-27px, 1.2px, 0px); transform-style: preserve-3d; backface-visibility: hidden; position: absolute; display: block; left: 0px; top: 0px;"><img src="https://www.tigermarketing.co.uk/wp-content/themes/TigerMarketing/assets/images/hero0102cp.png"><div class="charma-leaf"><img src="https://www.tigermarketing.co.uk/wp-content/themes/TigerMarketing/assets/images/charma-leaf.png"></div><div class="toucan-leaf"><img src="https://www.tigermarketing.co.uk/wp-content/themes/TigerMarketing/assets/images/toucan-leaf1.png"></div></div></div>
 </script>
 
 <svelte:head>
@@ -33,6 +34,7 @@
 
 <div class="hero min-h-screen hero-image-custom">
 	<div class="background-image" />
+
 	<div class="hero-content text-neutral-content text-center">
 		<h1 class="hero-title">
 			<span class="static-text">Not Just</span>
@@ -93,7 +95,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background-image: url($lib/images/tree-photo.png);
+		background-image: url($lib/images/jungle.jpg);
 		background-size: cover;
 		background-position: center;
 		z-index: 1;

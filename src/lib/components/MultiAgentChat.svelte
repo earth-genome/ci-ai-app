@@ -16,11 +16,23 @@
 	let chatUsed = false;
 	let selectedCardIndex = 0;
 
-	const cardTexts = [
-		'⚗️👨‍🔬🔬Research assistant:<br>A knowledgeable research assistant to help you explore scientific literature',
-		'📊💻🔍Policy expert:<br>An expert on translating science into actionable policy',
-		'🏫🍎📚Teacher:<br>Your favorite teacher breaks down topics. Choose from kindergarten to graduate level'
-	];
+    let cardTexts = [
+        '<b>Research assistant:</b> A knowledgeable research assistant to help you explore scientific literature',
+        '<b>Policy expert:</b> An expert on translating science into actionable policy',
+        '<b>Teacher:</b> Your favorite teacher breaks down topics. Choose from kindergarten to graduate level'
+    ];
+
+    const emojis = ['🔬','📊','🍎']
+
+	cardTexts = cardTexts.map((text, index) => {
+        const figureText = `
+            <figure>
+                <span style="font-size: 4rem">${emojis[index]}</span>
+            </figure>
+        `
+		return figureText + text;
+	});
+
 
 	function escapeHtml(unsafe) {
 		return unsafe
@@ -132,33 +144,33 @@
 
 		try {
         //     console.log(selectedCardIndex)
-			const response = await fetch('../api/multiagent-chat', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					message: userMessage,
-					agentIndex: selectedCardIndex,
-                    currentSliderValues: get(sliderValues)
-				})
-			});
+			// const response = await fetch('../api/multiagent-chat', {
+			// 	method: 'POST',
+			// 	headers: {
+			// 		'Content-Type': 'application/json'
+			// 	},
+			// 	body: JSON.stringify({
+			// 		message: userMessage,
+			// 		agentIndex: selectedCardIndex,
+            //         currentSliderValues: get(sliderValues)
+			// 	})
+			// });
 
-			if (!response.ok) {
-				throw new Error('Network response was not ok');
-			}
+			// if (!response.ok) {
+			// 	throw new Error('Network response was not ok');
+			// }
 
-			const data = await response.json();
-//             const data = //intersting undefined citation error
-//             {
-//     "message": "<h1>About Your Papers</h1>\n\n🌱 <i>Your papers encompass a variety of research topics related to forestry, hydrology, and environmental science.</i> One notable paper titled **\"Forests as ‘sponges’ and ‘pumps’: Assessing the impact of deforestation on dry-season flows across the tropics\"** investigates the effect of deforestation on water flows in tropical regions, authored by Jorge L. Peña-Arancibia et al. This research emphasizes the dual roles of forests in regulating water supply and highlights that deforestation can significantly disrupt these processes.\n\n<h2>Key Findings</h2>\n\n📝 <b>Impact of Deforestation</b>: The study found that in about **80%** of analyzed cases, forest restoration and cover expansion negatively impacted water yield, contrary to the expected positive outcomes often assumed in forest management discussions[0]. \n\n📊 <b>Methodology</b>: The researchers performed a systematic literature review, identifying a total of **666** papers, with **482** deemed relevant to the study's focus. They categorized data based on geographic location, intervention type, and hydrological responses, ultimately synthesizing findings from **167** papers for analysis[1].\n\n<h2>Additional Papers and Contributions</h2>\n\n🌳 Other related studies illustrate the broader implications of forest management practices on environmental outcomes, emphasizing topics such as carbon conservation and the socio-economic factors influencing deforestation rates[2][3]. These papers collectively suggest that more rigorous methodologies and interdisciplinary approaches are essential for addressing the complex interactions between forestry practices and ecosystem health.\n\n🔗 You can further explore the findings in detail through the <a href=\"https://doi.org/10.1016/j.jhydrol.2019.04.064\">Journal of Hydrology</a> where this research is published.",
-//     "citations": {
-//         "0": "Pena_Arancibia_2019_JH_pantropicalflowimpactsofdeforestation.pdf",
-//         "1": "file.pdf",
-//         "2": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
-//         "3": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf"
-//     }
-// }
+			// const data = await response.json();
+            const data = //intersting undefined citation error
+            {
+    "message": "<h1>About Your Papers</h1>\n\n🌱 <i>Your papers encompass a variety of research topics related to forestry, hydrology, and environmental science.</i> One notable paper titled **\"Forests as ‘sponges’ and ‘pumps’: Assessing the impact of deforestation on dry-season flows across the tropics\"** investigates the effect of deforestation on water flows in tropical regions, authored by Jorge L. Peña-Arancibia et al. This research emphasizes the dual roles of forests in regulating water supply and highlights that deforestation can significantly disrupt these processes.\n\n<h2>Key Findings</h2>\n\n📝 <b>Impact of Deforestation</b>: The study found that in about **80%** of analyzed cases, forest restoration and cover expansion negatively impacted water yield, contrary to the expected positive outcomes often assumed in forest management discussions[0]. \n\n📊 <b>Methodology</b>: The researchers performed a systematic literature review, identifying a total of **666** papers, with **482** deemed relevant to the study's focus. They categorized data based on geographic location, intervention type, and hydrological responses, ultimately synthesizing findings from **167** papers for analysis[1].\n\n<h2>Additional Papers and Contributions</h2>\n\n🌳 Other related studies illustrate the broader implications of forest management practices on environmental outcomes, emphasizing topics such as carbon conservation and the socio-economic factors influencing deforestation rates[2][3]. These papers collectively suggest that more rigorous methodologies and interdisciplinary approaches are essential for addressing the complex interactions between forestry practices and ecosystem health.\n\n🔗 You can further explore the findings in detail through the <a href=\"https://doi.org/10.1016/j.jhydrol.2019.04.064\">Journal of Hydrology</a> where this research is published.",
+    "citations": {
+        "0": "Pena_Arancibia_2019_JH_pantropicalflowimpactsofdeforestation.pdf",
+        "1": "file.pdf",
+        "2": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
+        "3": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf"
+    }
+}
     //         const data = {
     // "message": "<h1>Interesting Findings in Recent Research Papers</h1>\n\n<h2>🌳 Forest Management and Climate Change</h2>\n\n<p>🌿 <b>Climber Removal in Tropical Forests:</b> An intriguing study shows that <i>climber removal</i> in tropical forests can more than double tree growth and roughly triple biomass accumulation (AGB). This has significant implications for global carbon sequestration, as removing climbers can potentially sequester 32 Gigatons of CO2 over a decade if applied to secondary and production forests across the tropics[0].</p>\n\n<h2>🚑 Health Interventions and Environmental Conservation</h2>\n\n<p>🌲 <b>Linking Healthcare and Forest Conservation in Indonesia:</b> A fascinating intervention combined improved healthcare access with conservation programs in rural Indonesian communities near a national park. This multi-sector approach resulted in reduced illegal logging and better health outcomes. Forest loss rates declined significantly in areas with high engagement in the intervention programs. By 2012, over 97% of households believed the intervention effectively reduced illegal logging[1][2][3].</p>\n\n<h2>🌍 Agroforestry and Climate Benefits</h2>\n\n<p>🌾 <b>Cooling Effects of Silvopasture:</b> Research indicates that integrating trees into pasturelands (silvopasture) can significantly cool local environments. This practice has the potential to store substantial carbon in regions like Africa and the Americas, thus contributing to climate change mitigation. Not only does this reduce heat exposure for outdoor workers and livestock, but it also aligns with sustainable development and biodiversity conservation goals[4][5].</p>\n\n<h2>🍃 Deforestation and Temperature Increase</h2>\n\n<p>🔥 <b>Impact of Forest Change on Temperature:</b> A global analysis showed that deforestation causes significant warming, while reforestation can provide cooling effects. For instance, deforestation in tropical regions increased local surface temperature by approximately 0.38°C, whereas similar levels of forestation led to a temperature decrease of 0.18°C. This highlights the importance of forest management in mitigating local climate changes[6].</p>\n\nMake sure to delve deeper into these studies if they pique your interest as they provide comprehensive methods, results, and discussions on these impactful topics!",
     // "citations": {
@@ -201,7 +213,7 @@
 	<div class="cards-container {chatUsed ? 'cards-top' : 'cards-center'}">
 		{#each cardTexts as text, index}
 			<button
-				class="card {$selectedAgentIndex === index ? 'selected' : ''}"
+				class="card bg-base-100 image-full w-96 shadow-xl {$selectedAgentIndex === index ? 'selected' : ''}"
 				on:click={() => handleCardClick(index)}
 				on:keydown={(e) => e.key === 'Enter' && handleCardClick(index)}
 			>
@@ -307,8 +319,8 @@
 		border: 1px solid oklch(var(--s));
 		margin-right: 5px;
 		/* background-color: oklch(var(--s)); */
-		background-color: #ffffff;
-        color: #001600
+		background-color: #F1E9D2;
+        color: #2C665D
 	}
 
 	.send-button {
@@ -343,12 +355,12 @@
 	}
 
 	.message-content {
-		background-color: #DAEDA8;
+		background-color: #2C665D;
+        color: #F1E9D2;
 		padding: 10px 20px;
 		border-radius: 20px; /* Rounded corners */
 		max-width: 70%; /* Limit the width of the message content */
 		word-wrap: break-word; /* Ensure long words break to the next line */
-        color: black
 	}
 
 	.loading-icon {
@@ -432,16 +444,19 @@
 		z-index: 2; /* Ensure it sits above the chat container */
 	}
 
+    /* //D88A25 A3C18A D14D42  */
+
 	.card {
 		/* background-color: oklch(var(--s)); */
-        background-color: #ccffcc;
-		color: oklch(var(--pc)); /* Dark text color for contrast */
+        background-color: #A3C18A;
+		/* color: oklch(var(--pc));/ */
+        color: #4A403A;
 		padding: 15px; /* Slightly smaller padding */
 		border-radius: 15px; /* More rounded corners */
 		text-align: center;
 		flex: 1; /* Make the cards responsive */
-		max-width: 180px; /* Slightly smaller default size */
-		max-height: 140px; /* Ensure the cards are square */
+		max-width: 240px; /* Slightly smaller default size */
+		max-height: 220px; /* Ensure the cards are square */
 		aspect-ratio: 1 / 1; /* Maintain a consistent aspect ratio */
 		cursor: pointer;
 		transition: background-color 0.3s, box-shadow 0.3s;
@@ -453,19 +468,20 @@
 		--tw-shadow: 0 0 2px 0 rgba(0, 0, 0, .05), 0 4px 6px 0 rgba(0, 0, 0, .02);
 		--tw-shadow-colored: 0 0 2px 0 var(--tw-shadow-color), 0 4px 6px 0 var(--tw-shadow-color);
 		box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-		font-size: 9pt; /* Set text size to 10pt */
+		font-size: 11pt; /* Set text size to 10pt */
 	}
 
 	.card:hover {
 		/* background-color: rgb(226, 244, 206);  */
-        background-color: #7FC961;
+        background-color: #85A377; 
+        color: #F1E9D2;
 		box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
 	}
 
 	.card.selected {
-
-		background-color: #FFDE85;
-		border: 1px solid #A7C957;
+		background-color: #5E8D5C;
+        color: F1E9D2;
+		/* border: 1px solid #FFD700; */
 	}
 
     :global(.tooltip::before) {
