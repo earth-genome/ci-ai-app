@@ -51,19 +51,39 @@
 		overflow: hidden;
 	}
 
-	.background-image {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-image: url($lib/images/tree-photo.png);
-		background-size: cover;
-		background-position: center;
-		z-index: 1;
-		/* animation: brightnessChange  8s ease-in-out infinite alternate; */
-		animation: saturationChange  8s ease-in-out infinite alternate;
-	}
+    .background-image {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 70%;
+        height: 100%;
+        background-image: url($lib/images/tree-photo.png);
+        background-size: contain;
+        background-position: right center;
+        background-repeat: no-repeat;
+        z-index: 1;
+        animation: saturationChange 8s ease-in-out infinite alternate;
+    }
+
+    /* .background-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0, 77, 0, 0) 0%, rgba(0, 77, 0, 1) 100%);
+        z-index: 2; 
+        pointer-events: none;
+    } */
+
+    .background-image {
+        -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 0, rgba(0,0,0,0) 90%);
+        mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 0, rgba(0,0,0,0) 90%);
+
+        /* background: radial-gradient(ellipse at top, #e66465, transparent),
+                    radial-gradient(ellipse at bottom, #4d9f0c, transparent); */
+    }
 
 	@keyframes saturationChange {
 		0% {

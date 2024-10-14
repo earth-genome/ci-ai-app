@@ -28,7 +28,6 @@
 					class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
 				>
 					<li><a href="/">Home</a></li>
-					<li><a href="/agent-chat">Agent Chat</a></li>
 					<li><a href="/map-chat">Map Chat</a></li>
 					<li><a href="/multiagent-chat">Multi Agent Chat</a></li>
 					<!-- <li><a href="/vis-chat">Vis Chat</a></li> -->
@@ -42,7 +41,6 @@
 		<div class="navbar-center hidden lg:flex">
 			<ul class="menu menu-horizontal px-1">
 				<li><a href="/">Home</a></li>
-				<li><a href="/agent-chat">Agent Chat</a></li>
 				<li><a href="/map-chat">Map Chat</a></li>
 				<li><a href="/multiagent-chat">Multi Agent Chat</a></li>
                 <!-- <li><a href="/vis-chat">Vis Chat</a></li> -->

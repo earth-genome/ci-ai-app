@@ -26,21 +26,21 @@
     <div class="space-y-4">
         <div>
             <label for="temperature" class="block mb-2">Temperature: {$sliderValues.temperature}</label>
-            <input type="range" min="0" max="2" class="range range-primary" step="0.1" 
+            <input type="range" min="0" max="2" class="range range-primary range-xs" step="0.1" 
                    value={$sliderValues.temperatue} id="temperatue" 
                    on:input={(e) => updateSlider('temperatue', e.target.value)} />
         </div>
 
         <div>
             <label for="length" class="block mb-2">Response length: {$sliderValues.length}</label>
-            <input type="range" min="1" max="4" class="range range-secondary" step="1" 
+            <input type="range" min="1" max="4" class="range range-secondary range-xs" step="1" 
                    value={$sliderValues.length} id="length" 
                    on:input={(e) => updateSlider('length', e.target.value)}  />
         </div>
 
         <div>
             <label for="formatting" class="block mb-2">Level of formatting: {$sliderValues.formatting}</label>
-            <input type="range" min="1" max="4" class="range range-accent" step="1" 
+            <input type="range" min="1" max="4" class="range range-accent range-xs" step="1" 
                    value={$sliderValues.formatting} id="formatting" 
                    on:input={(e) => updateSlider('formatting', e.target.value)}  />
         </div>
@@ -48,7 +48,7 @@
         {#if isProfessorSelected}
             <div>
                 <label for="grade" class="block mb-2">Grade level: {getGradeString($sliderValues.grade)}</label>
-                <input type="range" min="1" max="15" class="range range-success" step="1" 
+                <input type="range" min="1" max="15" class="range range-success range-xs" step="1" 
                        value={$sliderValues.grade} id="grade-level" 
                        on:input={(e) => updateSlider('grade', e.target.value)}  />
             </div>

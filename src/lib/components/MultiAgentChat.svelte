@@ -94,7 +94,7 @@
 
             return `
                 <div class="tooltip" data-tip="${citation}" ${openDoiFunc}>
-                    <span class="badge badge-primary">${p1}</span>
+                    <span class="badge badge-info">${p1}</span>
                 </div>
             `
 		});
@@ -278,7 +278,7 @@
 		flex-grow: 1;
 		overflow-y: auto;
 		border-radius: 15px;
-		background-color: #000000;
+		/* background-color: #000000; */
 		padding: 10px;
 		padding-bottom: 60px;
 	}
@@ -291,7 +291,7 @@
 		position: absolute;
 		bottom: 0;
 		width: 98%;
-		background-color: #000000;
+		/* background-color: #000000; */
 	}
 
 	.input-wrapper {
@@ -307,7 +307,8 @@
 		border: 1px solid oklch(var(--s));
 		margin-right: 5px;
 		/* background-color: oklch(var(--s)); */
-		background-color: #ffffff
+		background-color: #ffffff;
+        color: #001600
 	}
 
 	.send-button {
@@ -342,11 +343,12 @@
 	}
 
 	.message-content {
-		background-color: #000000; /* Light gray background */
+		background-color: #DAEDA8;
 		padding: 10px 20px;
 		border-radius: 20px; /* Rounded corners */
 		max-width: 70%; /* Limit the width of the message content */
 		word-wrap: break-word; /* Ensure long words break to the next line */
+        color: black
 	}
 
 	.loading-icon {
@@ -432,7 +434,7 @@
 
 	.card {
 		/* background-color: oklch(var(--s)); */
-        background-color: #ffffff;
+        background-color: #D4EDD4;
 		color: oklch(var(--pc)); /* Dark text color for contrast */
 		padding: 15px; /* Slightly smaller padding */
 		border-radius: 15px; /* More rounded corners */
@@ -455,22 +457,25 @@
 	}
 
 	.card:hover {
-		background-color: #111111; /* Slightly darker background on hover */
+		/* background-color: rgb(226, 244, 206);  */
+        background-color: #ccffcc;
 		box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
 	}
 
 	.card.selected {
 
-		background-color: #e0f7fa;
-		border: 1px solid #00acc1;
+		background-color: #7FC961;
+		border: 1px solid #A7C957;
 	}
 
-    /* :global(.tooltip) {
-        position: relative;
+    :global(.tooltip::before) {
+        /* position: relative;
         display: inline-block;
-        cursor: pointer;
+        cursor: pointer; */
+        background-color: #DBEEFB;
+        color: theme('colors.primary')
     }
-
+    /*
     :global(.tooltip::before) {
         content: attr(data-tip);
         position: absolute;
