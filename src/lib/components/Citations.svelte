@@ -2,6 +2,9 @@
 	import { onMount } from 'svelte';
 	import { pdf_citation_mapping } from '$lib/pdf_citation_mapping.js';
 
+	let searchTerm = '';
+	let filteredCitations = Object.values(pdf_citation_mapping);
+
 	function formatCitationWithDOI(citation) {
 
 		// const yearRegex = /\b(19|20)\d{2}\b/g;
@@ -40,16 +43,29 @@
 		
 		return citation;
 	}
+
+	$: {
+		filteredCitations = Object.values(pdf_citation_mapping).filter(citation =>
+			citation.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	}
 </script>
 
 <div class="citations">
 	<div class="prose">
 		<h2 style="margin-bottom: 0rem;">List of available research</h2>
-        <p>CI AI has access to the following publications:</p>
+		<p>CI AI has access to the following publications:</p>
+	</div>
+	<div class="search-box">
+		<input
+			type="text"
+			placeholder="Search citations..."
+			bind:value={searchTerm}
+		/>
 	</div>
 	<div class="citation-list">
 		<ul>
-			{#each Object.values(pdf_citation_mapping) as citation}
+			{#each filteredCitations as citation}
 				<li>{@html formatCitationWithDOI(citation)}</li>
 			{/each}
 		</ul>
@@ -64,7 +80,7 @@
 	}
 
 	.citation-list {
-		height: 80vh;
+		height: 35vh;
 		overflow-y: auto;
 		/* border: 1px solid #ccc; */
 		/* border-radius: 4px; */
@@ -116,5 +132,18 @@
 
 	:global(.citations b) {
 		font-weight: bold;
+	}
+
+	.search-box {
+		margin-bottom: 1rem;
+        margin-right: 2rem;
+	}
+
+	.search-box input {
+		width: 100%;
+		padding: 0.5rem;
+		font-size: 1rem;
+		border: 1px solid #ccc;
+		border-radius: 4px;
 	}
 </style>

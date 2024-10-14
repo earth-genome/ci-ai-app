@@ -8,12 +8,12 @@
 </script>
 
 <main>
-	<div class="grid grid-cols-6">
+	<div class="grid grid-cols-4">
         <div class="col-span-1">
             <AgentCustomization />
             <Citations />
         </div>
-		<div class="col-span-5">
+		<div class="col-span-3">
             <MultiAgentChat />
 		</div>
 	</div>

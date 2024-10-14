@@ -270,7 +270,7 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		height: 80vh;
+		height: 90vh;
 		position: relative;
 	}
 
@@ -303,7 +303,7 @@
 	.input-box {
 		flex: 1;
 		padding: 10px;
-		border-radius: 20px;
+		border-radius: 40px;
 		border: 1px solid oklch(var(--s));
 		margin-right: 5px;
 		/* background-color: oklch(var(--s)); */
@@ -434,7 +434,7 @@
 
 	.card {
 		/* background-color: oklch(var(--s)); */
-        background-color: #D4EDD4;
+        background-color: #ccffcc;
 		color: oklch(var(--pc)); /* Dark text color for contrast */
 		padding: 15px; /* Slightly smaller padding */
 		border-radius: 15px; /* More rounded corners */
@@ -458,13 +458,13 @@
 
 	.card:hover {
 		/* background-color: rgb(226, 244, 206);  */
-        background-color: #ccffcc;
+        background-color: #7FC961;
 		box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
 	}
 
 	.card.selected {
 
-		background-color: #7FC961;
+		background-color: #FFDE85;
 		border: 1px solid #A7C957;
 	}
 
