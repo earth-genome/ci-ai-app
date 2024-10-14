@@ -1,7 +1,6 @@
 <script>
 	import { onMount, afterUpdate } from 'svelte';
-	import userAvatar from '$lib/images/user-square.png';
-	import robotAvatar from '$lib/images/robot-circle.png';
+	import userAvatar from '$lib/images/ci.png';
 	import { currentCitations } from '$lib/stores';
     import { pdf_citation_mapping } from '$lib/pdf_citation_mapping.js';
 	import { assistantDefinitions } from '$lib/assistant-definition.js';
@@ -161,28 +160,18 @@
 			// }
 
 			// const data = await response.json();
-            const data = //intersting undefined citation error
-            {
-    "message": "<h1>About Your Papers</h1>\n\n🌱 <i>Your papers encompass a variety of research topics related to forestry, hydrology, and environmental science.</i> One notable paper titled **\"Forests as ‘sponges’ and ‘pumps’: Assessing the impact of deforestation on dry-season flows across the tropics\"** investigates the effect of deforestation on water flows in tropical regions, authored by Jorge L. Peña-Arancibia et al. This research emphasizes the dual roles of forests in regulating water supply and highlights that deforestation can significantly disrupt these processes.\n\n<h2>Key Findings</h2>\n\n📝 <b>Impact of Deforestation</b>: The study found that in about **80%** of analyzed cases, forest restoration and cover expansion negatively impacted water yield, contrary to the expected positive outcomes often assumed in forest management discussions[0]. \n\n📊 <b>Methodology</b>: The researchers performed a systematic literature review, identifying a total of **666** papers, with **482** deemed relevant to the study's focus. They categorized data based on geographic location, intervention type, and hydrological responses, ultimately synthesizing findings from **167** papers for analysis[1].\n\n<h2>Additional Papers and Contributions</h2>\n\n🌳 Other related studies illustrate the broader implications of forest management practices on environmental outcomes, emphasizing topics such as carbon conservation and the socio-economic factors influencing deforestation rates[2][3]. These papers collectively suggest that more rigorous methodologies and interdisciplinary approaches are essential for addressing the complex interactions between forestry practices and ecosystem health.\n\n🔗 You can further explore the findings in detail through the <a href=\"https://doi.org/10.1016/j.jhydrol.2019.04.064\">Journal of Hydrology</a> where this research is published.",
+            const data = {
+    "message": "<h1>Interesting Findings in Recent Research Papers</h1>\n\n<h2>🌳 Forest Management and Climate Change</h2>\n\n<p>🌿 <b>Climber Removal in Tropical Forests:</b> An intriguing study shows that <i>climber removal</i> in tropical forests can more than double tree growth and roughly triple biomass accumulation (AGB). This has significant implications for global carbon sequestration, as removing climbers can potentially sequester 32 Gigatons of CO2 over a decade if applied to secondary and production forests across the tropics[0].</p>\n\n<h2>🚑 Health Interventions and Environmental Conservation</h2>\n\n<p>🌲 <b>Linking Healthcare and Forest Conservation in Indonesia:</b> A fascinating intervention combined improved healthcare access with conservation programs in rural Indonesian communities near a national park. This multi-sector approach resulted in reduced illegal logging and better health outcomes. Forest loss rates declined significantly in areas with high engagement in the intervention programs. By 2012, over 97% of households believed the intervention effectively reduced illegal logging[1][2][3].</p>\n\n<h2>🌍 Agroforestry and Climate Benefits</h2>\n\n<p>🌾 <b>Cooling Effects of Silvopasture:</b> Research indicates that integrating trees into pasturelands (silvopasture) can significantly cool local environments. This practice has the potential to store substantial carbon in regions like Africa and the Americas, thus contributing to climate change mitigation. Not only does this reduce heat exposure for outdoor workers and livestock, but it also aligns with sustainable development and biodiversity conservation goals[4][5].</p>\n\n<h2>🍃 Deforestation and Temperature Increase</h2>\n\n<p>🔥 <b>Impact of Forest Change on Temperature:</b> A global analysis showed that deforestation causes significant warming, while reforestation can provide cooling effects. For instance, deforestation in tropical regions increased local surface temperature by approximately 0.38°C, whereas similar levels of forestation led to a temperature decrease of 0.18°C. This highlights the importance of forest management in mitigating local climate changes[6].</p>\n\nMake sure to delve deeper into these studies if they pique your interest as they provide comprehensive methods, results, and discussions on these impactful topics!",
     "citations": {
-        "0": "Pena_Arancibia_2019_JH_pantropicalflowimpactsofdeforestation.pdf",
-        "1": "file.pdf",
+        "0": "Ecology and Evolution - 2022 - Finlayson - Removing climbers more than doubles tree growth and biomass in degraded tropical.pdf",
+        "1": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
         "2": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
-        "3": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf"
+        "3": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
+        "4": "s41467-022-28388-4.pdf",
+        "5": "s41467-022-28388-4.pdf",
+        "6": "file (4).pdf"
     }
 }
-    //         const data = {
-    // "message": "<h1>Interesting Findings in Recent Research Papers</h1>\n\n<h2>🌳 Forest Management and Climate Change</h2>\n\n<p>🌿 <b>Climber Removal in Tropical Forests:</b> An intriguing study shows that <i>climber removal</i> in tropical forests can more than double tree growth and roughly triple biomass accumulation (AGB). This has significant implications for global carbon sequestration, as removing climbers can potentially sequester 32 Gigatons of CO2 over a decade if applied to secondary and production forests across the tropics[0].</p>\n\n<h2>🚑 Health Interventions and Environmental Conservation</h2>\n\n<p>🌲 <b>Linking Healthcare and Forest Conservation in Indonesia:</b> A fascinating intervention combined improved healthcare access with conservation programs in rural Indonesian communities near a national park. This multi-sector approach resulted in reduced illegal logging and better health outcomes. Forest loss rates declined significantly in areas with high engagement in the intervention programs. By 2012, over 97% of households believed the intervention effectively reduced illegal logging[1][2][3].</p>\n\n<h2>🌍 Agroforestry and Climate Benefits</h2>\n\n<p>🌾 <b>Cooling Effects of Silvopasture:</b> Research indicates that integrating trees into pasturelands (silvopasture) can significantly cool local environments. This practice has the potential to store substantial carbon in regions like Africa and the Americas, thus contributing to climate change mitigation. Not only does this reduce heat exposure for outdoor workers and livestock, but it also aligns with sustainable development and biodiversity conservation goals[4][5].</p>\n\n<h2>🍃 Deforestation and Temperature Increase</h2>\n\n<p>🔥 <b>Impact of Forest Change on Temperature:</b> A global analysis showed that deforestation causes significant warming, while reforestation can provide cooling effects. For instance, deforestation in tropical regions increased local surface temperature by approximately 0.38°C, whereas similar levels of forestation led to a temperature decrease of 0.18°C. This highlights the importance of forest management in mitigating local climate changes[6].</p>\n\nMake sure to delve deeper into these studies if they pique your interest as they provide comprehensive methods, results, and discussions on these impactful topics!",
-    // "citations": {
-    //     "0": "Ecology and Evolution - 2022 - Finlayson - Removing climbers more than doubles tree growth and biomass in degraded tropical.pdf",
-    //     "1": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
-    //     "2": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
-    //     "3": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
-    //     "4": "s41467-022-28388-4.pdf",
-    //     "5": "s41467-022-28388-4.pdf",
-    //     "6": "file (4).pdf"
-    // }
-// }
 			currentCitations.set(data.citations);
 			const { codeBlocks, prunedResponse } = extractCodeBlocks(data.message);
             console.log('data: ', data);
@@ -225,7 +214,9 @@
 		{#each chatHistory as message}
 			<div class={message.role === 'user' ? 'user-question' : 'assistant-response'}>
 				{#if message.role === 'assistant'}
-					<img src={robotAvatar} alt="{message.role} icon" class="avatar" />
+					<div class="avatar assistant-avatar">
+						<span class="emoji">{emojis[$selectedAgentIndex]}</span>
+					</div>
 				{/if}
 				<div class="message-content {message.role}">
 					{#if message.role === 'assistant' && message.content === 'Loading...'}
@@ -242,7 +233,9 @@
 					{/if}
 				</div>
 				{#if message.role === 'user'}
-					<img src={userAvatar} alt="{message.role} icon" class="avatar" />
+					<div class="avatar user-avatar">
+						<img src={userAvatar} alt="User icon" />
+					</div>
 				{/if}
 			</div>
 		{/each}
@@ -290,7 +283,6 @@
 		flex-grow: 1;
 		overflow-y: auto;
 		border-radius: 15px;
-		/* background-color: #000000; */
 		padding: 10px;
 		padding-bottom: 60px;
 	}
@@ -303,7 +295,6 @@
 		position: absolute;
 		bottom: 0;
 		width: 98%;
-		/* background-color: #000000; */
 	}
 
 	.input-wrapper {
@@ -318,9 +309,8 @@
 		border-radius: 40px;
 		border: 1px solid oklch(var(--s));
 		margin-right: 5px;
-		/* background-color: oklch(var(--s)); */
 		background-color: #F1E9D2;
-        color: #2C665D
+		color: #2C665D;
 	}
 
 	.send-button {
@@ -352,6 +342,28 @@
 		width: 40px;
 		height: 40px;
 		margin: 5px;
+		border-radius: 50%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.user-avatar {
+		background-color: #F1E9D2;
+		padding: 5px;
+	}
+
+	.user-avatar img {
+		max-width: 80%;
+		max-height: 80%;
+	}
+
+	.assistant-avatar {
+		background-color: #F1E9D2;
+	}
+
+	.assistant-avatar .emoji {
+		font-size: 24px;
 	}
 
 	.message-content {
@@ -444,12 +456,9 @@
 		z-index: 2; /* Ensure it sits above the chat container */
 	}
 
-    /* //D88A25 A3C18A D14D42  */
 
 	.card {
-		/* background-color: oklch(var(--s)); */
         background-color: #A3C18A;
-		/* color: oklch(var(--pc));/ */
         color: #4A403A;
 		padding: 15px; /* Slightly smaller padding */
 		border-radius: 15px; /* More rounded corners */
@@ -481,65 +490,10 @@
 	.card.selected {
 		background-color: #5E8D5C;
         color: F1E9D2;
-		/* border: 1px solid #FFD700; */
 	}
 
     :global(.tooltip::before) {
-        /* position: relative;
-        display: inline-block;
-        cursor: pointer; */
         background-color: #DBEEFB;
         color: theme('colors.primary')
     }
-    /*
-    :global(.tooltip::before) {
-        content: attr(data-tip);
-        position: absolute;
-        background-color: #333;
-        color: #fff;
-        padding: 5px 10px;
-        border-radius: 4px;
-        white-space: nowrap;
-        z-index: 1;
-        opacity: 0;
-        transition: opacity 0.3s;
-        
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: 125%;
-    }
-
-    :global(.tooltip:hover::before) {
-        opacity: 1;
-    }
-
-    .rendered-html :global(h1),
-    .rendered-html :global(h2),
-    .rendered-html :global(h3),
-    .rendered-html :global(h4),
-    .rendered-html :global(h5),
-    .rendered-html :global(h6) {
-        margin-top: 1em;
-        margin-bottom: 0.5em;
-        font-weight: bold;
-    }
-
-    .rendered-html :global(p) {
-        margin-bottom: 1em;
-    }
-
-    .rendered-html :global(ul),
-    .rendered-html :global(ol) {
-        margin-bottom: 1em;
-        padding-left: 2em;
-    }
-
-    .rendered-html :global(li) {
-        margin-bottom: 0.5em;
-    }
-
-    .rendered-html :global(a) {
-        color: #0000FF;
-        text-decoration: underline;
-    } */
 </style>
