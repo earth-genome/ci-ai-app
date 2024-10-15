@@ -20,9 +20,19 @@
 		}, 1500); // Wait 1000ms before changing the word
 	}
 
+	let scrollY;
+
+	function handleScroll() {
+		scrollY = window.scrollY;
+	}
+
 	onMount(() => {
 		const interval = setInterval(switchWord, 5000); // Change word every 4 seconds
-		return () => clearInterval(interval); // Cleanup on component unmount
+		window.addEventListener('scroll', handleScroll);
+		return () => {
+			clearInterval(interval); // Cleanup on component unmount
+			window.removeEventListener('scroll', handleScroll);
+		};
 	});
 </script>
 
@@ -31,7 +41,12 @@
 	<meta name="description" content="CI AI Experiments" />
 </svelte:head>
 
-<div class="fullscreen-bg"></div>
+<svelte:window on:scroll={handleScroll}/>
+
+<div 
+	class="fullscreen-bg" 
+	style="transform: translateY(-{scrollY * 0.3}px);"
+></div>
 
 <div class="content-wrapper">
 	<section class="hero-section">
@@ -85,16 +100,17 @@
 <style>
 	.fullscreen-bg {
 		position: fixed;
-		top: 0;
+		top: 0; /* Change this back to 0 */
 		left: 0;
 		width: 100vw;
-		height: 100vh;
+		height: 120vh; /* Slightly taller than the viewport */
 		background-image: url($lib/images/jungle.jpg);
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
 		z-index: -1;
 		animation: saturationChange 8s ease-in-out infinite alternate;
+		will-change: transform;
 	}
 
 	.content-wrapper {
