@@ -2,6 +2,8 @@
 	import { page } from '$app/stores';
 	import logo from '$lib/images/ci-logo.svg';
 	import egLogo from '$lib/images/eg-logo-white.png';
+
+	$: currentPath = $page.url.pathname;
 </script>
 
 <header>
@@ -27,11 +29,9 @@
 				<ul
 					class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
 				>
-					<li><a href="/">Home</a></li>
-					<li><a href="/map-chat">Map Chat</a></li>
-					<li><a href="/multiagent-chat">CI Research Chat</a></li>
-					<!-- <li><a href="/vis-chat">Vis Chat</a></li> -->
-
+					<li class="nav-item" class:active={currentPath === '/'}><a href="/">Home</a></li>
+					<li class="nav-item" class:active={currentPath.startsWith('/map-chat')}><a href="/map-chat">Map Chat</a></li>
+					<li class="nav-item" class:active={currentPath.startsWith('/multiagent-chat')}><a href="/multiagent-chat">CI Research Chat</a></li>
 				</ul>
 			</div>
 			<a href="/" class="btn btn-ghost">
@@ -40,10 +40,9 @@
 		</div>
 		<div class="navbar-center hidden lg:flex">
 			<ul class="menu menu-horizontal px-1">
-				<li><a href="/">Home</a></li>
-				<li><a href="/map-chat">Map Chat</a></li>
-				<li><a href="/multiagent-chat">CI Research Chat</a></li>
-                <!-- <li><a href="/vis-chat">Vis Chat</a></li> -->
+				<li class="nav-item" class:active={currentPath === '/'}><a href="/">Home</a></li>
+				<li class="nav-item" class:active={currentPath.startsWith('/map-chat')}><a href="/map-chat">Map Chat</a></li>
+				<li class="nav-item" class:active={currentPath.startsWith('/multiagent-chat')}><a href="/multiagent-chat">CI Research Chat</a></li>
 			</ul>
 		</div>
 		<div class="navbar-end">
@@ -67,5 +66,22 @@
 	}
 	.ci-logo {
 		width: 7em;
+	}
+	.nav-item {
+		border-radius: 0.5rem;
+		transition: background-color 0.3s ease;
+	}
+	.nav-item:hover {
+		background-color: #1d443e;
+	}
+	.nav-item.active {
+		background-color: #1d443e;
+	}
+	.nav-item a {
+		font-weight: bold;
+		padding: 0.5rem 1rem;
+	}
+	:global(.menu-horizontal) {
+		gap: 0.5rem;
 	}
 </style>
