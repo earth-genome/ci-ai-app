@@ -104,7 +104,7 @@
             const openDoiFunc = `onclick="window.open('${doiUrl}', '_blank')"` || '';
 
             return `
-                <div class="tooltip" data-tip="${citation}" ${openDoiFunc}>
+                <div class="tooltip tooltip-right" data-tip="${citation}" ${openDoiFunc}>
                     <span class="badge badge-info">${p1}</span>
                 </div>
             `

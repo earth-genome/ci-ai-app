@@ -118,3 +118,7 @@ export async function GET() {
 		}
 	});
 }
+
+//upload a file to the vector store
+// if vector store is past x number of files dont allow? allow for a delete?
+    // - is this automatic when size limit is reached, and does larger vector store size affect performance?

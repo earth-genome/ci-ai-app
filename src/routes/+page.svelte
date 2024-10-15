@@ -24,7 +24,6 @@
 		const interval = setInterval(switchWord, 5000); // Change word every 4 seconds
 		return () => clearInterval(interval); // Cleanup on component unmount
 	});
-    // <div id="scene" class="scene animate-fade fade-in" style="transform: translate3d(0px, 0px, 0px) rotate(0.0001deg); transform-style: preserve-3d; backface-visibility: hidden; position: relative; pointer-events: none;"> <!--<div class="layer" data-depth="0.10"><img src="/hero04a.png"></div> --> <!--<div class="layer" data-depth="0.10"><img src="/hero03a.png"><div class="tiger-leaf"><img src="/tiger-leaf.png"></div></div><div class="layer" data-depth="0.10"><img src="/hero02a.png"><div class="charma-leaf"><img src="/charma-leaf.png"></div></div><div class="layer" data-depth="0.12"><img src="/hero01a.png"><div class="toucan-leaf"><img src="/toucan-leaf.png"></div></div> --><div class="layer" data-depth="0.10" style="transform: translate3d(-18px, 0.8px, 0px); transform-style: preserve-3d; backface-visibility: hidden; position: relative; display: block; left: 0px; top: 0px;"><img src="https://www.tigermarketing.co.uk/wp-content/themes/TigerMarketing/assets/images/hero0304cp.png"><div class="tiger-leaf"><img src="https://www.tigermarketing.co.uk/wp-content/themes/TigerMarketing/assets/images/tiger-leaf.png"></div></div><div class="layer" data-depth="0.15" style="transform: translate3d(-27px, 1.2px, 0px); transform-style: preserve-3d; backface-visibility: hidden; position: absolute; display: block; left: 0px; top: 0px;"><img src="https://www.tigermarketing.co.uk/wp-content/themes/TigerMarketing/assets/images/hero0102cp.png"><div class="charma-leaf"><img src="https://www.tigermarketing.co.uk/wp-content/themes/TigerMarketing/assets/images/charma-leaf.png"></div><div class="toucan-leaf"><img src="https://www.tigermarketing.co.uk/wp-content/themes/TigerMarketing/assets/images/toucan-leaf1.png"></div></div></div>
 </script>
 
 <svelte:head>
@@ -32,11 +31,11 @@
 	<meta name="description" content="CI AI Experiments" />
 </svelte:head>
 
-<div class="hero min-h-screen hero-image-custom">
-	<div class="background-image" />
+<div class="fullscreen-bg"></div>
 
-	<div class="hero-content text-neutral-content text-center">
-		<h1 class="hero-title">
+<div class="content-wrapper">
+	<section class="hero-section">
+		<h1 class="main-title">
 			<span class="static-text">Not Just</span>
 			<span class="word-container">
 				{#if visible}
@@ -46,67 +45,78 @@
 				{/if}
 			</span>
 		</h1>
-	</div>
-</div>
+	</section>
 
-<div class="flex flex-row">
-	<div class="w-1/2 p-4">
-		<img class="w-50 h-30 object-cover rounded-xl" src={multiAgentPhoto} alt="front tree" />
-	</div>
-	<div class="w-1/2">
-		<div class="p-4 flex flex-col justify-center items-center h-full">
-			<h1 class="block-title font-bold text-center">Explore the research</h1>
-			<p class="text-neutral-content p-3">
-				The Not Just Carbon report produced information about the deep, wide reaching impact that
-				deforestation could have on climate change and our planet as a whole. Go deeper and explore
-				the research behind the report with a personalized AI assistant.
-			</p>
-			<a href="/multiagent-chat" role="button" class="btn btn-lg btn-outline">Start Exploring</a>
+	<section class="info-section">
+		<div class="card card-side bg-base-100 shadow-xl m-4">
+			<figure class="w-1/2">
+				<img src={multiAgentPhoto} alt="Multi-agent" class="w-full h-full object-cover" />
+			</figure>
+			<div class="card-body w-1/2">
+				<h2 class="card-title">Explore the research</h2>
+				<p>The Not Just Carbon report produced information about the deep, wide reaching impact that
+				   deforestation could have on climate change and our planet as a whole. Go deeper and explore
+				   the research behind the report with a personalized AI assistant.</p>
+				<div class="card-actions justify-end">
+					<a href="/multiagent-chat" class="btn btn-primary">Start Exploring</a>
+				</div>
+			</div>
 		</div>
-	</div>
-</div>
+	</section>
 
-<div class="flex flex-row p-4">
-	<div class="w-1/2">
-		<div class="p-4 flex flex-col justify-center items-center h-full">
-			<h1 class="block-title font-bold text-center">Explore the maps</h1>
-			<p class="text-neutral-content p-3 text-right">
-				Several of the research projects that came out of the Not Just Carbon initiative produced
-				findings based on geospatial data. Explore these with an AI agent assisted map interface and
-				learn more about the where behind the findings.
-			</p>
-			<a href="/map-chat" role="button" class="btn btn-lg btn-outline">Start Exploring</a>
+	<section class="info-section">
+		<div class="card card-side bg-base-100 shadow-xl m-4 flex-row-reverse">
+			<figure class="w-1/2">
+				<img src={mapAgentPhoto} alt="Map agent" class="w-full h-full object-cover" />
+			</figure>
+			<div class="card-body w-1/2">
+				<h2 class="card-title">Explore the maps</h2>
+				<p>Several of the research projects that came out of the Not Just Carbon initiative produced
+				   findings based on geospatial data. Explore these with an AI agent assisted map interface and
+				   learn more about the where behind the findings.</p>
+				<div class="card-actions justify-end">
+					<a href="/map-chat" class="btn btn-primary">Start Exploring</a>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="w-1/2 p-4">
-		<img class="w-50 h-30 object-cover rounded-xl" src={mapAgentPhoto} alt="tree" />
-	</div>
+	</section>
 </div>
 
 <style>
-	.hero-image-custom {
-		position: relative;
-		overflow: hidden;
-	}
-
-	.background-image {
-		position: absolute;
+	.fullscreen-bg {
+		position: fixed;
 		top: 0;
 		left: 0;
-		width: 100%;
-		height: 100%;
+		width: 100vw;
+		height: 100vh;
 		background-image: url($lib/images/jungle.jpg);
 		background-size: cover;
 		background-position: center;
-		z-index: 1;
-		/* animation: brightnessChange  8s ease-in-out infinite alternate; */
+		background-repeat: no-repeat;
+		z-index: -1;
 		animation: saturationChange 8s ease-in-out infinite alternate;
 	}
 
-    /* .background-image {
-        -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 0, rgba(0,0,0,0) 90%);
-        mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 0, rgba(0,0,0,0) 90%);
-    } */
+	.content-wrapper {
+		position: relative;
+		z-index: 1;
+	}
+
+	.hero-section {
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.main-title {
+		font-weight: 600;
+		font-size: 10vw;
+		white-space: nowrap;
+		text-align: center;
+		color: white;
+		text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+	}
 
 	@keyframes saturationChange {
 		0% {
@@ -117,47 +127,31 @@
 		}
 	}
 
-	.hero-content {
-		position: relative;
-		z-index: 2;
-	}
-
-	.hero-title {
-		font-weight: 600;
-		font-size: 10vw; /* Responsive font size */
-		white-space: nowrap; /* Prevent wrapping */
-		width: 100%; /* Take full width */
-		text-align: center; /* Center the text */
-		overflow: hidden; /* Hide overflow */
-		text-overflow: ellipsis; /* Add ellipsis if text overflows */
-	}
-
 	.static-text {
 		display: inline-block;
-		margin-right: 0.3em; /* Add some space between "Not Just" and the changing word */
+		margin-right: 0.3em;
 	}
 
 	.word-container {
 		display: inline-block;
-		min-width: 4em; /* Adjust based on your longest word */
+		min-width: 4em;
 		text-align: left;
 	}
 
 	.changing-word {
 		display: inline-block;
 	}
-	.block-title {
-		font-size: 4em;
-	}
 
-	@media (min-width: 1750px) {
-		.hero-title {
-			font-size: 7.5vw;
-		}
-	}
 	@media (max-width: 768px) {
-		.hero-title {
+		.main-title {
 			font-size: 8vw;
+		}
+		.card-side {
+			flex-direction: column !important;
+		}
+		.card-side figure,
+		.card-side .card-body {
+			width: 100% !important;
 		}
 	}
 </style>
