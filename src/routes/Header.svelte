@@ -29,7 +29,7 @@
 				>
 					<li><a href="/">Home</a></li>
 					<li><a href="/map-chat">Map Chat</a></li>
-					<li><a href="/multiagent-chat">Multi Agent Chat</a></li>
+					<li><a href="/multiagent-chat">CI Research Chat</a></li>
 					<!-- <li><a href="/vis-chat">Vis Chat</a></li> -->
 
 				</ul>
@@ -42,7 +42,7 @@
 			<ul class="menu menu-horizontal px-1">
 				<li><a href="/">Home</a></li>
 				<li><a href="/map-chat">Map Chat</a></li>
-				<li><a href="/multiagent-chat">Multi Agent Chat</a></li>
+				<li><a href="/multiagent-chat">CI Research Chat</a></li>
                 <!-- <li><a href="/vis-chat">Vis Chat</a></li> -->
 			</ul>
 		</div>
