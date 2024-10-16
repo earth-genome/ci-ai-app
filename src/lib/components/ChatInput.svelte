@@ -1,14 +1,38 @@
 <script>
     import { input, isLoading, chatUsed, chatHistory, selectedAgentIndex, sliderValues } from '$lib/stores';
     import { get } from 'svelte/store';
+    import { onMount, afterUpdate } from 'svelte';
 
     let inputValue = '';
+    let textareaElement;
+    let inputWrapper;
 
     $: inputValue = $input;
 
     function updateInput(value) {
         input.set(value);
     }
+
+    function adjustTextareaHeight() {
+        if (textareaElement) {
+            textareaElement.style.height = 'auto';
+            const newHeight = Math.min(textareaElement.scrollHeight, 200);
+            textareaElement.style.height = newHeight + 'px';
+            if (inputWrapper) {
+                inputWrapper.style.height = newHeight + 'px';
+            }
+            // Add this line to hide/show scrollbar based on content
+            textareaElement.style.overflowY = textareaElement.scrollHeight > 200 ? 'auto' : 'hidden';
+        }
+    }
+
+    onMount(() => {
+        adjustTextareaHeight();
+    });
+
+    afterUpdate(() => {
+        adjustTextareaHeight();
+    });
 
     async function sendMessage() {
         console.log('message sent');
@@ -64,20 +88,30 @@
             sendMessage();
             updateInput('');
             inputValue = '';
+            // Remove this line as it's not needed anymore
+            // adjustTextareaHeight();
         }
     }
 </script>
 
 <div class="chat-input">
-    <div class="input-wrapper">
-        <input
-            type="text"
+    <div class="input-wrapper" bind:this={inputWrapper}>
+        <textarea
+            bind:this={textareaElement}
+            rows="1"
             placeholder="Message..."
             class="input-box"
             bind:value={inputValue}
-            on:input={(e) => updateInput(e.target.value)}
-            on:keydown={(e) => e.key === 'Enter' && handleSendMessage()}
-        />
+            on:input={(e) => {
+                updateInput(e.target.value);
+            }}
+            on:keydown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                }
+            }}
+        ></textarea>
         <button class="send-button" on:click={handleSendMessage} disabled={$isLoading || !inputValue.trim()}>
             <svg
                 width="24"
@@ -101,32 +135,40 @@
 <style>
     .chat-input {
         display: flex;
-        align-items: center;
+        align-items: flex-end;
+        padding: 1px;
     }
 
     .input-wrapper {
         position: relative;
         width: 100%;
+        min-height: 44px;
+        max-height: 200px;
     }
 
     .input-box {
         width: 100%;
+        height: 100%;
+        min-height: 44px;
+        max-height: 200px;
         padding: 0.75rem;
         padding-right: 3rem;
         border: 1px solid oklch(var(--s));
-        border-radius: 40px;
+        border-radius: 30px;
         box-sizing: border-box;
         background-color: #F1E9D2;
         color: #2C665D;
+        resize: none;
+        overflow-y: hidden; /* Change this from 'auto' to 'hidden' */
+        line-height: 1.5;
     }
 
     .send-button {
         position: absolute;
-        right: 4px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 40px;
-        height: 40px;
+        right: 6px;
+        bottom: 6px;
+        width: 36px;
+        height: 36px;
         background-color: #2C665D;
         color: white;
         border: none;

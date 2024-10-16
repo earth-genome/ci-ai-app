@@ -95,6 +95,7 @@
 		color: #333333;
 		cursor: pointer;
 		transition: background-color 0.2s ease-in-out;
+		text-align: left;
 	}
 
 	.citation-list li:hover {
@@ -104,7 +105,7 @@
 	:global(.citations a) {
 		color: theme('colors.primary');
 		text-decoration: none;
-		transition: background-color 0.2s ease-in-out;
+        transition: background-color 0.2s ease-in-out;
 		background-color: #DBEEFB;
 		padding: 0.1em 0.3em;
 		border-radius: 3px;
@@ -145,5 +146,15 @@
 		border-radius: 40px;
 		background-color: #F1E9D2;
 		color: #2C665D;
+	}
+
+	.citation-list button {
+		width: 100%;
+		text-align: left;
+		background: none;
+		border: none;
+		padding: 0;
+		font: inherit;
+		cursor: pointer;
 	}
 </style>
