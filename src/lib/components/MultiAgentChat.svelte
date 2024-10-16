@@ -6,6 +6,7 @@
 	import { assistantDefinitions } from '$lib/assistant-definition.js';
 	import { textEditorContent, codeBlocksMap, sliderValues, selectedAgentIndex } from '$lib/stores.js';
 	import { get } from 'svelte/store';
+	import jungleImage from '$lib/images/jungle.png';
 
 	let userQuestion = '';
 	let assistantResponse = '';
@@ -125,13 +126,29 @@
 		});
 	}
 
+	let isCardsAtTop = false;
+
+	// Modify the handleCardClick function
 	function handleCardClick(index) {
 		selectedAgentIndex.set(index);
+	}
+
+	// Add a new function to handle card hover
+	function handleCardHover(event, index) {
+		if (isCardsAtTop) {
+			const card = event.currentTarget;
+			if (event.type === 'mouseenter') {
+				card.innerHTML = cardTexts[index].replace(/<figure>.*?<\/figure>/, '');
+			} else {
+				card.innerHTML = `<span class="emoji">${emojis[index]}</span>`;
+			}
+		}
 	}
 
 	async function sendMessage() {
 		if (input.trim() === '') return;
 
+		isCardsAtTop = true;
 		chatUsed = true;
 		const userMessage = input;
 		input = '';
@@ -195,18 +212,35 @@
 	onMount(() => {
 		window.insertCode = insertCode;
 	});
+
+    // Add this function to generate random background positions
+    function getRandomBackgroundPosition() {
+        const x = Math.floor(Math.random() * 100);
+        const y = Math.floor(Math.random() * 100);
+        return `${x}% ${y}%`;
+    }
+
+    // Generate background positions for each card
+    const cardBackgrounds = cardTexts.map(() => getRandomBackgroundPosition());
 </script>
 
 
 <div class="chat-container">
-	<div class="cards-container {chatUsed ? 'cards-top' : 'cards-center'}">
+	<div class="cards-container" class:cards-top={isCardsAtTop}>
 		{#each cardTexts as text, index}
 			<button
-				class="card bg-base-100 image-full w-96 shadow-xl {$selectedAgentIndex === index ? 'selected' : ''}"
+				class="card image-full shadow-xl {$selectedAgentIndex === index ? 'selected' : ''}"
 				on:click={() => handleCardClick(index)}
+				on:mouseenter={(e) => handleCardHover(e, index)}
+				on:mouseleave={(e) => handleCardHover(e, index)}
 				on:keydown={(e) => e.key === 'Enter' && handleCardClick(index)}
+				style="background-image: url({jungleImage}); background-position: {cardBackgrounds[index]};"
 			>
-				{@html text}
+				{#if isCardsAtTop}
+					<span class="emoji">{emojis[index]}</span>
+				{:else}
+					{@html text}
+				{/if}
 			</button>
 		{/each}
 	</div>
@@ -274,9 +308,7 @@
 	.chat-container {
 		display: flex;
 		flex-direction: column;
-		width: 100%;
-		height: 82vh;
-		position: relative;
+		height: 80%;
 	}
 
 	.messages {
@@ -285,6 +317,7 @@
 		border-radius: 15px;
 		padding: 10px;
 		padding-bottom: 60px;
+		margin-top: 80px; /* Add space for the cards at the top */
 	}
 
 	.input-container {
@@ -435,17 +468,13 @@
 		justify-content: center;
 		align-items: center;
 		padding: 10px;
-		width: 90%; /* Make the container responsive */
-		transition: top 0.3s, transform 0.3s; /* Smooth transition */
-		position: relative; /* Ensure it can be layered on top */
-		z-index: 1; /* Ensure it sits above other elements */
-	}
-
-	.cards-center {
+		width: 90%;
+		transition: all 0.3s;
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+		z-index: 1;
 	}
 
 	.cards-top {
@@ -456,16 +485,15 @@
 		z-index: 2; /* Ensure it sits above the chat container */
 	}
 
-
 	.card {
-        background-color: #A3C18A;
-        color: #4A403A;
+		background-color: oklch(var(--s)); /* White background */
+		color: oklch(var(--pc)); /* Dark text color for contrast */
 		padding: 15px; /* Slightly smaller padding */
 		border-radius: 15px; /* More rounded corners */
 		text-align: center;
 		flex: 1; /* Make the cards responsive */
-		max-width: 240px; /* Slightly smaller default size */
-		max-height: 220px; /* Ensure the cards are square */
+		max-width: 180px; /* Slightly smaller default size */
+		max-height: 140px; /* Ensure the cards are square */
 		aspect-ratio: 1 / 1; /* Maintain a consistent aspect ratio */
 		cursor: pointer;
 		transition: background-color 0.3s, box-shadow 0.3s;
@@ -477,23 +505,100 @@
 		--tw-shadow: 0 0 2px 0 rgba(0, 0, 0, .05), 0 4px 6px 0 rgba(0, 0, 0, .02);
 		--tw-shadow-colored: 0 0 2px 0 var(--tw-shadow-color), 0 4px 6px 0 var(--tw-shadow-color);
 		box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-		font-size: 11pt; /* Set text size to 10pt */
+		font-size: 9pt; /* Set text size to 10pt */
+	}
+
+	/* .cards-top {
+		position: absolute;
+		top: 10px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 2;
+	}
+
+	.card {
+        background-image: url($lib/images/jungle.jpg);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        position: relative;
+		padding: 15px;
+		border-radius: 25px;
+		text-align: center;
+		flex: 1;
+		max-width: 240px;
+		max-height: 220px;
+		aspect-ratio: 1 / 1;
+		cursor: pointer;
+		transition: all 0.3s;
+		margin: 0 10px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		border: 1px solid #e0e0e0;
+		box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+		font-size: 11pt;
+		overflow: hidden;
+		background-size: 400% 400%;
+		background-repeat: no-repeat;
+		position: relative;
+	} */
+
+	.cards-top .card {
+		max-width: 100px;
+		max-height: 100px;
+		font-size: 9pt;
+		padding: 5px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Updated: slightly stronger shadow for top cards */
 	}
 
 	.card:hover {
-		/* background-color: rgb(226, 244, 206);  */
-        background-color: #85A377; 
-        color: #F1E9D2;
-		box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
+		background-color: #F2D17D;
+		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Updated: stronger shadow on hover */
+		transform: translateY(-2px); /* Added: slight lift effect on hover */
 	}
 
 	.card.selected {
-		background-color: #5E8D5C;
-        color: F1E9D2;
+		/* background-color: #EEC458; */
+		/* color: #F1E9D2; */
 	}
 
-    :global(.tooltip::before) {
-        background-color: #DBEEFB;
-        color: theme('colors.primary')
-    }
+	.emoji {
+		font-size: 2rem;
+	}
+
+	.cards-top .card .emoji {
+		font-size: 3rem;
+	}
+
+	.card-content {
+		margin-top: 10px;
+	}
+
+	.hidden {
+		display: none;
+	}
+
+	:global(.tooltip::before) {
+		background-color: #DBEEFB;
+		color: theme('colors.primary')
+	}
+
+	/* .card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(245, 219, 152, 0.7);
+		border-radius: 25px;
+	} */
+
+	.card > * {
+		position: relative;
+		z-index: 1;
+	}
 </style>
