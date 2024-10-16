@@ -275,7 +275,7 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		height: 90vh;
+		height: 82vh;
 		position: relative;
 	}
 

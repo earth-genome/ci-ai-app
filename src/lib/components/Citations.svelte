@@ -70,7 +70,7 @@
 		margin-top: 2rem;
 		font-size: 9pt;
 		color: #333333;
-		height: 60vh; 
+		height: 51vh; 
 		display: flex;
 		flex-direction: column;
 	}

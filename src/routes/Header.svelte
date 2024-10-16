@@ -8,7 +8,7 @@
 </script>
 
 <header>
-	<div class="navbar h-140px">
+	<div class="navbar">
 		<div class="navbar-start">
 			<div class="dropdown">
 				<div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -56,40 +56,44 @@
 
 <style>
 	header {
-		padding-top: 1rem;
+		padding-top: 1vh;
+		height: 14vh; /* Set the header height to 14% of viewport height */
 	}
 	.navbar {
 		color: #F1E9D2;
 		padding-left: 10%;
 		padding-right: 10%;
+		height: 100%; /* Make navbar fill the header */
+		display: flex;
+		align-items: flex-start;
 	}
 	.logo-button {
 		position: relative;
 		display: inline-block;
-		padding: 12px;
+		padding: 1vh;
 		background-color: rgba(255, 255, 255, 0.1);
-		border-radius: 16px;
+		border-radius: 1.6vh;
 		transition: all 0.3s ease;
 	}
 	.logo-button.home {
-		padding: 15px;
-		border-radius: 20px;
+		padding: 1.5vh;
+		border-radius: 2vh;
 	}
 	.logo-button:hover {
 		background-color: rgba(255, 255, 255, 0.2);
 		backdrop-filter: blur(5px);
 	}
 	.logo {
-		width: 7em;
+		width: 7vw;
 		height: auto;
 		object-fit: contain;
 		transition: width 0.3s ease;
 	}
 	.logo-button.home .logo {
-		width: 9em;
+		width: 9vw;
 	}
 	.nav-item {
-		border-radius: 0.5rem;
+		border-radius: 0.5vh;
 		transition: background-color 0.3s ease;
 	}
 	.nav-item:hover {
@@ -100,9 +104,9 @@
 	}
 	.nav-item a {
 		font-weight: bold;
-		padding: 0.5rem 1rem;
+		padding: 0.5vh 1vw;
 	}
 	:global(.menu-horizontal) {
-		gap: 0.5rem;
+		gap: 0.5vw;
 	}
 </style>
