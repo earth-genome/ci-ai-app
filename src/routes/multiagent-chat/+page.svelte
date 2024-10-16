@@ -3,6 +3,7 @@
 	import ChatInput from '$lib/components/ChatInput.svelte';
 	import Citations from '$lib/components/Citations.svelte';
 	import AgentCustomization from '$lib/components/AgentCustomization.svelte';
+    import AgentSelection from '$lib/components/AgentSelection1.svelte'
 	import Map from '$lib/components/Map.svelte';
 	import { Coords } from '$lib/stores.js';
 </script>
@@ -17,6 +18,7 @@
 		</div>
 	</div>
 	<div class="chat-container">
+        <AgentSelection />
 		<div class="chat-messages">
 			<MultiAgentChat />
 		</div>
@@ -63,7 +65,7 @@
 		display: flex;
 		flex-direction: column;
 		border-radius: 8px;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		/* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
 		overflow: hidden;
 	}
 
@@ -71,9 +73,11 @@
 		flex-grow: 1;
 		overflow-y: auto;
 		padding: 1rem;
+        /* padding-left: 10rem; */
 	}
 
 	.chat-input-wrapper {
 		padding: 1rem;
+        /* padding-left: 10rem; */
 	}
 </style>

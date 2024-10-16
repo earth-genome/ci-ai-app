@@ -30,7 +30,7 @@
 </script>
 
 <div class="chat-container">
-	<div class="cards-container {$chatUsed ? 'cards-top' : 'cards-center'}">
+	<!-- <div class="cards-container {$chatUsed ? 'cards-top' : 'cards-center'}">
 		{#each cardTexts as text, index}
 			<button
 				class="card bg-base-100 image-full w-96 shadow-xl {$selectedAgentIndex === index ? 'selected' : ''}"
@@ -40,7 +40,7 @@
 				{@html text}
 			</button>
 		{/each}
-	</div>
+	</div> -->
 	<div class="messages">
 		{#each $chatHistory as message}
 			<div class={message.role === 'user' ? 'user-question' : 'assistant-response'}>
