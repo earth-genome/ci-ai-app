@@ -4,10 +4,11 @@
 	import egLogo from '$lib/images/eg-logo-white.png';
 
 	$: currentPath = $page.url.pathname;
+	$: isHomePage = currentPath === '/';
 </script>
 
 <header>
-	<div class="navbar h-100px">
+	<div class="navbar h-140px">
 		<div class="navbar-start">
 			<div class="dropdown">
 				<div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -34,20 +35,20 @@
 					<li class="nav-item" class:active={currentPath.startsWith('/multiagent-chat')}><a href="/multiagent-chat">CI Research Chat</a></li>
 				</ul>
 			</div>
-			<a href="/" class="btn btn-ghost">
-				<img class="ci-logo" src={logo} alt="CI Logo" />
+			<a href="/" class="logo-button" class:home={isHomePage}>
+				<img class="logo ci-logo" src={logo} alt="CI Logo" />
 			</a>
 		</div>
 		<div class="navbar-center hidden lg:flex">
 			<ul class="menu menu-horizontal px-1">
-				<li class="nav-item" class:active={currentPath === '/'}><a href="/">Home</a></li>
+				<li class="nav-item" class:active={isHomePage}><a href="/">Home</a></li>
 				<li class="nav-item" class:active={currentPath.startsWith('/map-chat')}><a href="/map-chat">Map Chat</a></li>
 				<li class="nav-item" class:active={currentPath.startsWith('/multiagent-chat')}><a href="/multiagent-chat">CI Research Chat</a></li>
 			</ul>
 		</div>
 		<div class="navbar-end">
-			<a class="btn btn-ghost" href="https://www.earthgenome.org/">
-				<img class="eg-logo" src={egLogo} alt="Earth Genome" />
+			<a class="logo-button" class:home={isHomePage} href="https://www.earthgenome.org/">
+				<img class="logo eg-logo" src={egLogo} alt="Earth Genome" />
 			</a>
 		</div>
 	</div>
@@ -55,27 +56,47 @@
 
 <style>
 	header {
-		background-color: #2C665D;
-		border-bottom: 1px solid #F1E9D2;
+		padding-top: 1rem;
 	}
 	.navbar {
 		color: #F1E9D2;
+		padding-left: 10%;
+		padding-right: 10%;
 	}
-	.eg-logo {
-		width: 5em;
+	.logo-button {
+		position: relative;
+		display: inline-block;
+		padding: 12px;
+		background-color: rgba(255, 255, 255, 0.1);
+		border-radius: 16px;
+		transition: all 0.3s ease;
 	}
-	.ci-logo {
+	.logo-button.home {
+		padding: 15px;
+		border-radius: 20px;
+	}
+	.logo-button:hover {
+		background-color: rgba(255, 255, 255, 0.2);
+		backdrop-filter: blur(5px);
+	}
+	.logo {
 		width: 7em;
+		height: auto;
+		object-fit: contain;
+		transition: width 0.3s ease;
+	}
+	.logo-button.home .logo {
+		width: 9em;
 	}
 	.nav-item {
 		border-radius: 0.5rem;
 		transition: background-color 0.3s ease;
 	}
 	.nav-item:hover {
-		background-color: #1d443e;
+		background-color: rgba(29, 68, 62, 0.5);
 	}
 	.nav-item.active {
-		background-color: #1d443e;
+		background-color: rgba(29, 68, 62, 0.5);
 	}
 	.nav-item a {
 		font-weight: bold;
