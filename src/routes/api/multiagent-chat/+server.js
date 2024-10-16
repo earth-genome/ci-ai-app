@@ -36,6 +36,60 @@ function getPromptMods(vals, agentIndex) {
 	};
 }
 
+function escapeHtml(unsafe) {
+	return unsafe
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#039;');
+}
+
+function extractCodeBlocks(response) {
+	const multiLineCodeBlockRegex = /```(.*?)\n([\s\S]*?)```/g;
+	const singleLineCodeBlockRegex = /`([^`]+)`/g;
+	const citationRegex = /\[(\d+)\]/g;
+	const boldRegex = /\*\*(.*?)\*\*/g;
+	let match;
+	let prunedResponse = response;
+	let codeBlockCount = 0;
+
+	// Handle multi-line code blocks
+	while ((match = multiLineCodeBlockRegex.exec(response)) !== null) {
+		const codeId = `code-${codeBlockCount++}`;
+		const language = match[1].trim() === '' ? 'js' : match[1].trim() === 'javascript' ? 'js' : match[1].trim();
+		const escapedCode = escapeHtml(match[2].trim());
+		const codeBlockHtml = `
+			<div class="code-card">
+				<div class="code-card-header">
+					<span class="code-language">${language}</span>
+					<button class="copy-button" onclick="window.insertCode('${codeId}')">Insert code</button>
+				</div>
+				<pre><code class="language-${language}">${escapedCode}</code></pre>
+			</div>`;
+		prunedResponse = prunedResponse.replace(match[0], codeBlockHtml);
+	}
+
+	// Handle single-line code blocks
+	prunedResponse = prunedResponse.replace(singleLineCodeBlockRegex, (match, p1) => {
+		const escapedCode = escapeHtml(p1.trim());
+		return `<code class="inline-code">${escapedCode}</code>`;
+	});
+
+	// Handle citations
+	prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
+		return `
+			<div class="tooltip tooltip-right" data-tip="Citation ${p1}">
+				<span class="badge badge-info">${p1}</span>
+			</div>
+		`;
+	});
+
+	prunedResponse = prunedResponse.replace(boldRegex, '<b>$1</b>');
+
+	return prunedResponse;
+}
+
 export async function POST({ request }) {
 	const { message, agentIndex, currentSliderValues } = await request.json();
 
@@ -92,14 +146,14 @@ export async function POST({ request }) {
 					const citedFile = await openai.files.retrieve(file_citation.file_id);
 					const filename = citedFile.filename;
 					citations[i] = filename;
-				} else {
-					console.log('There are no citations');
 				}
 			}
 
+			const prunedResponse = extractCodeBlocks(processedText);
+
 			return json({
-				message: processedText,
-				citations: citations,
+				message: prunedResponse,
+				citations: citations
 			});
 		} else {
 			return json({ message: 'No response from the assistant.' });
@@ -122,3 +176,4 @@ export async function GET() {
 //upload a file to the vector store
 // if vector store is past x number of files dont allow? allow for a delete?
     // - is this automatic when size limit is reached, and does larger vector store size affect performance?
+

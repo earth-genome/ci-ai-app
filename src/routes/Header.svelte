@@ -57,7 +57,7 @@
 <style>
 	header {
 		padding-top: 1vh;
-		height: 14vh; /* Set the header height to 14% of viewport height */
+		height: 10vh; 
 	}
 	.navbar {
 		color: #F1E9D2;

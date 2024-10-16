@@ -1,251 +1,48 @@
 <script>
-	import { onMount, afterUpdate } from 'svelte';
+	import { onMount } from 'svelte';
 	import userAvatar from '$lib/images/ci.png';
-	import { currentCitations } from '$lib/stores';
-    import { pdf_citation_mapping } from '$lib/pdf_citation_mapping.js';
-	import { assistantDefinitions } from '$lib/assistant-definition.js';
-	import { textEditorContent, codeBlocksMap, sliderValues, selectedAgentIndex } from '$lib/stores.js';
-	import { get } from 'svelte/store';
-	import jungleImage from '$lib/images/jungle.png';
+	import { currentCitations, chatHistory, isLoading, chatUsed, selectedAgentIndex } from '$lib/stores';
+	import { textEditorContent } from '$lib/stores.js';
 
-	let userQuestion = '';
-	let assistantResponse = '';
-	let input = '';
-	let isLoading = false;
-	let chatHistory = [];
-	let chatUsed = false;
-	let selectedCardIndex = 0;
+	let cardTexts = [
+		'<b>Research assistant:</b> A knowledgeable research assistant to help you explore scientific literature',
+		'<b>Policy expert:</b> An expert on translating science into actionable policy',
+		'<b>Teacher:</b> Your favorite teacher breaks down topics. Choose from kindergarten to graduate level'
+	];
 
-    let cardTexts = [
-        '<b>Research assistant:</b> A knowledgeable research assistant to help you explore scientific literature',
-        '<b>Policy expert:</b> An expert on translating science into actionable policy',
-        '<b>Teacher:</b> Your favorite teacher breaks down topics. Choose from kindergarten to graduate level'
-    ];
-
-    const emojis = ['🔬','📊','🍎']
+	const emojis = ['🔬','📊','🍎'];
 
 	cardTexts = cardTexts.map((text, index) => {
-        const figureText = `
-            <figure>
-                <span style="font-size: 4rem">${emojis[index]}</span>
-            </figure>
-        `
+		const figureText = `
+			<figure>
+				<span style="font-size: 4rem">${emojis[index]}</span>
+			</figure>
+		`;
 		return figureText + text;
 	});
-
-
-	function escapeHtml(unsafe) {
-		return unsafe
-			.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;')
-			.replace(/"/g, '&quot;')
-			.replace(/'/g, '&#039;');
-	}
-
-	function extractCodeBlocks(response) {
-		const multiLineCodeBlockRegex = /```(.*?)\n([\s\S]*?)```/g;
-		const singleLineCodeBlockRegex = /`([^`]+)`/g;
-		const citationRegex = /\[(\d+)\]/g;
-        const boldRegex = /\*\*(.*?)\*\*/g;
-		let match;
-		const codeBlocks = [];
-		let prunedResponse = response;
-		const codeMap = new Map();
-
-		function unescapeHtml(safe) {
-			return safe
-				.replace(/&amp;/g, '&')
-				.replace(/&lt;/g, '<')
-				.replace(/&gt;/g, '>')
-				.replace(/&quot;/g, '"')
-				.replace(/&#039;/g, "'");
-		}
-
-		function extractDOI(citation) {
-			const doiRegex = /\b(10\.\d{4,}(?:\.\d+)*\/\S+)\b/;
-			const match = citation.match(doiRegex);
-			return match ? `https://doi.org/${match[1]}` : null;
-		}
-
-		// Handle multi-line code blocks
-		while ((match = multiLineCodeBlockRegex.exec(response)) !== null) {
-			const codeId = `code-${codeMap.size}`;
-			codeMap.set(codeId, match[2].trim());
-
-			const escapedCode = escapeHtml(match[2].trim());
-			const codeBlockHtml = `
-				<div class="code-card">
-					<div class="code-card-header">
-						<span class="code-language">${ match[1].trim() === '' ? 'js' : match[1].trim() === 'javascript' ? 'js' : match[1].trim() }</span>
-						<button class="copy-button" onclick="window.insertCode('${codeId}')">Insert code</button>
-					</div>
-					<pre><code class="language-${match[1].trim() === '' ? 'js' : match[1].trim() === 'javascript' ? 'js' : match[1].trim()}">${escapedCode}</code></pre>
-				</div>`;
-			prunedResponse = prunedResponse.replace(match[0], codeBlockHtml);
-		}
-
-		// Handle single-line code blocks
-		prunedResponse = prunedResponse.replace(singleLineCodeBlockRegex, (match, p1) => {
-			const escapedCode = escapeHtml(p1.trim());
-			return `<code class="inline-code">${escapedCode}</code>`;
-		});
-
-		// Handle citations
-        // match: full matched strig "[0]", p1: first captured group "0"
-		prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
-			const citationIndex = parseInt(p1, 10);
-			let citation = get(currentCitations)[citationIndex]
-            console.log('currentCitations: ', get(currentCitations));
-            console.log('citationIndex: ', citationIndex);
-            console.log('citation: ', citation);
-            citation = pdf_citation_mapping[citation] || citation
-
-            const doiUrl = extractDOI(citation);
-            const openDoiFunc = `onclick="window.open('${doiUrl}', '_blank')"` || '';
-
-            return `
-                <div class="tooltip tooltip-right" data-tip="${citation}" ${openDoiFunc}>
-                    <span class="badge badge-info">${p1}</span>
-                </div>
-            `
-		});
-
-        prunedResponse = prunedResponse.replace(boldRegex, '<b>$1</b>');
-
-		codeBlocksMap.set(codeMap);
-		return { codeBlocks, prunedResponse: unescapeHtml(prunedResponse.trim()) };
-	}
-
-	function insertCode(codeId) {
-		const codeMap = get(codeBlocksMap);
-		const code = codeMap.get(codeId);
-		textEditorContent.update((content) => {
-			const newContent = content + '\n' + code;
-			return newContent;
-		});
-	}
-
-	let isCardsAtTop = false;
-
-	// Modify the handleCardClick function
 	function handleCardClick(index) {
 		selectedAgentIndex.set(index);
 	}
 
-	// Add a new function to handle card hover
-	function handleCardHover(event, index) {
-		if (isCardsAtTop) {
-			const card = event.currentTarget;
-			if (event.type === 'mouseenter') {
-				card.innerHTML = cardTexts[index].replace(/<figure>.*?<\/figure>/, '');
-			} else {
-				card.innerHTML = `<span class="emoji">${emojis[index]}</span>`;
-			}
-		}
-	}
+	// create a derived store for the last message
+	$: lastMessage = $chatHistory[$chatHistory.length - 1];
 
-	async function sendMessage() {
-		if (input.trim() === '') return;
-
-		isCardsAtTop = true;
-		chatUsed = true;
-		const userMessage = input;
-		input = '';
-		isLoading = true;
-
-		chatHistory.push({ role: 'user', content: userMessage });
-		const assistantMessageIndex = chatHistory.length;
-		chatHistory.push({ role: 'assistant', content: 'Loading...' });
-
-		try {
-        //     console.log(selectedCardIndex)
-			// const response = await fetch('../api/multiagent-chat', {
-			// 	method: 'POST',
-			// 	headers: {
-			// 		'Content-Type': 'application/json'
-			// 	},
-			// 	body: JSON.stringify({
-			// 		message: userMessage,
-			// 		agentIndex: selectedCardIndex,
-            //         currentSliderValues: get(sliderValues)
-			// 	})
-			// });
-
-			// if (!response.ok) {
-			// 	throw new Error('Network response was not ok');
-			// }
-
-			// const data = await response.json();
-            const data = {
-    "message": "<h1>Interesting Findings in Recent Research Papers</h1>\n\n<h2>🌳 Forest Management and Climate Change</h2>\n\n<p>🌿 <b>Climber Removal in Tropical Forests:</b> An intriguing study shows that <i>climber removal</i> in tropical forests can more than double tree growth and roughly triple biomass accumulation (AGB). This has significant implications for global carbon sequestration, as removing climbers can potentially sequester 32 Gigatons of CO2 over a decade if applied to secondary and production forests across the tropics[0].</p>\n\n<h2>🚑 Health Interventions and Environmental Conservation</h2>\n\n<p>🌲 <b>Linking Healthcare and Forest Conservation in Indonesia:</b> A fascinating intervention combined improved healthcare access with conservation programs in rural Indonesian communities near a national park. This multi-sector approach resulted in reduced illegal logging and better health outcomes. Forest loss rates declined significantly in areas with high engagement in the intervention programs. By 2012, over 97% of households believed the intervention effectively reduced illegal logging[1][2][3].</p>\n\n<h2>🌍 Agroforestry and Climate Benefits</h2>\n\n<p>🌾 <b>Cooling Effects of Silvopasture:</b> Research indicates that integrating trees into pasturelands (silvopasture) can significantly cool local environments. This practice has the potential to store substantial carbon in regions like Africa and the Americas, thus contributing to climate change mitigation. Not only does this reduce heat exposure for outdoor workers and livestock, but it also aligns with sustainable development and biodiversity conservation goals[4][5].</p>\n\n<h2>🍃 Deforestation and Temperature Increase</h2>\n\n<p>🔥 <b>Impact of Forest Change on Temperature:</b> A global analysis showed that deforestation causes significant warming, while reforestation can provide cooling effects. For instance, deforestation in tropical regions increased local surface temperature by approximately 0.38°C, whereas similar levels of forestation led to a temperature decrease of 0.18°C. This highlights the importance of forest management in mitigating local climate changes[6].</p>\n\nMake sure to delve deeper into these studies if they pique your interest as they provide comprehensive methods, results, and discussions on these impactful topics!",
-    "citations": {
-        "0": "Ecology and Evolution - 2022 - Finlayson - Removing climbers more than doubles tree growth and biomass in degraded tropical.pdf",
-        "1": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
-        "2": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
-        "3": "jones-et-al-2020-improving-rural-health-care-reduces-illegal-logging-and-conserves-carbon-in-a-tropical-forest.pdf",
-        "4": "s41467-022-28388-4.pdf",
-        "5": "s41467-022-28388-4.pdf",
-        "6": "file (4).pdf"
-    }
-}
-			currentCitations.set(data.citations);
-			const { codeBlocks, prunedResponse } = extractCodeBlocks(data.message);
-            console.log('data: ', data);
-            console.log('prunedResponse: ', prunedResponse);
-			const assistantResponse = prunedResponse;
-
-			// update the last assistant message with the actual response
-			chatHistory[assistantMessageIndex] = { role: 'assistant', content: assistantResponse };
-		} catch (error) {
-			console.error('Error:', error);
-			// update the last assistant message to indicate an error
-			chatHistory[assistantMessageIndex] = {
-				role: 'assistant',
-				content: 'Sorry, an error occurred.'
-			};
-		} finally {
-			isLoading = false;
-		}
-	}
-
-	onMount(() => {
-		window.insertCode = insertCode;
-	});
-
-    // Add this function to generate random background positions
-    function getRandomBackgroundPosition() {
-        const x = Math.floor(Math.random() * 100);
-        const y = Math.floor(Math.random() * 100);
-        return `${x}% ${y}%`;
-    }
-
-    // Generate background positions for each card
-    const cardBackgrounds = cardTexts.map(() => getRandomBackgroundPosition());
 </script>
 
-
 <div class="chat-container">
-	<div class="cards-container" class:cards-top={isCardsAtTop}>
+	<div class="cards-container {$chatUsed ? 'cards-top' : 'cards-center'}">
 		{#each cardTexts as text, index}
 			<button
-				class="card image-full shadow-xl {$selectedAgentIndex === index ? 'selected' : ''}"
+				class="card bg-base-100 image-full w-96 shadow-xl {$selectedAgentIndex === index ? 'selected' : ''}"
 				on:click={() => handleCardClick(index)}
-				on:mouseenter={(e) => handleCardHover(e, index)}
-				on:mouseleave={(e) => handleCardHover(e, index)}
 				on:keydown={(e) => e.key === 'Enter' && handleCardClick(index)}
-				style="background-image: url({jungleImage}); background-position: {cardBackgrounds[index]};"
 			>
-				{#if isCardsAtTop}
-					<span class="emoji">{emojis[index]}</span>
-				{:else}
-					{@html text}
-				{/if}
+				{@html text}
 			</button>
 		{/each}
 	</div>
 	<div class="messages">
-		{#each chatHistory as message}
+		{#each $chatHistory as message}
 			<div class={message.role === 'user' ? 'user-question' : 'assistant-response'}>
 				{#if message.role === 'assistant'}
 					<div class="avatar assistant-avatar">
@@ -253,13 +50,8 @@
 					</div>
 				{/if}
 				<div class="message-content {message.role}">
-					{#if message.role === 'assistant' && message.content === 'Loading...'}
-						<span
-							class="loading-icon"
-							class:loading={isLoading}
-							class:loading-bars={isLoading}
-							class:loading-lg={isLoading}
-						/>
+					{#if message.role === 'assistant' && $isLoading && message === lastMessage}
+						<span class="loading loading-dots loading-lg" />
 					{:else}
 						<div class="rendered-html">
 							{@html message.content}
@@ -273,34 +65,6 @@
 				{/if}
 			</div>
 		{/each}
-		<div class="input-container">
-			<div class="input-wrapper">
-				<input
-					type="text"
-					placeholder="Message..."
-					class="input-box"
-					bind:value={input}
-					on:keydown={(e) => e.key === 'Enter' && !isLoading && sendMessage()}
-				/>
-				<button class="send-button" on:click={sendMessage} disabled={isLoading}>
-					<svg
-						width="32"
-						height="32"
-						viewBox="0 0 32 32"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-						class="icon-2xl"
-					>
-						<path
-							fill-rule="evenodd"
-							clip-rule="evenodd"
-							d="M15.1918 8.90615C15.6381 8.45983 16.3618 8.45983 16.8081 8.90615L21.9509 14.049C22.3972 14.4953 22.3972 15.2189 21.9509 15.6652C21.5046 16.1116 20.781 16.1116 20.3347 15.6652L17.1428 12.4734V22.2857C17.1428 22.9169 16.6311 23.4286 15.9999 23.4286C15.3688 23.4286 14.8571 22.9169 14.8571 22.2857V12.4734L11.6652 15.6652C11.2189 16.1116 10.4953 16.1116 10.049 15.6652C9.60265 15.2189 9.60265 14.4953 10.049 14.049L15.1918 8.90615Z"
-							fill="currentColor"
-						/>
-					</svg>
-				</button>
-			</div>
-		</div>
 	</div>
 </div>
 
@@ -308,7 +72,8 @@
 	.chat-container {
 		display: flex;
 		flex-direction: column;
-		height: 80%;
+		width: 100%;
+		position: relative;
 	}
 
 	.messages {
@@ -317,44 +82,6 @@
 		border-radius: 15px;
 		padding: 10px;
 		padding-bottom: 60px;
-		margin-top: 80px; /* Add space for the cards at the top */
-	}
-
-	.input-container {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: 10px;
-		position: absolute;
-		bottom: 0;
-		width: 98%;
-	}
-
-	.input-wrapper {
-		display: flex;
-		align-items: center;
-		width: 100%;
-	}
-
-	.input-box {
-		flex: 1;
-		padding: 10px;
-		border-radius: 40px;
-		border: 1px solid oklch(var(--s));
-		margin-right: 5px;
-		background-color: #F1E9D2;
-		color: #2C665D;
-	}
-
-	.send-button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: none;
-		background-color: transparent;
-		cursor: pointer;
-		border: 10 solid #000000;
-		box-sizing: border-box;
 	}
 
 	.user-question, .assistant-response {
@@ -468,13 +195,17 @@
 		justify-content: center;
 		align-items: center;
 		padding: 10px;
-		width: 90%;
-		transition: all 0.3s;
+		width: 90%; /* Make the container responsive */
+		transition: top 0.3s, transform 0.3s; /* Smooth transition */
+		position: relative; /* Ensure it can be layered on top */
+		z-index: 1; /* Ensure it sits above other elements */
+	}
+
+	.cards-center {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		z-index: 1;
 	}
 
 	.cards-top {
@@ -482,123 +213,49 @@
 		top: 0;
 		left: 50%;
 		transform: translateX(-50%);
-		z-index: 2; /* Ensure it sits above the chat container */
-	}
-
-	.card {
-		background-color: oklch(var(--s)); /* White background */
-		color: oklch(var(--pc)); /* Dark text color for contrast */
-		padding: 15px; /* Slightly smaller padding */
-		border-radius: 15px; /* More rounded corners */
-		text-align: center;
-		flex: 1; /* Make the cards responsive */
-		max-width: 180px; /* Slightly smaller default size */
-		max-height: 140px; /* Ensure the cards are square */
-		aspect-ratio: 1 / 1; /* Maintain a consistent aspect ratio */
-		cursor: pointer;
-		transition: background-color 0.3s, box-shadow 0.3s;
-		margin: 0 10px; /* Add some margin between cards */
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		border: 1px solid #e0e0e0; /* Border color */
-		--tw-shadow: 0 0 2px 0 rgba(0, 0, 0, .05), 0 4px 6px 0 rgba(0, 0, 0, .02);
-		--tw-shadow-colored: 0 0 2px 0 var(--tw-shadow-color), 0 4px 6px 0 var(--tw-shadow-color);
-		box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-		font-size: 9pt; /* Set text size to 10pt */
-	}
-
-	/* .cards-top {
-		position: absolute;
-		top: 10px;
-		left: 50%;
-		transform: translateX(-50%);
 		z-index: 2;
 	}
 
 	.card {
-        background-image: url($lib/images/jungle.jpg);
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        position: relative;
+		background-color: #A3C18A;
+		color: #4A403A;
 		padding: 15px;
-		border-radius: 25px;
+		border-radius: 15px;
 		text-align: center;
 		flex: 1;
 		max-width: 240px;
 		max-height: 220px;
 		aspect-ratio: 1 / 1;
 		cursor: pointer;
-		transition: all 0.3s;
+		transition: background-color 0.3s, box-shadow 0.3s;
 		margin: 0 10px;
 		display: flex;
-		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		border: 1px solid #e0e0e0;
-		box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+		--tw-shadow: 0 0 2px 0 rgba(0, 0, 0, .05), 0 4px 6px 0 rgba(0, 0, 0, .02);
+		--tw-shadow-colored: 0 0 2px 0 var(--tw-shadow-color), 0 4px 6px 0 var(--tw-shadow-color);
+		box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 		font-size: 11pt;
-		overflow: hidden;
-		background-size: 400% 400%;
-		background-repeat: no-repeat;
-		position: relative;
-	} */
-
-	.cards-top .card {
-		max-width: 100px;
-		max-height: 100px;
-		font-size: 9pt;
-		padding: 5px;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Updated: slightly stronger shadow for top cards */
 	}
 
 	.card:hover {
-		background-color: #F2D17D;
-		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Updated: stronger shadow on hover */
-		transform: translateY(-2px); /* Added: slight lift effect on hover */
+		background-color: #85A377;
+		color: #F1E9D2;
+		box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 	}
 
 	.card.selected {
-		/* background-color: #EEC458; */
-		/* color: #F1E9D2; */
+		background-color: #5E8D5C;
+		color: #F1E9D2;
 	}
 
-	.emoji {
-		font-size: 2rem;
-	}
+    :global(.tooltip::before) {
+        background-color: #DBEEFB;
+        color: theme('colors.primary')
+    }
 
-	.cards-top .card .emoji {
-		font-size: 3rem;
-	}
-
-	.card-content {
-		margin-top: 10px;
-	}
-
-	.hidden {
-		display: none;
-	}
-
-	:global(.tooltip::before) {
-		background-color: #DBEEFB;
-		color: theme('colors.primary')
-	}
-
-	/* .card::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background-color: rgba(245, 219, 152, 0.7);
-		border-radius: 25px;
-	} */
-
-	.card > * {
-		position: relative;
-		z-index: 1;
+	.loading {
+		color: #F1E9D2;
 	}
 </style>

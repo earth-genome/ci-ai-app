@@ -1,12 +1,12 @@
 <script>
 	import { onMount } from 'svelte';
 	import { pdf_citation_mapping } from '$lib/pdf_citation_mapping.js';
+	import { input } from '$lib/stores.js';
 
 	let searchTerm = '';
 	let filteredCitations = Object.values(pdf_citation_mapping);
 
 	function formatCitationWithDOI(citation) {
-
 		const doiRegex = /\b(https:\/\/doi\.org\/10\.\d{4,}(?:\.\d+)*\/\S+)\b/;
 		const doiMatches = citation.match(doiRegex);
 
@@ -17,36 +17,20 @@
 		return citation;
 	}
 
+	function selectCitation(citation) {
+		input.update(currentInput => currentInput + (currentInput ? ' ' : '') + citation);
+	}
+
 	$: {
 		filteredCitations = Object.values(pdf_citation_mapping).filter(citation =>
 			citation.toLowerCase().includes(searchTerm.toLowerCase())
 		);
 	}
-
-	let windowHeight;
-
-	// onMount(() => {
-	// 	const updateHeight = () => {
-	// 		windowHeight = window.innerHeight;
-	// 	};
-
-	// 	updateHeight();
-	// 	window.addEventListener('resize', updateHeight);
-
-	// 	return () => {
-	// 		window.removeEventListener('resize', updateHeight);
-	// 	};
-	// });
-
-	// $: citationListHeight = windowHeight
-	// 	? `${windowHeight - citationsTop - 160}px`
-	// 	: 'auto';
 </script>
 
 <div class="citations">
 	<div class="prose">
-		<!-- <h2 style="margin-bottom: 0rem;">List of available research</h2> -->
-		<h4 style="margin: 10px">CI AI has access to the following publications:</h4>
+		<h4>CI AI has access to the following publications:</h4>
 	</div>
 	<div class="search-box">
 		<input
@@ -55,11 +39,16 @@
 			bind:value={searchTerm}
 		/>
 	</div>
-	<!-- <div class="citation-list" style="height: {citationListHeight};"> -->
 	<div class="citation-list">
 		<ul>
 			{#each filteredCitations as citation}
-				<li>{@html formatCitationWithDOI(citation)}</li>
+				<li>
+					<button
+						on:click={() => selectCitation(citation)}
+					>
+						{@html formatCitationWithDOI(citation)}
+					</button>
+				</li>
 			{/each}
 		</ul>
 	</div>
@@ -67,24 +56,34 @@
 
 <style>
 	.citations {
-		margin-top: 2rem;
+		/* margin-top: 2rem; */
 		font-size: 9pt;
 		color: #333333;
-		height: 51vh; 
 		display: flex;
 		flex-direction: column;
+		height: 100%;
+		overflow: hidden;
+	}
+
+	.prose {
+		flex-shrink: 0;
+	}
+
+	.search-box {
+		flex-shrink: 0;
+		padding: 10px;
 	}
 
 	.citation-list {
 		flex-grow: 1;
 		overflow-y: auto;
-		padding-right: 10px;
-		margin: 10px;
+		padding: 0 10px;
 	}
 
 	.citation-list ul {
 		list-style-type: none;
 		padding: 0;
+		margin: 0;
 	}
 
 	.citation-list li {
@@ -93,7 +92,13 @@
 		background-color: #F1E9D2;
 		border-radius: 4px;
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-		color: #333333; 
+		color: #333333;
+		cursor: pointer;
+		transition: background-color 0.2s ease-in-out;
+	}
+
+	.citation-list li:hover {
+		background-color: #E8D8B0;
 	}
 
 	:global(.citations a) {
@@ -130,14 +135,15 @@
 		margin-bottom: 10px;
 		margin-top: 10px;
 		margin-right: 35px;
-
 	}
 
 	.search-box input {
 		width: 100%;
-		padding: 0.5rem;
+		padding: 10px;
 		font-size: 1rem;
 		border: 1px solid #ccc;
-		border-radius: 4px;
+		border-radius: 40px;
+		background-color: #F1E9D2;
+		color: #2C665D;
 	}
 </style>

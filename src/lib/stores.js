@@ -65,3 +65,8 @@ export const sliderValues = writable({
     formatting: 1,
     grade: 1
 })
+
+export const input = writable('');
+export const chatHistory = writable([]);
+export const isLoading = writable(false);
+export const chatUsed = writable(false);
