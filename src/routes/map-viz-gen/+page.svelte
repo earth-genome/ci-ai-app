@@ -4,25 +4,41 @@
 
 	let inputText = '';
 	let isSubmitted = false;
+	let isLoading = false;
 	let mapData = null;
 	let assistantResponse = '';
-	let isLoading = false;
 
-	function toggleSubmitted() {
-		console.log("Toggle function called");
-		isSubmitted = !isSubmitted;
-		console.log("isSubmitted is now:", isSubmitted);
+	async function makeAssistantRequest() {
+		try {
+			isLoading = true;
+			const res = await fetch('../api/map-viz-chat', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ message: inputText })
+			});
+
+			if (res.ok) {
+				const data = await res.json();
+				assistantResponse = data.answer;
+				mapData = data.mapStyle; // You can handle the map visualization data
+				console.log('Assistant response:', data);
+			} else {
+				console.error('Error:', res.statusText);
+			}
+		} catch (error) {
+			console.error('Request error:', error);
+		} finally {
+			isLoading = false;
+			isSubmitted = true;
+		}
 	}
 
 	onMount(() => {
-		console.log("Component mounted");
+		console.log('Component mounted');
 	});
 </script>
-
-<div>
-	<p>Current state: {isSubmitted ? 'Submitted' : 'Not Submitted'}</p>
-	<p>Loading: {isLoading ? 'Yes' : 'No'}</p>
-</div>
 
 {#if !isSubmitted}
 	<div class="flex items-center justify-center min-h-screen">
@@ -32,32 +48,41 @@
 				the Amazon. Ask a question related to these topics and a map visualization will be generated
 				below
 			</h1>
-			<textarea
+			<input
 				bind:value={inputText}
-				class="textarea textarea-bordered w-full h-14 mb-4"
-				placeholder="Enter your text here..."
+				type="text"
+				placeholder="Where does deforestation impact health in the Amazon.."
+				class="input input-bordered w-full mb-4"
 			/>
-			<button on:click={sendMessage} class="btn btn-outline" disabled={isLoading}>
-				{#if isLoading}
-					Loading...
-				{:else}
-					Submit
-				{/if}
-			</button>
-			<button on:click={toggleSubmitted} class="btn btn-outline ml-2">
-				Toggle State
-			</button>
+			<div class="flex justify-center">
+				<button
+					on:click={makeAssistantRequest}
+					class="btn btn-outline btn-wide"
+					disabled={isLoading}
+				>
+					{#if isLoading}
+						Loading...
+					{:else}
+						Explore
+					{/if}
+				</button>
+			</div>
+		</div>
+	</div>
+{:else if isSubmitted && !isLoading}
+	<div class="flex flex-1 overflow-hidden">
+		<div class="w-2/3 shadow-xl rounded-lg overflow-hidden mx-1">
+			<Map class="w-full h-full" />
+		</div>
+		<div class=" w-1/3 shadow-xl rounded-lg overflow-scroll p-2 map-viz-card mx-1">
+			<h2 class="text-2xl mb-4 text-center title-font">Map Visualization Explanation</h2>
+			<p>{assistantResponse}</p>
 		</div>
 	</div>
 {:else}
-	<div class="flex">
-		<div class="w-2/3 p-4">
-			<Map />
-			<p>hello</p>
-		</div>
-		<div class="w-1/3 p-4">
-			<h2 class="text-2xl mb-4">Map Visualization Explanation</h2>
-			<p>{assistantResponse}</p>
+	<div class="flex items-center justify-center min-h-screen">
+		<div class="container mx-auto p-4">
+			<h1 class="text-custom-intro mb-4 text-center">Generating map visualization...</h1>
 		</div>
 	</div>
 {/if}
@@ -66,5 +91,13 @@
 	.text-custom-intro {
 		font-size: 1.7rem;
 		font-weight: 700;
+	}
+	.map-viz-card {
+		color: rgb(44, 38, 32);
+		background-color: #f4f0e4;
+	}
+	.title-font {
+		font-family: 'Poppins', sans-serif;
+		font-weight: 600;
 	}
 </style>

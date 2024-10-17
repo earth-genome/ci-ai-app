@@ -1,179 +1,66 @@
 import { json } from '@sveltejs/kit';
 import OpenAI from 'openai';
 import { OPEN_AI_KEY } from '$env/static/private';
-import { assistantDefinitions } from '$lib/assistant-definition.js';
-import { citationsMap } from '$lib/citations-map.js';
-import { get } from 'svelte/store';
-import { promptModifiers, sliderValues } from '$lib/stores.js';
 
 const openai = new OpenAI({
-	apiKey: OPEN_AI_KEY
+  apiKey: OPEN_AI_KEY
 });
 
-function getPromptMods(vals, agentIndex) {
-	let modifierString = '';
-	const promptModifiersValue = get(promptModifiers);
-
-	for (const [key, value] of Object.entries(vals)) {
-		console.log('key: ', key);
-		console.log('val: ', value);
-		if (promptModifiersValue[key] && promptModifiersValue[key][value]) {
-			if (key !== 'temperature') {
-				if (key === 'grade' && agentIndex !== 3) {
-					// Skip grade level modifier if not professor agent
-					continue;
-				}
-				modifierString += promptModifiersValue[key][value] + ' ';
-			}
-		}
-	}
-
-	console.log('modifierString: ', modifierString);
-
-	return {
-		'modifierString': modifierString.trim(),
-		'temperature': vals['temperature']
-	};
-}
-
-function escapeHtml(unsafe) {
-	return unsafe
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&#039;');
-}
-
-function extractCodeBlocks(response) {
-	const multiLineCodeBlockRegex = /```(.*?)\n([\s\S]*?)```/g;
-	const singleLineCodeBlockRegex = /`([^`]+)`/g;
-	const citationRegex = /\[(\d+)\]/g;
-	const boldRegex = /\*\*(.*?)\*\*/g;
-	let match;
-	let prunedResponse = response;
-	let codeBlockCount = 0;
-
-	// Handle multi-line code blocks
-	while ((match = multiLineCodeBlockRegex.exec(response)) !== null) {
-		const codeId = `code-${codeBlockCount++}`;
-		const language = match[1].trim() === '' ? 'js' : match[1].trim() === 'javascript' ? 'js' : match[1].trim();
-		const escapedCode = escapeHtml(match[2].trim());
-		const codeBlockHtml = `
-			<div class="code-card">
-				<div class="code-card-header">
-					<span class="code-language">${language}</span>
-					<button class="copy-button" onclick="window.insertCode('${codeId}')">Insert code</button>
-				</div>
-				<pre><code class="language-${language}">${escapedCode}</code></pre>
-			</div>`;
-		prunedResponse = prunedResponse.replace(match[0], codeBlockHtml);
-	}
-
-	// Handle single-line code blocks
-	prunedResponse = prunedResponse.replace(singleLineCodeBlockRegex, (match, p1) => {
-		const escapedCode = escapeHtml(p1.trim());
-		return `<code class="inline-code">${escapedCode}</code>`;
-	});
-
-	// Handle citations
-	prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
-		return `
-			<div class="tooltip tooltip-right" data-tip="Citation ${p1}">
-				<span class="badge badge-info">${p1}</span>
-			</div>
-		`;
-	});
-
-	prunedResponse = prunedResponse.replace(boldRegex, '<b>$1</b>');
-
-	return prunedResponse;
-}
-
 export async function POST({ request }) {
-	const { message, agentIndex, currentSliderValues } = await request.json();
+  const { message } = await request.json();
 
-	try {
-		console.log('currentSliderValues: ', currentSliderValues);
-		const promptMods = getPromptMods(currentSliderValues, agentIndex);
-		const assistantDef = { ...assistantDefinitions[agentIndex], 'temperature': promptMods.temperature};
-		
+  try {
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content: `You are an assistant specializing in geospatial analysis for the Amazon region, focusing on health, climate, and deforestation. Provide concise answers, and generate a map style when required.`
+        },
+        {
+          role: 'user',
+          content: message
+        }
+      ],
+      functions: [
+        {
+          name: 'generate_map_style',
+          description: 'Generates a map style and provides a related answer.',
+          parameters: {
+            type: 'object',
+            properties: {
+              answer: {
+                type: 'string',
+                description: 'The answer to the user\'s question about health, climate, and deforestation in the Amazon.'
+              },
+              mapStyle: {
+                type: 'string',
+                description: "This should return a mapbox polygon paint property specifying the fill color for a map style. the map style should be related to the user's question. for instance paint: {'fill-color':'#ff0000'}"
+              }
+            },
+            required: ['answer', 'mapStyle']
+          }
+        }
+      ],
+      function_call: { name: 'generate_map_style' }
+    });
 
-		assistantDef.instructions = assistantDef.instructions + ' ' + promptMods.modifierString;
-		console.log('assistantDef: ', assistantDef);
-		const assistant = await openai.beta.assistants.create(assistantDef);
-		// Create a new thread
-		const thread = await openai.beta.threads.create();
+    const result = completion.choices[0].message;
+    
+    if (result.function_call) {
+      const parsedData = JSON.parse(result.function_call.arguments);
+	  console.log('Parsed answer:', parsedData.answer);
+      console.log('Parsed mapStyle:', parsedData.mapStyle);
 
-		// Add a message to the thread
-		await openai.beta.threads.messages.create(thread.id, {
-			role: 'user',
-			content: message
-		});
-
-		// Run the assistant
-		const run = await openai.beta.threads.runs.create(thread.id, {
-			assistant_id: assistant.id
-		});
-
-		// Wait for the run to complete
-		let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-		while (runStatus.status !== 'completed') {
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-			runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-		}
-
-		// Retrieve the assistant's response
-		const messages = await openai.beta.threads.messages.list(thread.id);
-		const assistantMessage = messages.data.find((msg) => msg.role === 'assistant');
-
-		// Clean up: delete the temporary assistant
-		await openai.beta.assistants.del(assistant.id);
-
-		if (assistantMessage && assistantMessage.content[0].type === 'text') {
-			const { text } = assistantMessage.content[0];
-			const { annotations } = text;
-			const citations = {};
-
-			let processedText = text.value;
-
-			for (let i = 0; i < annotations.length; i++) {
-				const annotation = annotations[i];
-				processedText = processedText.replace(annotation.text, `[${i}]`);
-
-				const { file_citation } = annotation;
-				if (file_citation) {
-					const citedFile = await openai.files.retrieve(file_citation.file_id);
-					const filename = citedFile.filename;
-					citations[i] = filename;
-				}
-			}
-
-			const prunedResponse = extractCodeBlocks(processedText);
-
-			return json({
-				message: prunedResponse,
-				citations: citations
-			});
-		} else {
-			return json({ message: 'No response from the assistant.' });
-		}
-	} catch (error) {
-		console.error('Error:', error);
-		return json({ message: 'Sorry, an error occurred.' }, { status: 500 });
-	}
+      return json({
+        answer: parsedData.answer,
+        mapStyle: parsedData.mapStyle
+      });
+    } else {
+      return json({ message: 'No structured output available.' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    return json({ message: 'An error occurred.', error }, { status: 500 });
+  }
 }
-
-export async function GET() {
-	return new Response('This endpoint only supports POST requests for responses from OpenAI.', {
-		status: 405, // Method Not Allowed
-		headers: {
-			'Content-Type': 'text/plain'
-		}
-	});
-}
-
-//upload a file to the vector store
-// if vector store is past x number of files dont allow? allow for a delete?
-    // - is this automatic when size limit is reached, and does larger vector store size affect performance?
-
