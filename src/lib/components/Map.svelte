@@ -17,7 +17,7 @@
 		mapboxgl.accessToken = accessToken;
 		map = new mapboxgl.Map({
 			container: 'map',
-			style: 'mapbox://styles/plotline/cm072jbsl00mj01ps9gcuexhn',
+			style: 'mapbox://styles/plotline/cm1v19tkd01c601rba4mcekli',
 			center: center,
 			zoom: zoom
 		});
