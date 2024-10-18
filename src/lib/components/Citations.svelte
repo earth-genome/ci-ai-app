@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { pdf_citation_mapping } from '$lib/pdf_citation_mapping.js';
 	import { input } from '$lib/stores.js';
+	import plusIcon from '$lib/images/plus.png'; // Import the plus icon
 
 	let searchTerm = '';
 	let filteredCitations = Object.values(pdf_citation_mapping);
@@ -45,8 +46,10 @@
 				<li>
 					<button
 						on:click={() => selectCitation(citation)}
+						class="citation-button"
 					>
 						{@html formatCitationWithDOI(citation)}
+						<img src={plusIcon} alt="Add" class="add-icon" /> <!-- Use the imported icon -->
 					</button>
 				</li>
 			{/each}
@@ -83,7 +86,6 @@
 	.citation-list ul {
 		list-style-type: none;
 		padding: 0;
-		margin: 0;
 	}
 
 	.citation-list li {
@@ -96,6 +98,8 @@
 		cursor: pointer;
 		transition: background-color 0.2s ease-in-out;
 		text-align: left;
+		/* margin: 10px; */
+
 	}
 
 	.citation-list li:hover {
@@ -142,9 +146,9 @@
 		width: 100%;
 		padding: 10px;
 		font-size: 1rem;
-		border: 1px solid #ccc;
+		border: 1px solid oklch(var(--s));;
 		border-radius: 40px;
-		background-color: #F1E9D2;
+		background-color: #fff;
 		color: #2C665D;
 	}
 
@@ -156,5 +160,18 @@
 		padding: 0;
 		font: inherit;
 		cursor: pointer;
+	}
+
+	.citation-button {
+		position: relative; /* Added to position the icon */
+	}
+
+	.add-icon {
+		position: absolute; /* Positioning the icon */
+		bottom: -8px; /* Adjust as needed */
+		right: -8px; /* Adjust as needed */
+		width: 18px; /* Set the width of the icon */
+		height: 18px; /* Set the height of the icon */
+		fill: green; /* Set the color to green */
 	}
 </style>
