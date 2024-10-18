@@ -35,7 +35,7 @@
     });
 
     async function sendMessage() {
-        console.log('message sent');
+        console.log('message sent', get(selectedAgentIndex));
         chatHistory.update(history => [...history, { role: 'user', content: inputValue }]);
         const assistantMessageIndex = $chatHistory.length;
         chatHistory.update(history => [...history, { role: 'assistant', content: 'Loading...' }]);

@@ -3,7 +3,7 @@
 	import ChatInput from '$lib/components/ChatInput.svelte';
 	import Citations from '$lib/components/Citations.svelte';
 	import AgentCustomization from '$lib/components/AgentCustomization.svelte';
-    import AgentSelection from '$lib/components/AgentSelection1.svelte'
+    import AgentSelection from '$lib/components/AgentSelection2.svelte'
 	import Map from '$lib/components/Map.svelte';
 	import { Coords } from '$lib/stores.js';
 </script>
@@ -18,8 +18,8 @@
 		</div>
 	</div>
 	<div class="chat-container">
-        <AgentSelection />
 		<div class="chat-messages">
+            <AgentSelection />
 			<MultiAgentChat />
 		</div>
 		<div class="chat-input-wrapper">
