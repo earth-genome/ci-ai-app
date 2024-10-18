@@ -2,35 +2,35 @@
 	import { selectedAgentIndex, chatUsed } from '$lib/stores'; // Import the store
 	import { onMount } from 'svelte';
 
-	// Subscribe to the chatUsed store
 	$: isChatUsed = $chatUsed;
 	$: selectedAgent = agents[$selectedAgentIndex];
 
-	// Set default selected text to include emoji
 	let isOpen = false;
 	const agents = [
 		{
-			name: 'Research Assistant',
+			name: 'Researcher',
 			description: 'A knowledgeable research assistant to help you explore scientific literature',
-				emoji: '🔬'
+			emoji: '🔬',
+			cards: ['a', 'b', 'c', 'd']
 		},
 		{
 			name: 'Policy Expert',
 			description: 'An expert on translating science into actionable policy',
-				emoji: '📊'
+			emoji: '📊',
+			cards: ['a', 'b', 'c', 'd']
 		},
 		{
 			name: 'Teacher',
-			description:
-				'Your favorite teacher breaks down topics. Choose from kindergarten to graduate level',
-				emoji: '🍎'
+			description: 'Your favorite teacher breaks down topics. Choose from kindergarten to graduate level',
+				emoji: '🍎',
+			cards: ['a', 'b', 'c', 'd']
 		}
 	];
 
-	let selectedText = `${agents[0].emoji} ${agents[0].name}`; // Include emoji in the selected text
-	$: selectedAgentIndex.set(0); // Set the default selected agent index
+	let selectedText = `${agents[0].emoji} ${agents[0].name}`;
+	$: selectedAgentIndex.set(0);
 
-	let isFadingOut = false; // New state to track fading out
+	let isFadingOut = false;
 
 	function handleHover() {
 		isOpen = true;
@@ -38,19 +38,19 @@
 
 	function toggleDropdown() {
 		if (isOpen) {
-			isFadingOut = true; // Set fading out state when closing
+			isFadingOut = true;
 			setTimeout(() => {
-				isOpen = !isOpen; // Toggle open state after fade-out
-				isFadingOut = false; // Reset fading out state
-			}, 300); // Match this duration with the fade-out animation duration
+				isOpen = !isOpen;
+				isFadingOut = false;
+			}, 300);
 		} else {
-			isOpen = !isOpen; // Just toggle open state if opening
+			isOpen = !isOpen;
 		}
 	}
 
 	function selectOption(option) {
-		selectedText = `${option.emoji} ${option.name}`; // Update selected text with emoji
-		selectedAgentIndex.set(agents.findIndex(agent => agent.name === option.name)); // Update selectedAgentIndex
+		selectedText = `${option.emoji} ${option.name}`;
+		selectedAgentIndex.set(agents.findIndex(agent => agent.name === option.name));
 		isOpen = false;
 	}
 
@@ -75,11 +75,11 @@
 	}
 
 	function handleMouseLeave() {
-		isFadingOut = true; // Set fading out state when mouse leaves
+		isFadingOut = true;
 		setTimeout(() => {
-			isOpen = false; // Close dropdown after fade-out
-			isFadingOut = false; // Reset fading out state
-		}, 300); // Match this duration with the fade-out animation duration
+			isOpen = false;
+			isFadingOut = false;
+		}, 300);
 	}
 
 	onMount(() => {
@@ -93,16 +93,29 @@
 	}
 </script>
 
-<!-- Listen for clicks on the window to close the dropdown when clicking outside -->
 <svelte:window on:click={handleWindowClick} />
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
+	/* Apply the font to the entire component */
+	/* nest_comment_start~:global(body) {
+		font-family: 'Roboto Mono', monospace; ~nest_comment_end *//* Set the font for the body *//* nest_comment_start~
+	}~nest_comment_end */
+
 	/* Styles for the outer container when chatUsed is false */
 	.center-container {
 		display: flex;
-		align-items: center;     /* Vertical centering */
-		justify-content: center; /* Horizontal centering */
-		height: 100%;            /* Full height of the parent */
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+	}
+
+	.agent-selection-wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 530px;
 	}
 
 	.dropdown {
@@ -110,21 +123,21 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		width: 530px; /* Increase width to accommodate larger text */
+		width: 100%;
 		padding: 10px;
 		cursor: pointer;
-		margin: 0 auto; /* Center horizontally when needed */
-		background-color: transparent; /* No background */
-		border: none; /* No border */
-		/* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+		background-color: transparent;
+		border: none;
 		border-radius: 10px;
+		font-family: 'Roboto Mono', monospace;
 	}
 
 	.selected-text {
 		flex-grow: 1;
 		margin-right: 10px;
-		font-size: 3rem; /* Increase font size */
-		white-space: nowrap; /* Prevent text from wrapping */
+		font-size: 3rem;
+		white-space: nowrap;
+		font-family: 'Roboto Mono', monospace;
 	}
 
 	/* nest_comment_start~.dropdown-icon {
@@ -137,7 +150,6 @@
 		transform: rotate(180deg); ~nest_comment_end *//* Rotate icon when dropdown is open *//* nest_comment_start~
 	}~nest_comment_end */
 
-/* Styles for the updated dropdown icon */
 /* Styles for the updated dropdown icon */
     .dropdown-icon {
         display: inline-flex;
@@ -153,15 +165,12 @@
     }
 
     .chevron-up {
-        margin-bottom: 6px; /* Increased spacing between chevrons */
+        margin-bottom: 6px;
     }
 
     .chevron-down {
         margin-top: 6px;
     }
-
-
-
 
 	.options {
 		font-size: 3rem;
@@ -171,12 +180,12 @@
 		width: 100%;
 		margin-top: 5px;
 		animation: fadeIn 0.3s forwards;
-		opacity: 1; /* Default opacity */
+		opacity: 1;
 	}
 
 	.options.fade-out {
-		animation: fadeOut 0.3s forwards; /* Apply fade-out animation */
-		opacity: 0; /* Set opacity to 0 for fade-out */
+		animation: fadeOut 0.3s forwards;
+		opacity: 0;
 	}
 
 	@keyframes fadeIn {
@@ -204,58 +213,97 @@
 	.option {
 		padding: 10px;
 		cursor: pointer;
-		transition: font-size 0.3s, transform 0.3s; /* Smooth transition for font size and movement */
-		font-size: 3rem; /* Base font size */
+		transition: font-size 0.3s, transform 0.3s;
+		font-size: 3rem;
 	}
 
 	.option:hover {
-		font-size: 3.2rem; /* Increase font size on hover */
-		transform: translateY(-5px); /* Optional: Slight upward movement */
+		font-size: 3.2rem;
+		transform: translateY(-5px);
+	}
+
+	.agent-description {
+		font-size: 1.5rem;
+		color: #666;
+		margin-top: 5px;
+	}
+
+	.cards-container {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin-top: 20px;
+		width: 100%;
+	}
+
+	.agent-selection-card {
+		width: calc(25% - 10px);
+		/* aspect-ratio: 1 / 1; */
+		border: 1px solid #2f2f2f;
+		border-radius: 8px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1rem;
+		font-family: 'Roboto Mono', monospace;
 	}
 </style>
 
-<!-- Conditional class application based on the chatUsed flag -->
-<div class="{isChatUsed ? '' : 'center-container'}">
-	<div
-		class="dropdown"
-		on:click|stopPropagation={toggleDropdown}
-		on:keydown={handleKeydown}
-		on:mouseenter={handleHover}
-		on:mouseleave={handleMouseLeave}
-		tabindex="0"
-		role="button"
-		aria-haspopup="listbox"
-		aria-expanded={isOpen}
-	>
-		<span class="selected-text">{selectedText}</span>
-		<!-- <span class="dropdown-icon {isOpen ? 'rotate' : ''}">▼</span> -->
-<!-- Updated dropdown icon -->
-        <span class="dropdown-icon">
-            <svg class="chevron-up" width="24" height="6" viewBox="0 0 24 6">
-                <polyline points="2,5 12,1 22,5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <svg class="chevron-down" width="24" height="6" viewBox="0 0 24 6">
-                <polyline points="2,1 12,5 22,1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </span>
+{#if !isChatUsed}
+	<div class="center-container">
+		<div class="agent-selection-wrapper">
+			<div
+				class="dropdown"
+				on:click|stopPropagation={toggleDropdown}
+				on:keydown={handleKeydown}
+				on:mouseenter={handleHover}
+				on:mouseleave={handleMouseLeave}
+				tabindex="0"
+				role="button"
+				aria-haspopup="listbox"
+				aria-expanded={isOpen}
+			>
+				<span class="selected-text">{selectedText}</span>
+				<span class="dropdown-icon">
+					<svg class="chevron-up" width="20" height="6" viewBox="0 0 20 6">
+						<polyline points="3,5 10,1 17,5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+					<svg class="chevron-down" width="20" height="6" viewBox="0 0 20 6">
+						<polyline points="3,1 10,5 17,1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</span>
 
-		{#if isOpen}
-			<div class="options" role="listbox" class:fade-out={isFadingOut}>
-				{#each agents as agent (agent.name)} <!-- Use unique key for each agent -->
-					{#if agent.name !== selectedAgent.name} <!-- Exclude the selected agent -->
-						<div
-							class="option"
-							role="option"
-							tabindex="0"
-							on:click|stopPropagation={() => selectOption(agent)}
-							on:keydown={(e) => handleOptionKeydown(e, agent)}
-							aria-selected={selectedText === `${agent.emoji} ${agent.name}`}
-						>
-							<span class="emoji">{agent.emoji}</span> {agent.name}
-						</div>
-					{/if}
+				{#if isOpen}
+					<div class="options" role="listbox" class:fade-out={isFadingOut}>
+						{#each agents as agent (agent.name)}
+							{#if agent.name !== selectedAgent.name}
+								<div
+									class="option"
+									role="option"
+									tabindex="0"
+									on:click|stopPropagation={() => selectOption(agent)}
+									on:keydown={(e) => handleOptionKeydown(e, agent)}
+									aria-selected={selectedText === `${agent.emoji} ${agent.name}`}
+								>
+									<span class="emoji">{agent.emoji}</span> {agent.name}
+								</div>
+							{/if}
+						{/each}
+					</div>
+				{/if}
+			</div>
+			<div class="agent-description">{selectedAgent.description}</div>
+
+			<div class="cards-container">
+				{#each selectedAgent.cards as card}
+					<div class="agent-selection-card">
+						{card}
+					</div>
 				{/each}
 			</div>
-		{/if}
+		</div>
 	</div>
-</div>
+{:else}
+	<div></div>
+{/if}
