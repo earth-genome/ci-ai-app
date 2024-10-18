@@ -66,6 +66,7 @@
                     content: data.message,
                     citations: data.citations
                 };
+                console.log('assistantMessageIndex: ', history[assistantMessageIndex]);
                 return history;
             });
 
@@ -144,7 +145,7 @@
     .input-wrapper {
         position: relative;
         width: 100%; /* Take full width of the parent */
-        max-width: 750px; /* Set a maximum width */
+        /* max-width: 750px; */
         min-height: 44px;
         max-height: 200px;
     }

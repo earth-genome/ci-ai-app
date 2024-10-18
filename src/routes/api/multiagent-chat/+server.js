@@ -4,7 +4,8 @@ import { OPEN_AI_KEY } from '$env/static/private';
 import { assistantDefinitions } from '$lib/assistant-definition.js';
 import { citationsMap } from '$lib/citations-map.js';
 import { get } from 'svelte/store';
-import { promptModifiers, sliderValues } from '$lib/stores.js';
+import { promptModifiers, sliderValues, currentCitations } from '$lib/stores.js';
+import { pdf_citation_mapping } from '$lib/pdf_citation_mapping.js';
 
 const openai = new OpenAI({
 	apiKey: OPEN_AI_KEY
@@ -48,7 +49,7 @@ function escapeHtml(unsafe) {
 function extractCodeBlocks(response) {
 	const multiLineCodeBlockRegex = /```(.*?)\n([\s\S]*?)```/g;
 	const singleLineCodeBlockRegex = /`([^`]+)`/g;
-	const citationRegex = /\[(\d+)\]/g;
+    const citationRegex = /\[(\d+)\]/g;
 	const boldRegex = /\*\*(.*?)\*\*/g;
 	let match;
 	let prunedResponse = response;
@@ -76,14 +77,31 @@ function extractCodeBlocks(response) {
 		return `<code class="inline-code">${escapedCode}</code>`;
 	});
 
-	// Handle citations
-	prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
-		return `
-			<div class="tooltip tooltip-right" data-tip="Citation ${p1}">
-				<span class="badge badge-info">${p1}</span>
-			</div>
-		`;
-	});
+    // prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
+    // })
+
+    function extractDOI(citation) {
+        const doiRegex = /\b(10\.\d{4,}(?:\.\d+)*\/\S+)\b/;
+        const match = citation.match(doiRegex);
+        return match ? `https://doi.org/${match[1]}` : null;
+    }
+    prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
+        const citationIndex = parseInt(p1, 10);
+        let citation = get(currentCitations)[citationIndex]
+        console.log('currentCitations: ', get(currentCitations));
+        console.log('citationIndex: ', citationIndex);
+        console.log('citation: ', citation);
+        citation = pdf_citation_mapping[citation] || citation
+
+        const doiUrl = extractDOI(citation);
+        const openDoiFunc = `onclick="window.open('${doiUrl}', '_blank')"` || '';
+
+        return `
+            <div class="tooltip tooltip-right" data-tip="${citation}" ${openDoiFunc}>
+                <span class="badge badge-info">${p1}</span>
+            </div>
+        `
+    });
 
 	prunedResponse = prunedResponse.replace(boldRegex, '<b>$1</b>');
 
@@ -149,6 +167,7 @@ export async function POST({ request }) {
 				}
 			}
 
+            currentCitations.set(citations);
 			const prunedResponse = extractCodeBlocks(processedText);
 
 			return json({

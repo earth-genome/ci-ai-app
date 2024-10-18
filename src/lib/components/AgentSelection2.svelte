@@ -1,5 +1,5 @@
 <script>
-	import { selectedAgentIndex, chatUsed } from '$lib/stores'; // Import the store
+	import { selectedAgentIndex, chatUsed, input } from '$lib/stores'; // Import the store
 	import { onMount } from 'svelte';
 
 	$: isChatUsed = $chatUsed;
@@ -11,19 +11,34 @@
 			name: 'Researcher',
 			description: 'A knowledgeable research assistant to help you explore scientific literature',
 			emoji: '🔬',
-			cards: ['a', 'b', 'c', 'd']
+			cards: [
+                "Provide a comprehensive summary of how deforestation in the Amazon contributes to global carbon emissions, highlighting key findings from recent studies.",
+                "Describe the methodologies employed in the papers that measure deforestation rates in the Amazon and analyze their impact on climate change. Include details on data sources, analytical techniques, and any innovative approaches.",
+                "Compare the effectiveness of different policy interventions aimed at reducing deforestation in the Amazon as discussed in the available papers. Highlight which strategies have been most successful and the reasons behind their success.",
+                "Based on the current literature, what are the major gaps in research regarding the relationship between Amazon deforestation and climate change? Suggest areas where further studies are needed."
+        ]
 		},
 		{
 			name: 'Policy Expert',
 			description: 'An expert on translating science into actionable policy',
 			emoji: '📊',
-			cards: ['a', 'b', 'c', 'd']
+			cards: [
+                "Based on the latest scientific findings, what evidence-based policy measures can governments implement to effectively reduce deforestation in the Amazon? Please ensure the recommendations address environmental sustainability and socio-economic impacts.",
+                "Analyze the socio-economic consequences of Amazon deforestation as presented in recent studies. What policy interventions can mitigate negative impacts on local communities while promoting sustainable development?",
+                "What policy strategies derived from current research can be employed to leverage Amazon rainforest conservation as a key component in global climate change mitigation efforts? Include considerations for feasibility and stakeholder engagement.",
+                "Highlight the major gaps in existing research on Amazon deforestation and its climate change implications. What areas should future studies focus on to better inform and support the creation of effective policies?"
+            ]
 		},
 		{
 			name: 'Teacher',
 			description: 'Your favorite teacher breaks down topics. Choose from kindergarten to graduate level',
 				emoji: '🍎',
-			cards: ['a', 'b', 'c', 'd']
+			cards: [
+                "Can you explain how deforestation in the Amazon affects global climate change, using simple terms and examples?",
+                "What are the key findings from recent studies on Amazon deforestation and its impact on climate, and how do they relate to our everyday lives?",
+                "Why is the rate of deforestation in the Amazon important for climate change, and what can individuals do to help?",
+                "How do the methods used in research on Amazon deforestation help us understand its relationship with climate change? Please provide a step-by-step explanation."
+            ]
 		}
 	];
 
@@ -82,6 +97,11 @@
 		}, 300);
 	}
 
+	function handleCardClick(cardText) {
+		input.set(cardText); // Set the input store value to the clicked card's text
+		// Remove the line that sets chatUsed to true
+	}
+
 	onMount(() => {
 		return () => {
 			// This cleanup function will be called when the component is destroyed
@@ -108,7 +128,17 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: 100%;
+		width: 530px;
+		margin: 0 auto;
+	}
+
+	.agent-selection-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+        padding-bottom: 200px
+
 	}
 
 	.agent-selection-wrapper {
@@ -228,76 +258,102 @@
 		margin-top: 5px;
 	}
 
-	.cards-container {
-		display: flex;
-		justify-content: center;
-		flex-wrap: wrap;
-		gap: 10px;
+	.cards-wrapper {
+		width: 100%;
 		margin-top: 20px;
+		padding-left: 10%; /* Add left padding */
+		padding-right: 10%; /* Add right padding */
+	}
+
+	.cards-container {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 10px;
 		width: 100%;
 	}
 
 	.agent-selection-card {
-		width: calc(25% - 10px);
 		/* aspect-ratio: 1 / 1; */
 		border: 1px solid #2f2f2f;
 		border-radius: 8px;
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1rem;
+		align-items: flex-start; /* Changed from center to flex-start */
+		justify-content: flex-start; /* Changed from center to flex-start */
+		padding: 12px; /* Increased padding slightly */
+		font-size: 0.7rem;
 		font-family: 'Roboto Mono', monospace;
+		text-align: left; /* Changed from center to left */
+		cursor: pointer;
+		transition: transform 0.2s, box-shadow 0.2s;
+		max-width: 250px;
+		max-height: 250px;
+		overflow: hidden;
+	}
+
+	.agent-selection-card:hover {
+		transform: translateY(-3px); /* Reduced lift on hover */
+		box-shadow: 0 3px 10px rgba(0,0,0,0.1); /* Smaller shadow */
 	}
 </style>
 
 {#if !isChatUsed}
-	<div class="center-container">
-		<div class="agent-selection-wrapper">
-			<div
-				class="dropdown"
-				on:click|stopPropagation={toggleDropdown}
-				on:keydown={handleKeydown}
-				on:mouseenter={handleHover}
-				on:mouseleave={handleMouseLeave}
-				tabindex="0"
-				role="button"
-				aria-haspopup="listbox"
-				aria-expanded={isOpen}
-			>
-				<span class="selected-text">{selectedText}</span>
-				<span class="dropdown-icon">
-					<svg class="chevron-up" width="20" height="6" viewBox="0 0 20 6">
-						<polyline points="3,5 10,1 17,5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					<svg class="chevron-down" width="20" height="6" viewBox="0 0 20 6">
-						<polyline points="3,1 10,5 17,1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-				</span>
+	<div class="agent-selection-container">
+		<div class="center-container">
+			<div class="agent-selection-wrapper">
+				<div
+					class="dropdown"
+					on:click|stopPropagation={toggleDropdown}
+					on:keydown={handleKeydown}
+					on:mouseenter={handleHover}
+					on:mouseleave={handleMouseLeave}
+					tabindex="0"
+					role="button"
+					aria-haspopup="listbox"
+					aria-expanded={isOpen}
+				>
+					<span class="selected-text">{selectedText}</span>
+					<span class="dropdown-icon">
+						<svg class="chevron-up" width="20" height="6" viewBox="0 0 20 6">
+							<polyline points="3,5 10,1 17,5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+						<svg class="chevron-down" width="20" height="6" viewBox="0 0 20 6">
+							<polyline points="3,1 10,5 17,1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</span>
 
-				{#if isOpen}
-					<div class="options" role="listbox" class:fade-out={isFadingOut}>
-						{#each agents as agent (agent.name)}
-							{#if agent.name !== selectedAgent.name}
-								<div
-									class="option"
-									role="option"
-									tabindex="0"
-									on:click|stopPropagation={() => selectOption(agent)}
-									on:keydown={(e) => handleOptionKeydown(e, agent)}
-									aria-selected={selectedText === `${agent.emoji} ${agent.name}`}
-								>
-									<span class="emoji">{agent.emoji}</span> {agent.name}
-								</div>
-							{/if}
-						{/each}
-					</div>
-				{/if}
+					{#if isOpen}
+						<div class="options" role="listbox" class:fade-out={isFadingOut}>
+							{#each agents as agent (agent.name)}
+								{#if agent.name !== selectedAgent.name}
+									<div
+										class="option"
+										role="option"
+										tabindex="0"
+										on:click|stopPropagation={() => selectOption(agent)}
+										on:keydown={(e) => handleOptionKeydown(e, agent)}
+										aria-selected={selectedText === `${agent.emoji} ${agent.name}`}
+									>
+										<span class="emoji">{agent.emoji}</span> {agent.name}
+									</div>
+								{/if}
+							{/each}
+						</div>
+					{/if}
+				</div>
+				<div class="agent-description">{selectedAgent.description}</div>
 			</div>
-			<div class="agent-description">{selectedAgent.description}</div>
-
+		</div>
+		
+		<div class="cards-wrapper">
 			<div class="cards-container">
 				{#each selectedAgent.cards as card}
-					<div class="agent-selection-card">
+					<div 
+						class="agent-selection-card"
+						on:click={() => handleCardClick(card)}
+						on:keydown={(e) => e.key === 'Enter' && handleCardClick(card)}
+						tabindex="0"
+						role="button"
+					>
 						{card}
 					</div>
 				{/each}

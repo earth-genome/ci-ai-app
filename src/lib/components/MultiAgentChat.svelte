@@ -250,10 +250,16 @@
 		color: #F1E9D2;
 	}
 
-    :global(.tooltip::before) {
-        background-color: #DBEEFB;
-        color: theme('colors.primary')
+    /* :global(.tooltip) {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
     }
+    :global(.tooltip::before) {
+        opacity: 1;
+        background-color: #DBEEFB;
+        color: theme('colors.primary');
+    } */
 
 	.loading {
 		color: #F1E9D2;

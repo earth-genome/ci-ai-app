@@ -5,7 +5,7 @@
 	import AgentCustomization from '$lib/components/AgentCustomization.svelte';
     import AgentSelection from '$lib/components/AgentSelection2.svelte'
 	import Map from '$lib/components/Map.svelte';
-	import { Coords } from '$lib/stores.js';
+	import { Coords, chatUsed } from '$lib/stores.js';
 </script>
 
 <div class="main-container">
@@ -20,7 +20,11 @@
 	<div class="chat-container">
 		<div class="chat-messages">
             <AgentSelection />
-			<MultiAgentChat />
+			{#if $chatUsed}
+				<div class="multi-agent-chat-wrapper">
+					<MultiAgentChat />
+				</div>
+			{/if}
 		</div>
 		<div class="chat-input-wrapper">
 			<ChatInput />
@@ -56,7 +60,7 @@
 
 	.sidebar-bottom {
 		flex: 1 1 0;
-		min-height: 0; /* This is crucial for allowing the flex item to shrink below its content size */
+		min-height: 0;
 		display: flex;
 		flex-direction: column;
 	}
@@ -64,20 +68,35 @@
 	.chat-container {
 		display: flex;
 		flex-direction: column;
+		align-items: center;
 		border-radius: 8px;
-		/* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
 		overflow: hidden;
+		height: 100%;
+		width: 100%;
 	}
 
 	.chat-messages {
 		flex-grow: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end; /* This will align content to the bottom */
+		overflow: hidden;
+		width: 100%;
+		/* max-width: 750px; */
+	}
+
+	.multi-agent-chat-wrapper {
+		flex-grow: 1;
 		overflow-y: auto;
-		padding: 1rem;
-        /* padding-left: 10rem; */
+		display: flex;
+		flex-direction: column-reverse;
+		width: 100%;
+		/* max-width: 780px; */
 	}
 
 	.chat-input-wrapper {
 		padding: 1rem;
-        /* padding-left: 10rem; */
+		max-width: 850px;
+		width: 100%;
 	}
 </style>
