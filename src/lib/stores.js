@@ -7,65 +7,66 @@ export const currentCitations = writable([]);
 export const textEditorContent = writable('');
 export const codeBlocksMap = writable(new Map());
 export const promptModifiers = writable({
-    formality: {
-        1: "very casual, conversational tone, informal language, colloquial expressions",
-        2: "casual, relaxed tone, everyday language, friendly but not overly formal",
-        3: "semi-casual, professional but approachable, light formality, balanced tone",
-        4: "neutral, moderately formal, professional but not rigid, clear and respectful",
-        5: "semi-formal, professional tone, polite and courteous, slight formality",
-        6: "formal, structured tone, respectful and clear, professional language",
-        7: "very formal, highly structured, polite and professional, precise language",
-        8: "extremely formal, rigid tone, academic or business-level language, no casual expressions"
-    },    
-    technical_depth: {
-        1: "basic overview, layperson terms, easy to understand, everyday language",
-        2: "high-level explanation, non-technical terms, clear and straightforward, general audience-friendly",
-        3: "fundamental concepts, light technical detail, accessible explanation, non-expert friendly",
-        4: "some technical terms, mid-level detail, clear examples with minimal jargon, general understanding with depth",
-        5: "moderate technical jargon, in-depth explanation, detailed breakdown, informative but accessible",
-        6: "technical terminology, complex ideas explained, specifics with examples, expert audience but not overly technical",
-        7: "advanced technical terms, detailed technical analysis, focused on precision and depth, specialist audience",
-        8: "highly specialized terminology, deep technical insights, comprehensive and exhaustive, expert-level analysis, no simplifications"
+    length: {
+        1: 'Give a very consice response with only the essential information.',
+        2: 'Give a concise response in no more than two paragraphs',
+        3: '', //Nothing, normal response. Already pretty wordy.
+        4: 'Give a long, detailed response with no concern for the response length'
     },
-    conciseness: {
-        1: "very concise, minimal detail, straight to the point, brief summary",
-        2: "concise, limited elaboration, key points only, compact explanation",
-        3: "moderate brevity, clear and focused, essential details included, not overly brief",
-        4: "balanced explanation, some detail with focus on clarity, avoids unnecessary elaboration",
-        5: "moderate detail, expands on key points, more comprehensive but not lengthy",
-        6: "detailed, in-depth explanation, elaborates on key areas, fairly thorough",
-        7: "very detailed, covers most aspects, expanded elaboration, almost comprehensive",
-        8: "extremely detailed, exhaustive explanation, covers every aspect in depth, no brevity"
+
+    formatting: {
+        1: 'Do not use any formatting whatsoever.',
+        2: `Use some limited basic formatting such as italic or bold.
+            Only use HTML tags:
+                - Use <i></i> for italics
+                - Use <b></b> for bold.`,
+        3: `Use more advanced formatting such as italics, bold, headers, and paragraphs.
+            Use emojis in a limited way, between 0 - 3 per response.
+            Only use HTML tags:
+                - Use <h1></h1> tags to create title headers.
+                - Use <h2></h2> tags to create sub headers.
+                - Use <b></b> tags to bold important keywords or concepts.
+                - Use <i></i> tags to italicize terms that need emphasis.
+                - Use <p></p> tags to create paragraphs for clear formatting.`,
+        4: `Use abundant formatting such as italics, bold, headers, and paragraphs, lists, tables, bullets/numbers, or code blocks.
+        Use emojis when appropriate.
+        Only use HTML tags:
+            - Use <h1></h1> tags to create title headers.
+            - Use <h2></h2> tags to create sub headers.
+            - Use <b></b> tags to bold important keywords or concepts.
+            - Use <i></i> tags to italicize terms that need emphasis.
+            - Use <p></p> tags to create paragraphs for clear formatting.`,
     },
-    directness: {
-        1: "very direct, straight to the point, no elaboration, minimal engagement",
-        2: "direct, clear and focused, minimal digression, efficient communication",
-        3: "mostly direct, focused with slight elaboration, occasional side points",
-        4: "balanced, provides clear answers with some engagement, moderate elaboration",
-        5: "moderately indirect, provides context and background, engages in dialogue",
-        6: "indirect, more exploratory and conversational, includes additional context and examples",
-        7: "very indirect, detailed and exploratory, engaging conversation with multiple points",
-        8: "extremely indirect, highly exploratory, deeply conversational, rich in context and examples"
-    },
+
     grade: {
-        1: "first",
-        2: "second",
-        3: "third",
-        4: "fourth",
-        5: "fifth",
-        6: "sixth",
-        7: "seventh",
-        8: "eighth",
-        9: "ninth",
-        10: "tenth",
-        11: "eleventh",
-        12: "twelfth"
+        1: 'Pretend you are responding to a first grader.',
+        2: 'Pretend you are responding to a second grader.',
+        3: 'Pretend you are responding to a third grader.',
+        4: 'Pretend you are responding to a fourth grader.',
+        5: 'Pretend you are responding to a fifth grader.',
+        6: 'Pretend you are responding to a sixth grader.',
+        7: 'Pretend you are responding to a seventh grader.',
+        8: 'Pretend you are responding to a eighth grader.',
+        9: 'Pretend you are responding to a ninth grader.',
+        10: 'Pretend you are responding to a tenth grader.',
+        11: 'Pretend you are responding to a eleventh grader.',
+        12: 'Pretend you are responding to a twelfth grader.',
+        13: 'Pretend you are responding to a undergraduate student.',
+        14: 'Pretend you are responding to a graduate student.',
+        15: 'Pretend you are responding to a PhD student.'
     }
-})
+});
+
+export const selectedAgentIndex = writable(0);
+
 export const sliderValues = writable({
-    formality: 4,    
-    technical_depth: 4,
-    conciseness: 4,
-    directness: 4,
-    grade: 12,
+    temperature: 1,
+    length: 1,
+    formatting: 1,
+    grade: 1
 })
+
+export const input = writable('');
+export const chatHistory = writable([]);
+export const isLoading = writable(false);
+export const chatUsed = writable(false);

@@ -18,7 +18,7 @@
 		});
 	}
 	onMount(() => {
-		document.documentElement.setAttribute('data-theme', 'black');
+		document.documentElement.setAttribute('data-theme', 'mytheme');
 	});
 </script>
 
@@ -78,22 +78,10 @@
 		flex-direction: column;
 		padding: 1rem;
 		width: 100%;
-		/* max-width: 64rem; */
 		margin: 0 auto;
 		box-sizing: border-box;
 	}
 
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
-	}
-
 	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
 	}
 </style>

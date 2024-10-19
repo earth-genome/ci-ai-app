@@ -1,44 +1,25 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-	content: ['./src/**/*.{html,svelte,js,ts}'],
-	theme: {
-		extend: {}
-	},
-  plugins: [require("@tailwindcss/typography"), require("daisyui")],
-  daisyui: {
-    themes: [
-      "light",
-      "dark",
-      "cupcake",
-      "bumblebee",
-      "emerald",
-      "corporate",
-      "synthwave",
-      "retro",
-      "cyberpunk",
-      "valentine",
-      "halloween",
-      "garden",
-      "forest",
-      "aqua",
-      "lofi",
-      "pastel",
-      "fantasy",
-      "wireframe",
-      "black",
-      "luxury",
-      "dracula",
-      "cmyk",
-      "autumn",
-      "business",
-      "acid",
-      "lemonade",
-      "night",
-      "coffee",
-      "winter",
-      "dim",
-      "nord",
-      "sunset",
-    ],
-  },
+    content: ['./src/**/*.{html,svelte,js,ts}'],
+    theme: {
+        extend: {}
+    },
+    plugins: [require("@tailwindcss/typography"), require("daisyui")],
+    daisyui: {
+        themes: [
+            {
+                mytheme: {
+                    "primary": "#1982C4",
+                    "secondary": "#8AC926",
+                    "accent": "#FFCA3A",
+                    "neutral": "#040404",
+                    "base-100":  "212121",// "1B3B28",//"001500",//"#132A13", //"#021A02",
+                    "info": "#90F1EF",
+                    "success": "#43ff84",
+                    "warning": "#b96d00",
+                    "error": "#ff7576",
+                },
+            },
+        ],
+    },
 };
