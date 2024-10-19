@@ -263,5 +263,34 @@
 
 	.loading {
 		color: #F1E9D2;
-	}
+  }
+  .rendered-html :global(h1),
+  .rendered-html :global(h2),
+  .rendered-html :global(h3),
+  .rendered-html :global(h4),
+  .rendered-html :global(h5),
+  .rendered-html :global(h6) {
+      margin-top: 1em;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+  }
+
+  .rendered-html :global(p) {
+      margin-bottom: 1em;
+  }
+
+  .rendered-html :global(ul),
+  .rendered-html :global(ol) {
+      margin-bottom: 1em;
+      padding-left: 2em;
+  }
+
+  .rendered-html :global(li) {
+      margin-bottom: 0.5em;
+  }
+
+  .rendered-html :global(a) {
+      color: #0000FF;
+      text-decoration: underline;
+  }
 </style>
