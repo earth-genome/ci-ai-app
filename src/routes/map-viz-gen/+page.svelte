@@ -1,9 +1,10 @@
 <script>
 	import { onMount } from 'svelte';
 	import Map from '$lib/components/Map.svelte';
+	import MapVizSelect from '$lib/components/MapVizSelect.svelte';
 
 	let inputText = '';
-	let isSubmitted = false;
+	let isSubmitted = true;
 	let isLoading = false;
 	let mapData = null;
 	let assistantResponse = '';
@@ -41,7 +42,9 @@
 </script>
 
 {#if !isSubmitted}
-	<div class="flex items-center justify-center min-h-screen">
+	<!-- load the MapVizSelect Component -->
+	<MapVizSelect />
+	<!-- <div class="flex items-center justify-center min-h-screen">
 		<div class="container mx-auto p-4">
 			<h1 class="text-custom-intro mb-4 text-center">
 				We have geospatial data on the relationship between health, climate, and deforestation in
@@ -68,7 +71,7 @@
 				</button>
 			</div>
 		</div>
-	</div>
+	</div> -->
 {:else if isSubmitted && !isLoading}
 	<div class="flex flex-1 overflow-hidden">
 		<div class="w-2/3 shadow-xl rounded-lg overflow-hidden mx-1">
