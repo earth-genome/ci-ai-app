@@ -53,7 +53,7 @@
 					{#if message.role === 'assistant' && $isLoading && message === lastMessage}
 						<span class="loading loading-dots loading-lg" />
 					{:else}
-						<div class="rendered-html">
+						<div class="rendered-html prose">
 							{@html message.content}
 						</div>
 					{/if}
@@ -250,12 +250,47 @@
 		color: #F1E9D2;
 	}
 
-    :global(.tooltip::before) {
-        background-color: #DBEEFB;
-        color: theme('colors.primary')
+    /* :global(.tooltip) {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
     }
+    :global(.tooltip::before) {
+        opacity: 1;
+        background-color: #DBEEFB;
+        color: theme('colors.primary');
+    } */
 
 	.loading {
 		color: #F1E9D2;
-	}
+  }
+  .rendered-html :global(h1),
+  .rendered-html :global(h2),
+  .rendered-html :global(h3),
+  .rendered-html :global(h4),
+  .rendered-html :global(h5),
+  .rendered-html :global(h6) {
+      margin-top: 1em;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+  }
+
+  .rendered-html :global(p) {
+      margin-bottom: 1em;
+  }
+
+  .rendered-html :global(ul),
+  .rendered-html :global(ol) {
+      margin-bottom: 1em;
+      padding-left: 2em;
+  }
+
+  .rendered-html :global(li) {
+      margin-bottom: 0.5em;
+  }
+
+  .rendered-html :global(a) {
+      color: #0000FF;
+      text-decoration: underline;
+  }
 </style>

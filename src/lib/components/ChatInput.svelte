@@ -35,7 +35,7 @@
     });
 
     async function sendMessage() {
-        console.log('message sent');
+        console.log('message sent', get(selectedAgentIndex));
         chatHistory.update(history => [...history, { role: 'user', content: inputValue }]);
         const assistantMessageIndex = $chatHistory.length;
         chatHistory.update(history => [...history, { role: 'assistant', content: 'Loading...' }]);
@@ -66,6 +66,7 @@
                     content: data.message,
                     citations: data.citations
                 };
+                console.log('assistantMessageIndex: ', history[assistantMessageIndex]);
                 return history;
             });
 
@@ -135,13 +136,16 @@
 <style>
     .chat-input {
         display: flex;
-        align-items: flex-end;
+        justify-content: center; /* Center the content horizontally */
+        align-items: center; /* Center the content vertically */
         padding: 1px;
+        width: 100%; /* Ensure the chat-input takes full width */
     }
 
     .input-wrapper {
         position: relative;
-        width: 100%;
+        width: 100%; /* Take full width of the parent */
+        /* max-width: 750px; */
         min-height: 44px;
         max-height: 200px;
     }
@@ -156,7 +160,7 @@
         border: 1px solid oklch(var(--s));
         border-radius: 30px;
         box-sizing: border-box;
-        background-color: #F1E9D2;
+        background-color: #fff;
         color: #2C665D;
         resize: none;
         overflow-y: hidden; /* Change this from 'auto' to 'hidden' */

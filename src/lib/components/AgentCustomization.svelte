@@ -26,7 +26,7 @@
             <div>
                 <div class="flex items-center">
                     <label for="temperature" class="badge badge-custom mr-2">Creativity: {$sliderValues.temperature.toFixed(1)}</label>
-                    <div class="tooltip tooltip-right" data-tip="Creativity, aka 'temperature,' controls response randomness. Lower values make results more focused and predictable, while higher values increase creativity and diversity but reduce coherence.">
+                    <div class="tooltip tooltip-bottom" data-tip="Creativity, aka 'temperature,' controls response randomness. Lower values make results more focused and predictable, while higher values increase creativity and diversity but reduce coherence.">
                         <span class="badge badge-info cursor-help">?</span>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
             <div>
                 <div class="flex items-center">
                     <label for="length" class="badge badge-custom mr-2">Response length: {$sliderValues.length}</label>
-                    <div class="tooltip tooltip-right" data-tip="Choose between concise, 1-2 paragraphs, normal, or unlimited length.">
+                    <div class="tooltip tooltip-bottom" data-tip="Choose between concise, 1-2 paragraphs, normal, or unlimited length.">
                         <span class="badge badge-info cursor-help">?</span>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
             <div>
                 <div class="flex items-center">
                     <label for="formatting" class="badge badge-custom mr-2">Level of formatting: {$sliderValues.formatting}</label>
-                    <div class="tooltip tooltip-right" data-tip="Choose in a range between no formatting and a highly structured report.">
+                    <div class="tooltip tooltip-top" data-tip="Choose in a range between no formatting and a highly structured report.">
                         <span class="badge badge-info cursor-help">?</span>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                 <div>
                     <div class="flex items-center">
                         <label for="grade" class="badge badge-custom mr-2">Grade level: {getGradeString($sliderValues.grade)}</label>
-                        <div class="tooltip tooltip-right" data-tip="Lorem ipsum">
+                        <div class="tooltip tooltip-right" data-tip="Choose grade levels from 1st to PhD">
                             <span class="badge badge-info cursor-help">?</span>
                         </div>
                     </div>
