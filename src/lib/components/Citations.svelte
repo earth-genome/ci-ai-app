@@ -55,7 +55,7 @@
 				bind:value={searchTerm}
 			/>
 		</div>
-		<div class="tooltip tooltip-bottom ml-2" data-tip="Creativity, aka 'temperature,' controls response randomness. Lower values make results more focused and predictable, while higher values increase creativity and diversity but reduce coherence.">
+		<div class="tooltip tooltip-bottom ml-2" data-tip="Search the list of citations below to see what publications CI AI has access to. Click on a citation to insert it into the chat input. Click on the DOI to open the publication in a new tab.">
 			<span class="badge badge-info cursor-help">?</span>
 		</div>
 	</div>
