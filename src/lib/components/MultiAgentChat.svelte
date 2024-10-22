@@ -53,7 +53,7 @@
 					{#if message.role === 'assistant' && $isLoading && message === lastMessage}
 						<span class="loading loading-dots loading-lg" />
 					{:else}
-						<div class="rendered-html">
+						<div class="rendered-html prose">
 							{@html message.content}
 						</div>
 					{/if}
