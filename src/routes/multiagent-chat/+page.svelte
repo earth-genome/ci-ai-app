@@ -6,10 +6,40 @@
     import AgentSelection from '$lib/components/AgentSelection2.svelte'
 	import Map from '$lib/components/Map.svelte';
 	import { Coords, chatUsed } from '$lib/stores.js';
+	import { onMount } from 'svelte';
+
+	let helpModal;
+
+	onMount(() => {
+		if (helpModal) {
+			helpModal.showModal();
+		}
+	});
 </script>
 
 <div class="main-container">
 	<div class="sidebar">
+		<!-- Use bind:this to get a reference to the dialog element -->
+		<button class="btn" on:click={() => helpModal.showModal()}>What is CI Research Chat?</button>
+		<dialog bind:this={helpModal} class="modal">
+			<div class="modal-box prose">
+				<h3 class="text-lg font-bold">Welcome!</h3>
+				<p class="py-4">
+					Explore the research powering <a href="https://www.wri.org/research/not-just-carbon-capturing-benefits-forests-climate">Conservation International's Not Just Carbon report</a> in a conversational manner.
+					CI Research Chat (CI AI) is a machine intelligence that has deep knowledge on the research behind the Not Just Carbon report. Ask it about anything topic related to the report, or climate change at large, and CI AI will reference over 100 documents to answer your question, citing its sources.<br><br>
+					
+					The list of papers being used by CI AI is on the left. You can search for a publication using the search bar, and clikcing the citation will insert its reference into the chat window.
+					Click the citations in a response to open the document in a new tab. <br><br>
+
+					Explore the three different specialties to view the data from different perspectives. Suggested prompts below the speciality description demonstrate what can be asked of each specialied AI - click to insert the prompt into the chat, or try asking your own question.
+				</p>
+				<div class="modal-action">
+					<form method="dialog">
+						<button class="btn">Close</button>
+					</form>
+				</div>
+			</div>
+		</dialog>
 		<div class="sidebar-top">
 			<AgentCustomization />
 		</div>
@@ -19,7 +49,7 @@
 	</div>
 	<div class="chat-container">
 		<div class="chat-messages">
-            <AgentSelection />
+			<AgentSelection />
 			{#if $chatUsed}
 				<div class="multi-agent-chat-wrapper">
 					<MultiAgentChat />

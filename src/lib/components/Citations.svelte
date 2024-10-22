@@ -7,19 +7,36 @@
 	let searchTerm = '';
 	let filteredCitations = Object.values(pdf_citation_mapping);
 
-	function formatCitationWithDOI(citation) {
-		const doiRegex = /\b(https:\/\/doi\.org\/10\.\d{4,}(?:\.\d+)*\/\S+)\b/;
-		const doiMatches = citation.match(doiRegex);
-
-		const titleRegex = /"([^"]*)"/g;
-		citation = citation.replace(titleRegex, '<b>"$1"</b>');
-		citation = citation.replace(doiRegex, (match) => `<a href="${match}" target="_blank">${match}</a>`);
-
-		return citation;
+	function getAuthorYearPart(citation) {
+		return citation.split('"')[0].trim();
 	}
 
 	function selectCitation(citation) {
-		input.update(currentInput => currentInput + (currentInput ? ' ' : '') + citation);
+		const authorYearPart = getAuthorYearPart(citation);
+		input.update(currentInput => currentInput + (currentInput ? ' ' : '') + authorYearPart);
+	}
+
+	function formatCitationWithDOI(citation) {
+		const doiRegex = /\b(https:\/\/doi\.org\/10\.\d{4,}(?:\.\d+)*\/\S+)\b/;
+		const titleRegex = /"([^"]*)"/;
+
+		// Extract the part before the first quote (authors and year)
+		const authorYearPart = getAuthorYearPart(citation);
+
+		// Extract the title
+		const titleMatch = citation.match(titleRegex);
+		const title = titleMatch ? titleMatch[1] : '';
+
+			// Format the citation
+			let formattedCitation = `${authorYearPart}` + (title ? ` <b>"${title}"</b>` : '');
+
+			// Add DOI link if present
+			const doiMatches = citation.match(doiRegex);
+			if (doiMatches) {
+				formattedCitation += ` <a href="${doiMatches[0]}" target="_blank">${doiMatches[0]}</a>`;
+			}
+
+			return formattedCitation;
 	}
 
 	$: {
@@ -30,15 +47,17 @@
 </script>
 
 <div class="citations">
-	<div class="prose">
-		<h4>CI AI has access to the following publications:</h4>
-	</div>
-	<div class="search-box">
-		<input
-			type="text"
-			placeholder="Search publications..."
-			bind:value={searchTerm}
-		/>
+	<div class="flex items-center">
+		<div class="search-box flex-grow">
+			<input
+				type="text"
+				placeholder="Search publications..."
+				bind:value={searchTerm}
+			/>
+		</div>
+		<div class="tooltip tooltip-bottom ml-2" data-tip="Creativity, aka 'temperature,' controls response randomness. Lower values make results more focused and predictable, while higher values increase creativity and diversity but reduce coherence.">
+			<span class="badge badge-info cursor-help">?</span>
+		</div>
 	</div>
 	<div class="citation-list">
 		<ul>
@@ -66,10 +85,6 @@
 		flex-direction: column;
 		height: 100%;
 		overflow: hidden;
-	}
-
-	.prose {
-		flex-shrink: 0;
 	}
 
 	.search-box {
@@ -136,10 +151,8 @@
 	}
 
 	.search-box {
-		margin-left: 10px;
 		margin-bottom: 10px;
 		margin-top: 10px;
-		margin-right: 35px;
 	}
 
 	.search-box input {
