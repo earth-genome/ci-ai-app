@@ -1,6 +1,7 @@
 <script>
     import { sliderValues, selectedAgentIndex } from '$lib/stores.js';
     import { get } from 'svelte/store'
+    import TooltipBadge from './TooltipBadge.svelte';
 
     function updateSlider(key, value) {
         sliderValues.update(currentValues => {
@@ -26,9 +27,11 @@
             <div>
                 <div class="flex items-center">
                     <label for="temperature" class="badge badge-custom mr-2">Creativity: {$sliderValues.temperature.toFixed(1)}</label>
-                    <div class="tooltip tooltip-bottom" data-tip="Creativity, aka 'temperature,' controls response randomness. Lower values make results more focused and predictable, while higher values increase creativity and diversity but reduce coherence.">
-                        <span class="badge badge-info cursor-help">?</span>
-                    </div>
+                    <TooltipBadge
+                        tooltipText="Creativity, aka 'temperature,' controls response randomness. Lower values make results more focused and predictable, while higher values increase creativity and diversity but reduce coherence."
+                        position="right"
+                        badgeContent="?"
+                    />
                 </div>
                 <input type="range" min="0" max="2" class="range range-temperature range-xs" step="0.1" 
                        value={$sliderValues.temperature} id="temperature" 
@@ -38,9 +41,11 @@
             <div>
                 <div class="flex items-center">
                     <label for="length" class="badge badge-custom mr-2">Response length: {$sliderValues.length}</label>
-                    <div class="tooltip tooltip-bottom" data-tip="Choose between concise, 1-2 paragraphs, normal, or unlimited length.">
-                        <span class="badge badge-info cursor-help">?</span>
-                    </div>
+                    <TooltipBadge
+                        tooltipText="Choose between concise, 1-2 paragraphs, normal, or unlimited length."
+                        position="right"
+                        badgeContent="?"
+                    />
                 </div>
                 <input type="range" min="1" max="4" class="range range-secondary range-xs" step="1" 
                        value={$sliderValues.length} id="length" 
@@ -50,9 +55,11 @@
             <div>
                 <div class="flex items-center">
                     <label for="formatting" class="badge badge-custom mr-2">Level of formatting: {$sliderValues.formatting}</label>
-                    <div class="tooltip tooltip-top" data-tip="Choose in a range between no formatting and a highly structured report.">
-                        <span class="badge badge-info cursor-help">?</span>
-                    </div>
+                    <TooltipBadge
+                        tooltipText="Choose in a range between no formatting and a highly structured report."
+                        position="right"
+                        badgeContent="?"
+                    />
                 </div>
                 <input type="range" min="1" max="4" class="range range-accent range-xs" step="1" 
                        value={$sliderValues.formatting} id="formatting" 
@@ -63,9 +70,11 @@
                 <div>
                     <div class="flex items-center">
                         <label for="grade" class="badge badge-custom mr-2">Grade level: {getGradeString($sliderValues.grade)}</label>
-                        <div class="tooltip tooltip-right" data-tip="Choose grade levels from 1st to PhD">
-                            <span class="badge badge-info cursor-help">?</span>
-                        </div>
+                        <TooltipBadge
+                            tooltipText="Choose in a range between no formatting and a highly structured report."
+                            position="right"
+                            badgeContent="?"
+                        />
                     </div>
                     <input type="range" min="1" max="15" class="range range-success range-xs" step="1" 
                            value={$sliderValues.grade} id="grade-level" 
