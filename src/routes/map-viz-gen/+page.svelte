@@ -1,106 +1,155 @@
 <script>
-	import { onMount } from 'svelte';
-	import Map from '$lib/components/Map.svelte';
-	import MapVizSelect from '$lib/components/MapVizSelect.svelte';
+    import { onMount } from 'svelte';
+    import Map from '$lib/components/Map.svelte';
+    import { selectedProperty } from '$lib/stores.js';
 
-	let inputText = '';
-	let isSubmitted = true;
-	let isLoading = false;
-	let mapData = null;
-	let assistantResponse = '';
+    let inputText = '';
+    let isLoading = false;
+    let mapData = null;
+    let assistantResponse = '';
+    let dataProperties;
+    let currentProperty = null;
 
-	async function makeAssistantRequest() {
-		try {
-			isLoading = true;
-			const res = await fetch('../api/map-viz-chat', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ message: inputText })
-			});
+    const allProperties = [
+        'Delta_T',
+        'local_0-2km_start', 'local_0-2km_end',
+        'regional_2-5km_start', 'regional_2-5km_end',
+        'regional_5-10km_start', 'regional_5-10km_end',
+        'regional_10-25km_start', 'regional_10-25km_end',
+        'regional_25-50km_start', 'regional_25-50km_end',
+        'regional_50-100km_start', 'regional_50-100km_end',
+        'wbgt_ERA5', 'wbgt_hist_comflor', 'wbgt_hist_se6flor',
+        'wbgt_rcp4_comflor', 'wbgt_rcp4_se6flor',
+        'wbgt_rcp8_comflor', 'wbgt_rcp8_se6flor'
+    ];
 
-			if (res.ok) {
-				const data = await res.json();
-				assistantResponse = data.answer;
-				mapData = data.mapStyle; // You can handle the map visualization data
-				console.log('Assistant response:', data);
-			} else {
-				console.error('Error:', res.statusText);
-			}
-		} catch (error) {
-			console.error('Request error:', error);
-		} finally {
-			isLoading = false;
-			isSubmitted = true;
-		}
-	}
+    onMount(async () => {
+        const response = await fetch('/heat_deforestation_data_overview.json');
+        dataProperties = await response.json();
+    });
 
-	onMount(() => {
-		console.log('Component mounted');
-	});
+    async function handleSelect(property) {
+        if (property === currentProperty) return;
+        
+        try {
+            isLoading = true;
+            currentProperty = property;
+            selectedProperty.set(property);
+            
+            const res = await fetch('../api/map-viz-chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    message: `Show me the visualization for ${property}`,
+                    property: property 
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                assistantResponse = data.answer;
+                mapData = data.mapStyle;
+                console.log('Assistant response:', data);
+            } else {
+                console.error('Error:', res.statusText);
+            }
+        } catch (error) {
+            console.error('Request error:', error);
+        } finally {
+            isLoading = false;
+        }
+    }
 </script>
 
-{#if !isSubmitted}
-	<!-- load the MapVizSelect Component -->
-	<MapVizSelect />
-	<!-- <div class="flex items-center justify-center min-h-screen">
-		<div class="container mx-auto p-4">
-			<h1 class="text-custom-intro mb-4 text-center">
-				We have geospatial data on the relationship between health, climate, and deforestation in
-				the Amazon. Ask a question related to these topics and a map visualization will be generated
-				below
-			</h1>
-			<input
-				bind:value={inputText}
-				type="text"
-				placeholder="Where does deforestation impact health in the Amazon.."
-				class="input input-bordered w-full mb-4"
-			/>
-			<div class="flex justify-center">
-				<button
-					on:click={makeAssistantRequest}
-					class="btn btn-outline btn-wide"
-					disabled={isLoading}
-				>
-					{#if isLoading}
-						Loading...
-					{:else}
-						Explore
-					{/if}
-				</button>
-			</div>
-		</div>
-	</div> -->
-{:else if isSubmitted && !isLoading}
-	<div class="flex flex-1 overflow-hidden">
-		<div class="w-2/3 shadow-xl rounded-lg overflow-hidden mx-1">
-			<Map class="w-full h-full" />
-		</div>
-		<div class=" w-1/3 shadow-xl rounded-lg overflow-scroll p-2 map-viz-card mx-1">
-			<h2 class="text-2xl mb-4 text-center title-font">Map Visualization Explanation</h2>
-			<p>{assistantResponse}</p>
-		</div>
-	</div>
-{:else}
-	<div class="flex items-center justify-center min-h-screen">
-		<div class="container mx-auto p-4">
-			<h1 class="text-custom-intro mb-4 text-center">Generating map visualization...</h1>
-		</div>
-	</div>
-{/if}
+<div class="flex flex-col h-screen">
+    {#if !mapData}
+        {#if dataProperties}
+            <div class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {#each allProperties as property}
+                        <div class="card bg-neutral shadow-s hover:shadow-2xl transition-shadow">
+                            <div class="card-body p-4">
+                                <h2 class="card-title">{dataProperties.short_explanation[property]}</h2>
+                                <p class="text-sm">{dataProperties.explanation[property]}</p>
+                                <div class="card-actions justify-center">
+                                    <button 
+                                        class="btn btn-wide btn-outline mt-4"
+                                        on:click={() => handleSelect(property)}
+                                    >
+                                        Visualize
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {/each}
+                </div>
+            </div>
+        {:else}
+            <div class="flex justify-center items-center h-screen">
+                <span class="loading loading-spinner loading-lg"></span>
+            </div>
+        {/if}
+    {:else if isLoading}
+        <div class="flex items-center justify-center flex-1">
+            <div class="container mx-auto p-4">
+                <h1 class="text-custom-intro mb-4 text-center">Generating map visualization...</h1>
+                <div class="flex justify-center">
+                    <span class="loading loading-spinner loading-lg"></span>
+                </div>
+            </div>
+        </div>
+    {:else}
+        <div class="flex flex-1 overflow-hidden">
+            <div class="w-2/3 shadow-xl rounded-lg overflow-hidden mx-1">
+                <Map {mapData} class="w-full h-full" />
+            </div>
+            <div class="w-1/3 flex flex-col">
+                <div class="h-2/3 shadow-xl rounded-lg overflow-scroll p-2 map-viz-card mx-1 mb-2">
+                    <h2 class="text-2xl mb-4 text-center title-font">Map Visualization Explanation</h2>
+                    <p>{assistantResponse}</p>
+                </div>
+                <div class="h-1/3 shadow-xl rounded-lg overflow-auto p-2 mx-1">
+                    <h3 class="text-lg mb-2 font-semibold">Switch Visualization</h3>
+                    <div class="space-y-0 max-h-full overflow-y-auto">
+                        {#each allProperties as property}
+                            <div class="form-control">
+                                <label class="label cursor-pointer justify-start gap-2">
+                                    <input 
+                                        type="radio" 
+                                        name="visualization" 
+                                        class="radio radio-primary"
+                                        checked={currentProperty === property}
+                                        on:change={() => handleSelect(property)}
+                                    />
+                                    <span class="label-text">
+                                        {dataProperties?.short_explanation[property] || property}
+                                    </span>
+                                </label>
+                            </div>
+                        {/each}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {/if}
+</div>
 
 <style>
-	.text-custom-intro {
-		font-size: 1.7rem;
-		font-weight: 700;
-	}
-	.map-viz-card {
-		color: rgb(44, 38, 32);
-		background-color: #f4f0e4;
-	}
-	.title-font {
-		font-family: 'Poppins', sans-serif;
-		font-weight: 600;
-	}
+    .text-custom-intro {
+        font-size: 1.7rem;
+        font-weight: 700;
+    }
+    .map-viz-card {
+        color: rgb(44, 38, 32);
+        background-color: #f4f0e4;
+    }
+    .title-font {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+    }
+    .card {
+        @apply backdrop-blur-sm bg-opacity-90;
+    }
 </style>
