@@ -31,7 +31,7 @@
 					class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
 				>
 					<li class="nav-item" class:active={currentPath === '/'}><a href="/">Home</a></li>
-					<li class="nav-item" class:active={currentPath.startsWith('/map-chat')}><a href="/map-chat">Map Chat</a></li>
+					<li class="nav-item" class:active={currentPath.startsWith('/map-viz-gen')}><a href="/map-viz-gen">Map Chat</a></li>
 					<li class="nav-item" class:active={currentPath.startsWith('/multiagent-chat')}><a href="/multiagent-chat">CI Research Chat</a></li>
 				</ul>
 			</div>
@@ -41,8 +41,9 @@
 		</div>
 		<div class="navbar-center hidden lg:flex">
 			<ul class="menu menu-horizontal px-1">
+
 				<li class="nav-item" class:active={isHomePage}><a href="/">Home</a></li>
-				<li class="nav-item" class:active={currentPath.startsWith('/map-chat')}><a href="/map-chat">Map Chat</a></li>
+				<li class="nav-item" class:active={currentPath.startsWith('/map-viz-gen')}><a href="/map-viz-gen">Map Chat</a></li>
 				<li class="nav-item" class:active={currentPath.startsWith('/multiagent-chat')}><a href="/multiagent-chat">CI Research Chat</a></li>
 			</ul>
 		</div>

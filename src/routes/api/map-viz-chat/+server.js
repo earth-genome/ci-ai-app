@@ -24,25 +24,25 @@ export async function POST({ request }) {
       ],
       functions: [
         {
-          name: 'generate_map_style',
-          description: 'Generates a map style and provides a related answer.',
+          name: 'generate_map_info',
+          description: 'Provides information about map visualization and recommendations for additional properties to visualize.',
           parameters: {
             type: 'object',
             properties: {
               answer: {
                 type: 'string',
-                description: 'The answer to the user\'s question about health, climate, and deforestation in the Amazon.'
+                description: 'The user shared the property they are visualizing on the map. Explain the significance and meaning of the property that is being visualized '
               },
-              mapStyle: {
+              recommendation: {
                 type: 'string',
-                description: "This should return a mapbox polygon paint property specifying the fill color for a map style. the map style should be related to the user's question. for instance paint: {'fill-color':'#ff0000'}"
+                description: "The user shared with you the other properties they have access to and which one they are visualizing now. Recommend one of the other properties and explain why it would add context to the current visualization."
               }
             },
-            required: ['answer', 'mapStyle']
+            required: ['answer', 'recommendation']
           }
         }
       ],
-      function_call: { name: 'generate_map_style' }
+      function_call: { name: 'generate_map_info' }
     });
 
     const result = completion.choices[0].message;
@@ -50,11 +50,11 @@ export async function POST({ request }) {
     if (result.function_call) {
       const parsedData = JSON.parse(result.function_call.arguments);
 	  console.log('Parsed answer:', parsedData.answer);
-      console.log('Parsed mapStyle:', parsedData.mapStyle);
+      console.log('Parsed recommendation:', parsedData.recommendation);
 
       return json({
         answer: parsedData.answer,
-        mapStyle: parsedData.mapStyle
+        recommendation: parsedData.recommendation
       });
     } else {
       return json({ message: 'No structured output available.' });

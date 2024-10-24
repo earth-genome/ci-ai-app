@@ -21,6 +21,7 @@
 	let currentProperty;
     selectedProperty.subscribe(value => {
         currentProperty = value;
+		console.log("currentProperty: ", currentProperty);
         // Update the map layer if it exists
         if (map && map.getLayer('researchData')) {
             map.setPaintProperty('researchData', 'fill-color', [
