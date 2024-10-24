@@ -68,9 +68,9 @@ export const selectedAgentIndex = writable(0);
 
 export const sliderValues = writable({
     temperature: 1,
-    length: 1,
-    formatting: 1,
-    grade: 1
+    length: 2,
+    formatting: 2,
+    grade: 12
 })
 
 export const input = writable('');
