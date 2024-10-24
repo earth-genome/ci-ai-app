@@ -1,5 +1,5 @@
 <script>
-	import { selectedAgentIndex, chatUsed, input } from '$lib/stores'; // Import the store
+	import { selectedAgentIndex, chatUsed, input } from '$lib/stores';
 	import { onMount } from 'svelte';
 
 	$: isChatUsed = $chatUsed;
@@ -44,12 +44,11 @@
 	];
 
 	let selectedText = `${agents[0].emoji} ${agents[0].name}`;
-	$: selectedAgentIndex.set(0);
+	selectedAgentIndex.set(0);
 
 	let isFadingOut = false;
-
 	let windowWidth;
-    let windowHeight;
+	let windowHeight;
 
 	function handleHover() {
 		isOpen = true;
@@ -59,11 +58,11 @@
 		if (isOpen) {
 			isFadingOut = true;
 			setTimeout(() => {
-				isOpen = !isOpen;
+				isOpen = false;
 				isFadingOut = false;
 			}, 300);
 		} else {
-			isOpen = !isOpen;
+			isOpen = true;
 		}
 	}
 
@@ -102,13 +101,12 @@
 	}
 
 	function handleCardClick(cardText) {
-		input.set(cardText); // Set the input store value to the clicked card's text
-		// Remove the line that sets chatUsed to true
+		input.set(cardText);
 	}
 
 	function handleResize() {
 		windowWidth = window.innerWidth;
-        windowHeight = window.innerHeight;
+		windowHeight = window.innerHeight;
 	}
 
 	onMount(() => {
@@ -122,23 +120,16 @@
 	const minWindowWidth = 1000;
 	const minWindowHeight = 950;
 
-
 	$: if ($chatUsed) {
 		isOpen = false;
 	}
 
-	$: showDropdown = windowWidth > minWindowWidth && windowHeight > minWindowHeight;
+	$: showFullCard = windowWidth > minWindowWidth && windowHeight > minWindowHeight;
 
 	function truncateCard(text, wordCount = 3) {
 		const words = text.split(' ');
 		if (words.length <= wordCount) return text;
 		return words.slice(0, wordCount).join(' ') + '...';
-	}
-
-	$: showFullCard = windowWidth > minWindowWidth && windowHeight > minWindowHeight;
-
-	function handleSelectOption(agent) {
-		selectOption(agent);
 	}
 </script>
 
@@ -147,115 +138,94 @@
 {#if !isChatUsed}
 	<div class="agent-selection-container">
 		<div class="center-container">
-				<div class="agent-selection-wrapper">
-					{#if showDropdown}
-						<div
-							class="dropdown"
-							on:click|stopPropagation={toggleDropdown}
-							on:keydown={handleKeydown}
-							on:mouseenter={handleHover}
-							on:mouseleave={handleMouseLeave}
-							tabindex="0"
-							role="button"
-							aria-haspopup="listbox"
-							aria-expanded={isOpen}
-						>
-							<span class="selected-text">{selectedText}</span>
-							<span class="dropdown-icon">
-								<svg class="chevron-up" width="20" height="6" viewBox="0 0 20 6">
-									<polyline
-										points="3,5 10,1 17,5"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="3"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
-								</svg>
-								<svg class="chevron-down" width="20" height="6" viewBox="0 0 20 6">
-									<polyline
-										points="3,1 10,5 17,1"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="3"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
-								</svg>
-							</span>
+			<div class="agent-selection-wrapper">
+				<div
+					class="dropdown"
+					on:click|stopPropagation={toggleDropdown}
+					on:keydown={handleKeydown}
+					on:mouseenter={handleHover}
+					on:mouseleave={handleMouseLeave}
+					tabindex="0"
+					role="button"
+					aria-haspopup="listbox"
+					aria-expanded={isOpen}
+				>
+					<span class="selected-text">{selectedText}</span>
+					<span class="dropdown-icon">
+						<svg class="chevron-up" width="20" height="6" viewBox="0 0 20 6">
+							<polyline
+								points="3,5 10,1 17,5"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="3"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+						<svg class="chevron-down" width="20" height="6" viewBox="0 0 20 6">
+							<polyline
+								points="3,1 10,5 17,1"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="3"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+					</span>
 
-							{#if isOpen}
-								<div class="options" role="listbox" class:fade-out={isFadingOut}>
-									{#each agents as agent (agent.name)}
-										{#if agent.name !== selectedAgent.name}
-											<div
-												class="option"
-												role="option"
-												tabindex="0"
-												on:click|stopPropagation={() => selectOption(agent)}
-												on:keydown={(e) => handleOptionKeydown(e, agent)}
-												aria-selected={selectedText === `${agent.emoji} ${agent.name}`}
-											>
-												<span class="emoji">{agent.emoji}</span>
-												{agent.name}
-											</div>
-										{/if}
-									{/each}
-								</div>
-							{/if}
+					{#if isOpen}
+						<div class="options" role="listbox" class:fade-out={isFadingOut}>
+							{#each agents as agent (agent.name)}
+								{#if agent.name !== selectedAgent.name}
+									<div
+										class="option"
+										role="option"
+										tabindex="0"
+										on:click|stopPropagation={() => selectOption(agent)}
+										on:keydown={(e) => handleOptionKeydown(e, agent)}
+										aria-selected={selectedText === `${agent.emoji} ${agent.name}`}
+									>
+										<span class="emoji">{agent.emoji}</span>
+										{agent.name}
+									</div>
+								{/if}
+							{/each}
 						</div>
-					{:else}
-						<details class="dropdown dropdown-top">
-							<summary class="btn m-1">{selectedAgent.emoji} {selectedAgent.name}</summary>
-							<ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-								{#each agents as agent}
-									{#if agent.name !== selectedAgent.name}
-										<li>
-											<a on:click|preventDefault={() => handleSelectOption(agent)}>
-												{agent.emoji} {agent.name}
-											</a>
-										</li>
-									{/if}
-								{/each}
-							</ul>
-						</details>
 					{/if}
-					<div class="agent-description">{selectedAgent.description}</div>
-				</div>
-			</div>
-
-			<div class="cards-wrapper">
-				<div class="cards-container">
-					{#each selectedAgent.cards as card}
-						<div
-							class="agent-selection-card"
-							on:click={() => handleCardClick(card)}
-							on:keydown={(e) => e.key === 'Enter' && handleCardClick(card)}
-							tabindex="0"
-							role="button"
-						>
-							{#if showFullCard}
-								{card}
-							{:else}
-								{truncateCard(card)}
-							{/if}
-						</div>
-					{/each}
 				</div>
 			</div>
 		</div>
-	<!-- </div> -->
+
+		<div class="cards-wrapper">
+			<div class="agent-description" style="padding-bottom: 40px; text-align: center;">
+				{selectedAgent.description}
+			</div>
+			<div class="cards-container">
+				{#each selectedAgent.cards as card}
+					<div
+						class="agent-selection-card"
+						on:click={() => handleCardClick(card)}
+						on:keydown={(e) => e.key === 'Enter' && handleCardClick(card)}
+						tabindex="0"
+						role="button"
+					>
+						{#if showFullCard}
+							{card}
+						{:else}
+							{truncateCard(card)}
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</div>
+	</div>
 {:else}
 	<div />
 {/if}
 
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
-
-	/* Apply the font to the entire component */
-	/* nest_comment_start~:global(body) {
-		font-family: 'Roboto Mono', monospace; ~nest_comment_end */ /* Set the font for the body */ /* nest_comment_start~
-	}~nest_comment_end */
 
 	/* Styles for the outer container when chatUsed is false */
 	.center-container {
@@ -271,7 +241,7 @@
 		flex-direction: column;
 		align-items: center;
 		width: 100%;
-		padding-bottom: 100px
+		padding-bottom: 100px;
 	}
 
 	.agent-selection-wrapper {
@@ -300,20 +270,8 @@
 		margin-right: 10px;
 		font-size: 3rem;
 		white-space: nowrap;
-		font-family: 'Roboto Mono', monospace;
 	}
 
-	/* nest_comment_start~.dropdown-icon {
-		width: 16px;
-		height: 16px;
-		transition: transform 0.3s; ~nest_comment_end */ /* Smooth rotation transition */ /* nest_comment_start~
-	}~nest_comment_end */
-
-	/* nest_comment_start~.dropdown-icon.rotate {
-		transform: rotate(180deg); ~nest_comment_end */ /* Rotate icon when dropdown is open */ /* nest_comment_start~
-	}~nest_comment_end */
-
-	/* Styles for the updated dropdown icon */
 	.dropdown-icon {
 		display: inline-flex;
 		flex-direction: column;
@@ -394,8 +352,8 @@
 	.cards-wrapper {
 		width: 100%;
 		margin-top: 20px;
-		padding-left: 10%; /* Add left padding */
-		padding-right: 10%; /* Add right padding */
+		padding-left: 10%;
+		padding-right: 10%;
 	}
 
 	.cards-container {
@@ -406,16 +364,15 @@
 	}
 
 	.agent-selection-card {
-		/* aspect-ratio: 1 / 1; */
 		border: 1px solid #2f2f2f;
 		border-radius: 8px;
 		display: flex;
-		align-items: flex-start; /* Changed from center to flex-start */
-		justify-content: flex-start; /* Changed from center to flex-start */
-		padding: 12px; /* Increased padding slightly */
+		align-items: flex-start;
+		justify-content: flex-start;
+		padding: 12px;
 		font-size: 0.7rem;
 		font-family: 'Roboto Mono', monospace;
-		text-align: left; /* Changed from center to left */
+		text-align: left;
 		cursor: pointer;
 		transition: transform 0.2s, box-shadow 0.2s;
 		max-width: 250px;
@@ -424,7 +381,35 @@
 	}
 
 	.agent-selection-card:hover {
-		transform: translateY(-3px); /* Reduced lift on hover */
-		box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* Smaller shadow */
+		transform: translateY(-3px);
+		box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+	}
+
+	/* Media query for small screens */
+	@media (max-width: 1000px), (max-height: 750px) {
+		.agent-selection-container {
+			padding-bottom: 0;
+		}
+
+		.agent-selection-wrapper {
+			width: 340px;
+		}
+
+		.selected-text {
+			font-size: 1.75rem;
+		}
+
+		.option {
+			font-size: 2rem;
+		}
+
+		.option:hover {
+			font-size: 2.2rem;
+			transform: translateY(-3px);
+		}
+
+		.agent-description {
+			font-size: 1rem;
+		}
 	}
 </style>
