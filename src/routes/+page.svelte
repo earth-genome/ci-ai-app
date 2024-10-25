@@ -1,8 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import multiAgentPhoto from '$lib/images/aspen-white.png';
-	import mapAgentPhoto from '$lib/images/aspen-up.png';
+	import multiAgentPhoto from '$lib/images/jungle-waterfall.png';
+	import mapAgentPhoto from '$lib/images/deep-rainforest.jpg';
 
 	let currentWord = 'Trees';
 	const words = ['Trees', 'Heat', 'Health', 'Carbon'];
@@ -62,8 +62,8 @@
 		</h1>
 	</section>
 
-	<section class="info-section">
-		<div class="card card-side bg-base-100 shadow-xl m-4">
+	<section class="info-section flex justify-end">
+		<div class="card card-side bg-base-100 shadow-xl m-4" style="max-width: 1000px;">
 			<figure class="w-1/2">
 				<img src={multiAgentPhoto} alt="Multi-agent" class="w-full h-full object-cover" />
 			</figure>
@@ -72,15 +72,15 @@
 				<p>The Not Just Carbon report produced information about the deep, wide reaching impact that
 				   deforestation could have on climate change and our planet as a whole. Go deeper and explore
 				   the research behind the report with a personalized AI assistant.</p>
-				<div class="card-actions justify-end">
-					<a href="/multiagent-chat" class="btn btn-primary">Start Exploring</a>
+				<div class="card-actions justify-center">
+					<a href="/multiagent-chat" class="btn btn-outline btn-wide">Start Exploring</a>
 				</div>
 			</div>
 		</div>
 	</section>
 
 	<section class="info-section">
-		<div class="card card-side bg-base-100 shadow-xl m-4 flex-row-reverse">
+		<div class="card card-side bg-base-100 shadow-xl m-4 flex-row-reverse" style="max-width: 1000px;">
 			<figure class="w-1/2">
 				<img src={mapAgentPhoto} alt="Map agent" class="w-full h-full object-cover" />
 			</figure>
@@ -90,7 +90,9 @@
 				   findings based on geospatial data. Explore these with an AI agent assisted map interface and
 				   learn more about the where behind the findings.</p>
 				<div class="card-actions justify-end">
-					<a href="/map-chat" class="btn btn-primary">Start Exploring</a>
+					<div class="flex justify-center w-full">
+						<a href="/map-viz-gen" class="btn btn-outline btn-wide">Start Exploring</a>
+					</div>
 				</div>
 			</div>
 		</div>
