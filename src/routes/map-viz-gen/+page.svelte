@@ -2,14 +2,21 @@
 	import { onMount } from 'svelte';
 	import Map from '$lib/components/Map.svelte';
 	import { selectedProperty } from '$lib/stores.js';
+	import { slide, blur, crossfade, fade, draw, fly, scale } from 'svelte/transition';
+
+	let isMobile = false;
 
 	let inputText = '';
 	let isLoading = false;
+	let isQuickLoading = false;
 	let mapData = null;
 	let assistantResponse = null;
-    let recommendationData = '';
+	let recommendationData = '';
 	let dataProperties;
 	let currentProperty = null;
+	let hoveredProperty = null;
+	let hoverPosition = 0;
+	let tooltipHeight = 0;
 
 	const vizProperties = [
 		'Delta_T',
@@ -19,30 +26,43 @@
 		'regional_10-25km_delta',
 		'regional_25-50km_delta',
 		'regional_50-100km_delta',
-		'regional_2-10km_delta',
-		'regional_10-100km_delta',
-        "wbgt_rcp8_se6flor", 
-		"wbgt_hist_se6flor",
-		"wbgt_rcp4_comflor-hist_comflor",
-		"wbgt_rcp4_se6flor-hist_comflor",
-		"wbgt_rcp8_comflor",
-		"wbgt_rcp8_se6flor-hist_comflor",
-		"wbgt_hist_comflor-ERA5",
-		"wbgt_rcp8_comflor-hist_comflor",
-		"wbgt_hist_se6flor-hist_comflor",
-		"wbgt_rcp8_se6flor-rcp8_comflor",
-		"wbgt_hist_comflor",
-		"wbgt_rcp4_se6flor",
-		"wbgt_ERA5",
-		"wbgt_rcp4_se6flor-rcp4_comflor",
-		"wbgt_rcp4_comflor"
+		'wbgt_ERA5',
+		'wbgt_hist_comflor',
+		'wbgt_hist_se6flor',
+		'wbgt_rcp4_se6flor',
+		'wbgt_rcp8_comflor',
+		'wbgt_rcp8_se6flor',
+		'wbgt_rcp4_comflor',
+		'wbgt_rcp8_se6flor-hist_comflor',
+		'wbgt_rcp4_comflor-hist_comflor',
+		'wbgt_rcp4_se6flor-hist_comflor',
+		'wbgt_rcp8_comflor-hist_comflor',
+		'wbgt_hist_se6flor-hist_comflor',
+		'wbgt_rcp8_se6flor-rcp8_comflor',
+		'wbgt_rcp4_se6flor-rcp4_comflor',
+		'wbgt_hist_comflor-ERA5'
 	];
 
 	onMount(async () => {
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
 		const response = await fetch('/heat_deforestation_data_overview.json');
 		dataProperties = await response.json();
-	});
 
+		return () => window.removeEventListener('resize', checkMobile);
+	});
+	function checkMobile() {
+		isMobile = window.innerWidth < 600; // Using 1024px as breakpoint
+	}
+
+	function handleHover(event, property) {
+		hoveredProperty = property;
+		// Get the position of the hovered item relative to the menu
+		const menuItem = event.currentTarget;
+		const menuTop = menuItem.offsetParent.getBoundingClientRect().top;
+		const itemTop = menuItem.getBoundingClientRect().top;
+		hoverPosition = itemTop - menuTop;
+	}
 	async function handleSelect(property) {
 		if (property === currentProperty) return;
 
@@ -57,17 +77,16 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					message: `always begin your response with the word "tada." I'm a user that just chose to visualize ${property} on a map. Explain to me what i'm looking at and why it's significant. Also, I have access to ${dataProperties["explanation"]} tell me what to visualize next and why it would add context.`,
+					message: `I'm a user that just chose to visualize ${property} on a map. Explain to me what i'm looking at and why it's significant. Also, I have access to ${dataProperties['explanation']} tell me what to visualize next and why it would add context.`,
 					property: property
 				})
 			});
 
 			if (res.ok) {
 				const data = await res.json();
-                console.log('Assistant response:', data);
+				console.log('Assistant response:', data);
 				assistantResponse = data.answer;
 				recommendationData = data.recommendation;
-				
 			} else {
 				console.error('Error:', res.statusText);
 			}
@@ -77,11 +96,11 @@
 			isLoading = false;
 		}
 	}
-    async function handleQuickSelect(property) {
+	async function handleQuickSelect(property) {
 		if (property === currentProperty) return;
 
 		try {
-			// isLoading = true;
+			isQuickLoading = true;
 			currentProperty = property;
 			selectedProperty.set(property);
 
@@ -91,48 +110,71 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					message: `Show me the visualization for ${property}`,
+					message: `I'm a user that just chose to visualize ${property} on a map. Explain to me what i'm looking at and why it's significant. Also, I have access to ${dataProperties['explanation']} tell me what to visualize next and why it would add context. When giving me this recommendation always refer to the properties by the short explanation.`,
 					property: property
 				})
 			});
-// it looks like the data file to generate might be produced by the agent we should switch this to be hardcoded in
+
 			if (res.ok) {
 				const data = await res.json();
+				console.log('Assistant response:', data);
 				assistantResponse = data.answer;
 				recommendationData = data.recommendation;
-				console.log('Assistant response:', data);
 			} else {
 				console.error('Error:', res.statusText);
 			}
 		} catch (error) {
 			console.error('Request error:', error);
 		} finally {
-			isLoading = false;
+			isQuickLoading = false;
 		}
 	}
 </script>
 
-<div class="flex flex-col h-screen">
-	{#if !assistantResponse}
+<div class="flex flex-col h-[calc(100vh-125px)]">
+	{#if isMobile}
+		<div class="flex items-center justify-center min-h-screen p-4">
+			<div class="text-center bg-neutral rounded-box p-8 mx-4 shadow-lg">
+				<h2 class="text-2xl font-bold mb-4">Device Not Supported</h2>
+				<p>Please use a desktop or laptop computer to access this visualization tool.</p>
+			</div>
+		</div>
+	{:else if !assistantResponse && !isLoading}
 		{#if dataProperties}
-			<div class="p-4">
-				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-					{#each vizProperties as property}
-						<div class="card bg-neutral shadow-s hover:shadow-2xl transition-shadow">
-							<div class="card-body p-4">
-								<h2 class="card-title">{dataProperties.short_explanation[property]}</h2>
-								<p class="text-sm">{dataProperties.explanation[property]}</p>
-								<div class="card-actions justify-center">
-									<button
-										class="btn btn-wide btn-outline mt-4"
-										on:click={() => handleSelect(property)}
+			<div class="flex justify-center items-center min-h-100">
+				<div class="relative flex">
+					<ul class="menu bg-neutral rounded-box w-80">
+						<li class="menu-title">Visualization Options</li>
+						{#each vizProperties as property}
+							<li class="relative">
+								<a
+									href="#"
+									class="hover:bg-neutral-focus"
+									on:mouseenter={(e) => handleHover(e, property)}
+									on:mouseleave={() => (hoveredProperty = null)}
+									on:click={() => handleSelect(property)}
+									on:keydown={(e) => e.key === 'Enter' && handleSelect(property)}
+								>
+									<span class="font-bold">{dataProperties.short_explanation[property]}</span>
+								</a>
+
+								{#if hoveredProperty === property}
+									<div
+										class="absolute left-full -ml-[8px] w-80 z-50"
+										style="top: calc(-50% - 24px)"
+										bind:clientHeight={tooltipHeight}
+										transition:slide|local={{ axis: 'x', duration: 200 }}
 									>
-										Visualize
-									</button>
-								</div>
-							</div>
-						</div>
-					{/each}
+										<div class="bg-neutral rounded-r-box p-4">
+											<p class="text-sm">
+												{dataProperties.explanation[property]}
+											</p>
+										</div>
+									</div>
+								{/if}
+							</li>
+						{/each}
+					</ul>
 				</div>
 			</div>
 		{:else}
@@ -155,12 +197,21 @@
 				<Map {mapData} class="w-full h-full" />
 			</div>
 			<div class="w-1/3 flex flex-col">
-				<div class="h-2/3 shadow-xl rounded-lg overflow-scroll p-2 map-viz-card mx-1 mb-2">
-					<h2 class="text-2xl mb-4 text-center title-font">Map Visualization Explanation</h2>
-					<p>{assistantResponse}</p>
-                    <p>{recommendationData}</p>
+				<div class="h-1/2 shadow-xl rounded-lg overflow-scroll p-2 map-viz-card mx-1 mb-2">
+					{#if isQuickLoading}
+							<h1 class="text-custom-intro mb-4 text-center">Generating map explanation...</h1>
+							<div class="flex justify-center">
+								<span class="loading loading-spinner loading-lg" />
+							</div>
+	
+					{:else}
+						<h2 class="text-2xl mb-4 text-center title-font">Map Visualization Explanation</h2>
+						<p>{assistantResponse}</p>
+						<p>{recommendationData}</p>
+	
+					{/if}
 				</div>
-				<div class="h-1/3 shadow-xl rounded-lg overflow-auto p-2 mx-1">
+				<div class="h-1/2 shadow-xl rounded-lg overflow-auto p-2 mx-1">
 					<h3 class="text-lg mb-2 font-semibold">Switch Visualization</h3>
 					<div class="space-y-0 max-h-full overflow-y-auto">
 						{#each vizProperties as property}
@@ -199,7 +250,13 @@
 		font-family: 'Poppins', sans-serif;
 		font-weight: 600;
 	}
-	.card {
-		@apply backdrop-blur-sm bg-opacity-90;
+
+	:global(.menu li) {
+		overflow: visible !important;
+	}
+
+	:global(.menu) {
+		position: relative;
+		z-index: 10;
 	}
 </style>
