@@ -2,13 +2,15 @@
 	import { onMount } from 'svelte';
 	import Map from '$lib/components/Map.svelte';
 	import { selectedProperty } from '$lib/stores.js';
-	import { slide } from 'svelte/transition';
+	import { slide, blur, crossfade, fade, draw, fly, scale } from 'svelte/transition';
 
 	let hoveredProperty = null;
 	let hoverPosition = 0;
+	let tooltipHeight = 0;
 
 	let inputText = '';
 	let isLoading = false;
+	let isQuickLoading = false;
 	let mapData = null;
 	let assistantResponse = null;
 	let recommendationData = '';
@@ -25,21 +27,21 @@
 		'regional_50-100km_delta',
 		'regional_2-10km_delta',
 		'regional_10-100km_delta',
-		'wbgt_rcp8_se6flor',
-		'wbgt_hist_se6flor',
-		'wbgt_rcp4_comflor-hist_comflor',
-		'wbgt_rcp4_se6flor-hist_comflor',
-		'wbgt_rcp8_comflor',
-		'wbgt_rcp8_se6flor-hist_comflor',
-		'wbgt_hist_comflor-ERA5',
-		'wbgt_rcp8_comflor-hist_comflor',
-		'wbgt_hist_se6flor-hist_comflor',
-		'wbgt_rcp8_se6flor-rcp8_comflor',
-		'wbgt_hist_comflor',
-		'wbgt_rcp4_se6flor',
-		'wbgt_ERA5',
-		'wbgt_rcp4_se6flor-rcp4_comflor',
-		'wbgt_rcp4_comflor'
+		"wbgt_ERA5",
+		"wbgt_hist_comflor",
+		"wbgt_hist_se6flor",
+		"wbgt_rcp4_se6flor",
+		"wbgt_rcp8_comflor",
+		"wbgt_rcp8_se6flor",
+		"wbgt_rcp4_comflor",
+		"wbgt_rcp8_se6flor-hist_comflor",
+		"wbgt_rcp4_comflor-hist_comflor",
+		"wbgt_rcp4_se6flor-hist_comflor",
+		"wbgt_rcp8_comflor-hist_comflor",
+		"wbgt_hist_se6flor-hist_comflor",
+		"wbgt_rcp8_se6flor-rcp8_comflor",
+		"wbgt_rcp4_se6flor-rcp4_comflor",
+		"wbgt_hist_comflor-ERA5",
 	];
 
 	onMount(async () => {
@@ -55,7 +57,6 @@
 		const itemTop = menuItem.getBoundingClientRect().top;
 		hoverPosition = itemTop - menuTop;
 	}
-
 	async function handleSelect(property) {
 		if (property === currentProperty) return;
 
@@ -93,7 +94,7 @@
 		if (property === currentProperty) return;
 
 		try {
-			// isLoading = true;
+			isQuickLoading = true;
 			currentProperty = property;
 			selectedProperty.set(property);
 
@@ -103,31 +104,31 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					message: `Show me the visualization for ${property}`,
+					message: `I'm a user that just chose to visualize ${property} on a map. Explain to me what i'm looking at and why it's significant. Also, I have access to ${dataProperties['explanation']} tell me what to visualize next and why it would add context. When giving me this recommendation always refer to the properties by the short explanation.`,
 					property: property
 				})
 			});
+
 			if (res.ok) {
 				const data = await res.json();
+				console.log('Assistant response:', data);
 				assistantResponse = data.answer;
 				recommendationData = data.recommendation;
-				console.log('Assistant response:', data);
 			} else {
 				console.error('Error:', res.statusText);
 			}
 		} catch (error) {
 			console.error('Request error:', error);
 		} finally {
-			isLoading = false;
+			isQuickLoading = false;
 		}
 	}
 </script>
 
 <div class="flex flex-col h-screen">
-	{#if !assistantResponse}
+	{#if !assistantResponse && !isLoading}
 		{#if dataProperties}
-			<!-- refactor this section -->
-			<div class="flex justify-center items-center min-h-screen py-4 px-0">
+			<div class="flex justify-center items-center min-h-screen py-4 px-0 my-4">
 				<div class="relative flex">
 					<ul class="menu bg-neutral rounded-box w-64">
 						<li class="menu-title">Visualization Options</li>
@@ -146,10 +147,12 @@
 
 								{#if hoveredProperty === property}
 									<div
-										class="absolute left-full top-[-50%] -ml-[8px] w-64 z-50"
+										class="absolute left-full -ml-[8px] w-80 z-50"
+										style="top: calc(-50% - 24px)"
+										bind:clientHeight={tooltipHeight}
 										transition:slide|local={{ axis: 'x', duration: 200 }}
 									>
-										<div class="bg-neutral rounded-r-box p-4 shadow-lg">
+										<div class="bg-neutral rounded-r-box p-4">
 											<p class="text-sm">
 												{dataProperties.explanation[property]}
 											</p>
@@ -181,12 +184,23 @@
 				<Map {mapData} class="w-full h-full" />
 			</div>
 			<div class="w-1/3 flex flex-col">
-				<div class="h-2/3 shadow-xl rounded-lg overflow-scroll p-2 map-viz-card mx-1 mb-2">
-					<h2 class="text-2xl mb-4 text-center title-font">Map Visualization Explanation</h2>
-					<p>{assistantResponse}</p>
-					<p>{recommendationData}</p>
-				</div>
-				<div class="h-1/3 shadow-xl rounded-lg overflow-auto p-2 mx-1">
+				{#if isQuickLoading}
+					<div class="flex items-center justify-center flex-1">
+						<div class="container mx-auto p-4">
+							<h1 class="text-custom-intro mb-4 text-center">Generating map explanation...</h1>
+							<div class="flex justify-center">
+								<span class="loading loading-spinner loading-lg" />
+							</div>
+						</div>
+					</div>
+				{:else}
+					<div class="h-1/2 shadow-xl rounded-lg overflow-scroll p-2 map-viz-card mx-1 mb-2">
+						<h2 class="text-2xl mb-4 text-center title-font">Map Visualization Explanation</h2>
+						<p>{assistantResponse}</p>
+						<p>{recommendationData}</p>
+					</div>
+				{/if}
+				<div class="h-1/2 shadow-xl rounded-lg overflow-auto p-2 mx-1">
 					<h3 class="text-lg mb-2 font-semibold">Switch Visualization</h3>
 					<div class="space-y-0 max-h-full overflow-y-auto">
 						{#each vizProperties as property}
