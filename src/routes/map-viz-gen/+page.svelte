@@ -4,9 +4,7 @@
 	import { selectedProperty } from '$lib/stores.js';
 	import { slide, blur, crossfade, fade, draw, fly, scale } from 'svelte/transition';
 
-	let hoveredProperty = null;
-	let hoverPosition = 0;
-	let tooltipHeight = 0;
+	let isMobile = false;
 
 	let inputText = '';
 	let isLoading = false;
@@ -16,6 +14,9 @@
 	let recommendationData = '';
 	let dataProperties;
 	let currentProperty = null;
+	let hoveredProperty = null;
+	let hoverPosition = 0;
+	let tooltipHeight = 0;
 
 	const vizProperties = [
 		'Delta_T',
@@ -25,29 +26,34 @@
 		'regional_10-25km_delta',
 		'regional_25-50km_delta',
 		'regional_50-100km_delta',
-		'regional_2-10km_delta',
-		'regional_10-100km_delta',
-		"wbgt_ERA5",
-		"wbgt_hist_comflor",
-		"wbgt_hist_se6flor",
-		"wbgt_rcp4_se6flor",
-		"wbgt_rcp8_comflor",
-		"wbgt_rcp8_se6flor",
-		"wbgt_rcp4_comflor",
-		"wbgt_rcp8_se6flor-hist_comflor",
-		"wbgt_rcp4_comflor-hist_comflor",
-		"wbgt_rcp4_se6flor-hist_comflor",
-		"wbgt_rcp8_comflor-hist_comflor",
-		"wbgt_hist_se6flor-hist_comflor",
-		"wbgt_rcp8_se6flor-rcp8_comflor",
-		"wbgt_rcp4_se6flor-rcp4_comflor",
-		"wbgt_hist_comflor-ERA5",
+		'wbgt_ERA5',
+		'wbgt_hist_comflor',
+		'wbgt_hist_se6flor',
+		'wbgt_rcp4_se6flor',
+		'wbgt_rcp8_comflor',
+		'wbgt_rcp8_se6flor',
+		'wbgt_rcp4_comflor',
+		'wbgt_rcp8_se6flor-hist_comflor',
+		'wbgt_rcp4_comflor-hist_comflor',
+		'wbgt_rcp4_se6flor-hist_comflor',
+		'wbgt_rcp8_comflor-hist_comflor',
+		'wbgt_hist_se6flor-hist_comflor',
+		'wbgt_rcp8_se6flor-rcp8_comflor',
+		'wbgt_rcp4_se6flor-rcp4_comflor',
+		'wbgt_hist_comflor-ERA5'
 	];
 
 	onMount(async () => {
+		checkMobile();
+		window.addEventListener('resize', checkMobile);
 		const response = await fetch('/heat_deforestation_data_overview.json');
 		dataProperties = await response.json();
+
+		return () => window.removeEventListener('resize', checkMobile);
 	});
+	function checkMobile() {
+		isMobile = window.innerWidth < 600; // Using 1024px as breakpoint
+	}
 
 	function handleHover(event, property) {
 		hoveredProperty = property;
@@ -125,12 +131,19 @@
 	}
 </script>
 
-<div class="flex flex-col h-screen">
-	{#if !assistantResponse && !isLoading}
+<div class="flex flex-col h-[calc(100vh-125px)]">
+	{#if isMobile}
+		<div class="flex items-center justify-center min-h-screen p-4">
+			<div class="text-center bg-neutral rounded-box p-8 mx-4 shadow-lg">
+				<h2 class="text-2xl font-bold mb-4">Device Not Supported</h2>
+				<p>Please use a desktop or laptop computer to access this visualization tool.</p>
+			</div>
+		</div>
+	{:else if !assistantResponse && !isLoading}
 		{#if dataProperties}
-			<div class="flex justify-center items-center min-h-screen py-4 px-0 my-4">
+			<div class="flex justify-center items-center min-h-100">
 				<div class="relative flex">
-					<ul class="menu bg-neutral rounded-box w-64">
+					<ul class="menu bg-neutral rounded-box w-80">
 						<li class="menu-title">Visualization Options</li>
 						{#each vizProperties as property}
 							<li class="relative">
@@ -184,22 +197,20 @@
 				<Map {mapData} class="w-full h-full" />
 			</div>
 			<div class="w-1/3 flex flex-col">
-				{#if isQuickLoading}
-					<div class="flex items-center justify-center flex-1">
-						<div class="container mx-auto p-4">
+				<div class="h-1/2 shadow-xl rounded-lg overflow-scroll p-2 map-viz-card mx-1 mb-2">
+					{#if isQuickLoading}
 							<h1 class="text-custom-intro mb-4 text-center">Generating map explanation...</h1>
 							<div class="flex justify-center">
 								<span class="loading loading-spinner loading-lg" />
 							</div>
-						</div>
-					</div>
-				{:else}
-					<div class="h-1/2 shadow-xl rounded-lg overflow-scroll p-2 map-viz-card mx-1 mb-2">
+	
+					{:else}
 						<h2 class="text-2xl mb-4 text-center title-font">Map Visualization Explanation</h2>
 						<p>{assistantResponse}</p>
 						<p>{recommendationData}</p>
-					</div>
-				{/if}
+	
+					{/if}
+				</div>
 				<div class="h-1/2 shadow-xl rounded-lg overflow-auto p-2 mx-1">
 					<h3 class="text-lg mb-2 font-semibold">Switch Visualization</h3>
 					<div class="space-y-0 max-h-full overflow-y-auto">
@@ -238,9 +249,6 @@
 	.title-font {
 		font-family: 'Poppins', sans-serif;
 		font-weight: 600;
-	}
-	.card {
-		@apply backdrop-blur-sm bg-opacity-90;
 	}
 
 	:global(.menu li) {
