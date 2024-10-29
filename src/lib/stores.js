@@ -77,3 +77,4 @@ export const input = writable('');
 export const chatHistory = writable([]);
 export const isLoading = writable(false);
 export const chatUsed = writable(false);
+export const selectedProperty = writable('wbgt_rcp8_se6flor');
