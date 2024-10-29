@@ -112,7 +112,7 @@ export async function POST({ request }) {
 	const { message, agentIndex, currentSliderValues } = await request.json();
 
 	try {
-		console.log('currentSliderValues: ', currentSliderValues);
+		console.log('assistantDefinitions[agentIndex]: ', assistantDefinitions[agentIndex]);
 		const promptMods = getPromptMods(currentSliderValues, agentIndex);
 		const assistantDef = { ...assistantDefinitions[agentIndex], 'temperature': promptMods.temperature};
 		

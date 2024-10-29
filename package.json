@@ -44,6 +44,7 @@
 		"lucide-svelte": "^0.436.0",
 		"mapbox-gl": "^3.6.0",
 		"motion": "^10.18.0",
-		"openai": "^4.55.7"
+		"openai": "^4.55.7",
+		"svelte-portal": "^2.2.1"
 	}
 }

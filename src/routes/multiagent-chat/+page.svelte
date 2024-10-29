@@ -1,13 +1,14 @@
+<!-- src/routes/+page.svelte -->
 <script>
 	import MultiAgentChat from '$lib/components/MultiAgentChat.svelte';
 	import ChatInput from '$lib/components/ChatInput.svelte';
 	import Citations from '$lib/components/Citations.svelte';
 	import AgentCustomization from '$lib/components/AgentCustomization.svelte';
-    import AgentSelection from '$lib/components/AgentSelection2.svelte'
+	import AgentSelection from '$lib/components/AgentSelection2.svelte';
 	import Map from '$lib/components/Map.svelte';
+	import Tooltip from '$lib/components/Tooltip.svelte';
 	import { Coords, chatUsed } from '$lib/stores.js';
 	import { onMount } from 'svelte';
-
 	let helpModal;
 
 	onMount(() => {
@@ -18,8 +19,7 @@
 </script>
 
 <div class="main-container">
-	<div class="sidebar">
-		<!-- Use bind:this to get a reference to the dialog element -->
+	<div class="sidebar z-50">
 		<button class="btn" on:click={() => helpModal.showModal()}>What is CI Research Chat?</button>
 		<dialog bind:this={helpModal} class="modal">
 			<div class="modal-box prose">
@@ -47,6 +47,7 @@
 			<Citations />
 		</div>
 	</div>
+	<Tooltip />
 	<div class="chat-container">
 		<div class="chat-messages">
 			<AgentSelection />
@@ -77,9 +78,11 @@
 		flex-direction: column;
 		gap: 1rem;
 		max-height: 100%;
+		overflow: visible; /* Ensure overflow is visible */
 	}
 
-	.sidebar-top, .sidebar-bottom {
+	.sidebar-top,
+	.sidebar-bottom {
 		border-radius: 8px;
 		overflow: hidden;
 	}
@@ -112,7 +115,6 @@
 		justify-content: flex-end; /* This will align content to the bottom */
 		overflow: hidden;
 		width: 100%;
-		/* max-width: 750px; */
 	}
 
 	.multi-agent-chat-wrapper {
@@ -121,7 +123,6 @@
 		display: flex;
 		flex-direction: column-reverse;
 		width: 100%;
-		/* max-width: 780px; */
 	}
 
 	.chat-input-wrapper {
@@ -129,4 +130,31 @@
 		max-width: 850px;
 		width: 100%;
 	}
+
+	/* Modal styles */
+	/* nest_comment_start~.modal {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 2000;
+		background: white;
+		border-radius: 8px;
+		padding: 1rem;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	}
+
+	.modal-box {
+		~nest_comment_end *//* Additional modal box styles *//* nest_comment_start~
+	}
+
+	.prose a {
+		color: #1d4ed8; ~nest_comment_end *//* Example primary color *//* nest_comment_start~
+		text-decoration: underline;
+	}
+
+	~nest_comment_end *//* Ensure buttons have proper cursor *//* nest_comment_start~
+	.btn {
+		cursor: pointer;
+	}~nest_comment_end */
 </style>

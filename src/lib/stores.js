@@ -6,6 +6,13 @@ export const pointInfo = writable({});
 export const currentCitations = writable([]);
 export const textEditorContent = writable('');
 export const codeBlocksMap = writable(new Map());
+export const tooltipStore = writable({
+    visible: false,
+    text: '',
+    position: 'right',
+    x: 0,
+    y: 0
+});
 export const promptModifiers = writable({
     length: {
         1: 'Give a very consice response with only the essential information.',
@@ -61,9 +68,9 @@ export const selectedAgentIndex = writable(0);
 
 export const sliderValues = writable({
     temperature: 1,
-    length: 1,
-    formatting: 1,
-    grade: 1
+    length: 2,
+    formatting: 2,
+    grade: 12
 })
 
 export const input = writable('');

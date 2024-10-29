@@ -1,7 +1,6 @@
 <script>
-	import { onMount } from 'svelte';
 	import { pdf_citation_mapping } from '$lib/pdf_citation_mapping.js';
-	import { input } from '$lib/stores.js';
+	import { input, tooltipStore } from '$lib/stores.js';
 	import plusIcon from '$lib/images/plus.png'; // Import the plus icon
 
 	let searchTerm = '';
@@ -13,7 +12,7 @@
 
 	function selectCitation(citation) {
 		const authorYearPart = getAuthorYearPart(citation);
-		input.update(currentInput => currentInput + (currentInput ? ' ' : '') + authorYearPart);
+		input.update((currentInput) => currentInput + (currentInput ? ' ' : '') + authorYearPart);
 	}
 
 	function formatCitationWithDOI(citation) {
@@ -27,48 +26,74 @@
 		const titleMatch = citation.match(titleRegex);
 		const title = titleMatch ? titleMatch[1] : '';
 
-			// Format the citation
-			let formattedCitation = `${authorYearPart}` + (title ? ` <b>"${title}"</b>` : '');
+		// Format the citation
+		let formattedCitation = `${authorYearPart}` + (title ? ` <b>"${title}"</b>` : '');
 
-			// Add DOI link if present
-			const doiMatches = citation.match(doiRegex);
-			if (doiMatches) {
-				formattedCitation += ` <a href="${doiMatches[0]}" target="_blank">${doiMatches[0]}</a>`;
-			}
+		// Add DOI link if present
+		const doiMatches = citation.match(doiRegex);
+		if (doiMatches) {
+			formattedCitation += ` <a href="${doiMatches[0]}" target="_blank">${doiMatches[0]}</a>`;
+		}
 
-			return formattedCitation;
+		return formattedCitation;
 	}
 
 	$: {
-		filteredCitations = Object.values(pdf_citation_mapping).filter(citation =>
+		filteredCitations = Object.values(pdf_citation_mapping).filter((citation) =>
 			citation.toLowerCase().includes(searchTerm.toLowerCase())
 		);
+	}
+
+	function showTooltip(event) {
+		const tooltipText =
+			'Search the list of citations below to see what publications CI AI has access to. Click on a citation to insert it into the chat input. Click on the DOI to open the publication in a new tab.';
+		const position = 'right';
+
+		// Get the bounding rect of the target element
+		const rect = event.currentTarget.getBoundingClientRect();
+		const x = rect.right + 8;
+		const y = rect.top + rect.height / 2;
+
+		tooltipStore.set({
+			visible: true,
+			text: tooltipText,
+			position: position,
+			x: x,
+			y: y
+		});
+	}
+
+	function hideTooltip() {
+		tooltipStore.set({
+			visible: false,
+			text: '',
+			position: 'right',
+			x: 0,
+			y: 0
+		});
 	}
 </script>
 
 <div class="citations">
 	<div class="flex items-center">
 		<div class="search-box flex-grow">
-			<input
-				type="text"
-				placeholder="Search publications..."
-				bind:value={searchTerm}
-			/>
+			<input type="text" placeholder="Search publications..." bind:value={searchTerm} />
 		</div>
-		<div class="tooltip tooltip-bottom ml-2" data-tip="Search the list of citations below to see what publications CI AI has access to. Click on a citation to insert it into the chat input. Click on the DOI to open the publication in a new tab.">
-			<span class="badge badge-info cursor-help">?</span>
-		</div>
+		<span
+			class="badge badge-info cursor-help"
+			on:mouseenter={showTooltip}
+			on:mouseleave={hideTooltip}
+		>
+			?
+		</span>
 	</div>
 	<div class="citation-list">
 		<ul>
 			{#each filteredCitations as citation}
 				<li>
-					<button
-						on:click={() => selectCitation(citation)}
-						class="citation-button"
-					>
+					<button on:click={() => selectCitation(citation)} class="citation-button">
 						{@html formatCitationWithDOI(citation)}
-						<img src={plusIcon} alt="Add" class="add-icon" /> <!-- Use the imported icon -->
+						<img src={plusIcon} alt="Add" class="add-icon" />
 					</button>
 				</li>
 			{/each}
@@ -78,7 +103,6 @@
 
 <style>
 	.citations {
-		/* margin-top: 2rem; */
 		font-size: 9pt;
 		color: #333333;
 		display: flex;
@@ -106,26 +130,24 @@
 	.citation-list li {
 		margin-bottom: 1rem;
 		padding: 1rem;
-		background-color: #F1E9D2;
+		background-color: #f1e9d2;
 		border-radius: 4px;
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 		color: #333333;
 		cursor: pointer;
 		transition: background-color 0.2s ease-in-out;
 		text-align: left;
-		/* margin: 10px; */
-
 	}
 
 	.citation-list li:hover {
-		background-color: #E8D8B0;
+		background-color: #e8d8b0;
 	}
 
 	:global(.citations a) {
-		color: theme('colors.primary');
+		color: #1d4ed8;
 		text-decoration: none;
-        transition: background-color 0.2s ease-in-out;
-		background-color: #DBEEFB;
+		transition: background-color 0.2s ease-in-out;
+		background-color: #dbeefb;
 		padding: 0.1em 0.3em;
 		border-radius: 3px;
 		word-wrap: break-word;
@@ -135,7 +157,7 @@
 	}
 
 	:global(.citations a:hover) {
-		background-color: #80C5EF;
+		background-color: #80c5ef;
 	}
 
 	:global(.citations p) {
@@ -159,10 +181,10 @@
 		width: 100%;
 		padding: 10px;
 		font-size: 1rem;
-		border: 1px solid oklch(var(--s));;
+		border: 1px solid #ccc;
 		border-radius: 40px;
 		background-color: #fff;
-		color: #2C665D;
+		color: #2c665d;
 	}
 
 	.citation-list button {
@@ -176,15 +198,15 @@
 	}
 
 	.citation-button {
-		position: relative; /* Added to position the icon */
+		position: relative;
 	}
 
 	.add-icon {
-		position: absolute; /* Positioning the icon */
-		bottom: -8px; /* Adjust as needed */
-		right: -8px; /* Adjust as needed */
-		width: 18px; /* Set the width of the icon */
-		height: 18px; /* Set the height of the icon */
-		fill: green; /* Set the color to green */
+		position: absolute;
+		bottom: -8px;
+		right: -8px;
+		width: 18px;
+		height: 18px;
+		fill: green;
 	}
 </style>
