@@ -1,4 +1,4 @@
-const vectorStoreID = 'vs_qvbAjFYXzetwyq0wLTv9omsT'
+const vectorStoreID = 'vs_Sbq0nlouP0lxkzNMj9dhoJOg'
 
 export const assistantDefinitions = [
     {
