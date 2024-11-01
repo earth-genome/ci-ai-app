@@ -26,7 +26,7 @@
 				<h3 class="text-lg font-bold">Welcome!</h3>
 				<p class="py-4">
 					Explore the research powering <a href="https://www.wri.org/research/not-just-carbon-capturing-benefits-forests-climate">Conservation International's Not Just Carbon report</a> in a conversational manner.
-					CI Research Chat (CI AI) is a machine intelligence that has deep knowledge on the research behind the Not Just Carbon report. Ask it about anything topic related to the report, or climate change at large, and CI AI will reference over 100 documents to answer your question, citing its sources.<br><br>
+					CI Research Chat (CI AI) is a machine intelligence that has deep knowledge on the research behind the Not Just Carbon report. Ask it about anything topic related to the report, or climate change at large, and CI AI will reference over 100 documents to answer your question, citing its sources. You can ask questions in any language.<br><br>
 					
 					The list of papers being used by CI AI is on the left. You can search for a publication using the search bar, and clicking the citation will insert its reference into the chat window.
 					Click the citations in a response to open the document in a new tab. <br><br>
