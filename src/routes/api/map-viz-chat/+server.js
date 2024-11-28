@@ -6,26 +6,30 @@ const openai = new OpenAI({
   apiKey: OPEN_AI_KEY
 });
 
-// Add your vector store API key if required
 const VECTOR_STORE_ID = 'vs_XcgsWWBBEVoK4paHiWXgFSYN';
 
 async function queryVectorStore(query) {
   try {
-    const response = await fetch('https://api.metaphor.systems/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // Add any required authentication headers for your vector store
-      },
-      body: JSON.stringify({
-        vectorStoreId: VECTOR_STORE_ID,
-        query: query,
-        numResults: 3  // Adjust based on your needs
-      })
+    // First, create an embedding for the query
+    const embeddingResponse = await openai.embeddings.create({
+      model: "text-embedding-ada-002",
+      input: query,
     });
 
-    const data = await response.json();
-    return data.results || [];
+    const queryEmbedding = embeddingResponse.data[0].embedding;
+
+    // Now search the vector store using the embedding
+    const response = await openai.vectors.search({
+      model: "text-embedding-ada-002",
+      vector_store_id: VECTOR_STORE_ID,
+      query_vector: queryEmbedding,
+      max_results: 3
+    });
+
+    console.log('Vector search response:', response);
+    
+    // Extract and return the relevant text from the matches
+    return response.matches || [];
   } catch (error) {
     console.error('Vector store query error:', error);
     return [];
@@ -90,7 +94,7 @@ export async function POST({ request }) {
       return json({
         answer: parsedData.answer,
         recommendation: parsedData.recommendation,
-        sourcesUsed: vectorResults.length > 0  // inform frontend if sources were used
+        sourcesUsed: vectorResults.length > 0  // Optional: inform frontend if sources were used
       });
     } else {
       return json({ message: 'No structured output available.' });
