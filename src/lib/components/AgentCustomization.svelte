@@ -7,7 +7,7 @@
         sliderValues.update(currentValues => {
             return { ...currentValues, [key]: key === 'temperature' ? parseFloat(value) : parseInt(value, 10) };
         });
-        console.log('sliderValues: ', get(sliderValues))
+        // console.log('sliderValues: ', get(sliderValues))
     }
 
     $: isProfessorSelected = $selectedAgentIndex === 2; // Assuming professor is index 3

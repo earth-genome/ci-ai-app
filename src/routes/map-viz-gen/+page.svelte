@@ -84,7 +84,7 @@
 
 			if (res.ok) {
 				const data = await res.json();
-				console.log('Assistant response:', data);
+				// console.log('Assistant response:', data);
 				assistantResponse = data.answer;
 				recommendationData = data.recommendation;
 			} else {
@@ -117,7 +117,7 @@
 
 			if (res.ok) {
 				const data = await res.json();
-				console.log('Assistant response:', data);
+				// console.log('Assistant response:', data);
 				assistantResponse = data.answer;
 				recommendationData = data.recommendation;
 			} else {

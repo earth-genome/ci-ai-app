@@ -24,16 +24,16 @@ async function invokeLambda(prompt) {
 			throw new Error(JSON.parse(payload.body).error);
 		}
         let resp = JSON.parse(payload.body)
-        console.log("resp: ", resp)
+        // console.log("resp: ", resp)
 		return resp;
 	} catch (error) {
-		console.error('Error invoking Lambda:', error);
+		// console.error('Error invoking Lambda:', error);
 		throw error;
 	}
 }
 
 export async function POST({ request }) {
-    console.log("POST request received in api folder structure")
+    // console.log("POST request received in api folder structure")
 	const { message } = await request.json();
 
 	try {
@@ -56,7 +56,7 @@ export async function POST({ request }) {
 }
 
 export async function GET() {
-  console.log('POST request received');
+//   console.log('POST request received');
 	return new Response('This endpoint only supports POST requests for responses from Lambda.', {
 		status: 405,
 		headers: {

@@ -12,7 +12,7 @@
 
 		messages = [...messages, { role: 'user', content: input }];
 		isLoading = true;
-		console.log('input is:', input);
+		// console.log('input is:', input);
 
 		try {
 			const response = await fetch('../api/lambda-chat', {
@@ -28,8 +28,8 @@
 			}
 
 			const content = await response.text();
-			console.log(response)
-			console.log("content: ", content)
+			// console.log(response)
+			// console.log("content: ", content)
 			messages = [...messages, { role: 'assistant', content }];
 		} catch (error) {
 			console.error('Error:', error);

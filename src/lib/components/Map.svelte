@@ -123,7 +123,7 @@
 							{ hover: false }
 						);
 					}
-					console.log(e.features[0]);
+					// console.log(e.features[0]);
 
 					hoveredStateId = e.features[0].id; // Make sure your features have an id property
 

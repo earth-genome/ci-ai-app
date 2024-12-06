@@ -72,8 +72,8 @@ export async function POST({ request }) {
 			const responseWithCitations =
 				processedText + (citations.length > 0 ? '\n\nCitations:\n' + citations.join('\n') : '');
 
-			console.log('Processed text:', processedText);
-			console.log('Citations:', citations);
+			// console.log('Processed text:', processedText);
+			// console.log('Citations:', citations);
 			// console.log('Response with citations:', responseWithCitations);
 			// console.log('Raw annotations:', annotations);
 

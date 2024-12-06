@@ -14,7 +14,7 @@
 
 	function handleClick(index) {
 		$selectedOption = index;
-		console.log($selectedOption);
+		// console.log($selectedOption);
 	}
 </script>
 

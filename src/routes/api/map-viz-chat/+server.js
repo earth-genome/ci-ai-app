@@ -26,7 +26,7 @@ async function queryVectorStore(query) {
       max_results: 3
     });
 
-    console.log('Vector search response:', response);
+    // console.log('Vector search response:', response);
     
     // Extract and return the relevant text from the matches
     return response.matches || [];
@@ -88,8 +88,8 @@ export async function POST({ request }) {
     
     if (result.function_call) {
       const parsedData = JSON.parse(result.function_call.arguments);
-      console.log('Parsed answer:', parsedData.answer);
-      console.log('Parsed recommendation:', parsedData.recommendation);
+      // console.log('Parsed answer:', parsedData.answer);
+      // console.log('Parsed recommendation:', parsedData.recommendation);
 
       return json({
         answer: parsedData.answer,

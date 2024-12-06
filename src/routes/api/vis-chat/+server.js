@@ -44,7 +44,7 @@ export async function POST({ request }) {
 		const messages = await openai.beta.threads.messages.list(thread.id);
 		const assistantMessage = messages.data.find((msg) => msg.role === 'assistant');
 
-        console.log('assistantMessage: ', assistantMessage);
+        // console.log('assistantMessage: ', assistantMessage);
 
 		// Clean up: delete the temporary assistant
 		await openai.beta.assistants.del(assistant.id);
@@ -53,12 +53,12 @@ export async function POST({ request }) {
 			const textMessage = assistantMessage.content.find(msg => msg.type === 'text');
 			const imageMessage = assistantMessage.content.find(msg => msg.type === 'image_file');
 
-            console.log('imageMessage: ', imageMessage);
+            // console.log('imageMessage: ', imageMessage);
 
 			if (imageMessage) {
 				let imageFileID = imageMessage.image_file.file_id
 				const response = await openai.files.content(imageFileID);
-                console.log('rsponse: ', response);
+                // console.log('rsponse: ', response);
 				const image_data = await response.arrayBuffer();
 				const image_data_buffer = Buffer.from(image_data);
 				fs.writeFileSync("src/lib/images/temp-chart.png", image_data_buffer);
@@ -69,7 +69,7 @@ export async function POST({ request }) {
 				const { annotations } = text;
 				const citations = [];
 
-                console.log('text: ', text);
+                // console.log('text: ', text);
 
 				let processedText = text.value;
 
@@ -95,8 +95,8 @@ export async function POST({ request }) {
 				const responseWithCitations =
 					processedText + (citations.length > 0 ? '\n\nCitations:\n' + citations.join('\n') : '');
 
-				console.log('Processed text:', processedText);
-				console.log('Citations:', citations);
+				// console.log('Processed text:', processedText);
+				// console.log('Citations:', citations);
 
 				return json({
 					message: processedText,

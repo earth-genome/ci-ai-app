@@ -16,8 +16,8 @@ function getPromptMods(vals, agentIndex) {
 	const promptModifiersValue = get(promptModifiers);
 
 	for (const [key, value] of Object.entries(vals)) {
-		console.log('key: ', key);
-		console.log('val: ', value);
+		// console.log('key: ', key);
+		// console.log('val: ', value);
 		if (promptModifiersValue[key] && promptModifiersValue[key][value]) {
 			if (key !== 'temperature') {
 				if (key === 'grade' && agentIndex !== 3) {
@@ -29,7 +29,7 @@ function getPromptMods(vals, agentIndex) {
 		}
 	}
 
-	console.log('modifierString: ', modifierString);
+	// console.log('modifierString: ', modifierString);
 
 	return {
 		'modifierString': modifierString.trim(),
@@ -88,9 +88,9 @@ function extractCodeBlocks(response) {
     prunedResponse = prunedResponse.replace(citationRegex, (match, p1) => {
         const citationIndex = parseInt(p1, 10);
         let citation = get(currentCitations)[citationIndex]
-        console.log('currentCitations: ', get(currentCitations));
-        console.log('citationIndex: ', citationIndex);
-        console.log('citation: ', citation);
+        // console.log('currentCitations: ', get(currentCitations));
+        // console.log('citationIndex: ', citationIndex);
+        // console.log('citation: ', citation);
         citation = pdf_citation_mapping[citation] || citation
 
         const doiUrl = extractDOI(citation);
@@ -112,13 +112,13 @@ export async function POST({ request }) {
 	const { message, agentIndex, currentSliderValues } = await request.json();
 
 	try {
-		console.log('assistantDefinitions[agentIndex]: ', assistantDefinitions[agentIndex]);
+		// console.log('assistantDefinitions[agentIndex]: ', assistantDefinitions[agentIndex]);
 		const promptMods = getPromptMods(currentSliderValues, agentIndex);
 		const assistantDef = { ...assistantDefinitions[agentIndex], 'temperature': promptMods.temperature};
 		
 
 		assistantDef.instructions = assistantDef.instructions + ' ' + promptMods.modifierString;
-		console.log('assistantDef: ', assistantDef);
+		// console.log('assistantDef: ', assistantDef);
 		const assistant = await openai.beta.assistants.create(assistantDef);
 		// Create a new thread
 		const thread = await openai.beta.threads.create();
